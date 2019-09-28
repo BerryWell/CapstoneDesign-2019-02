@@ -1,0 +1,16 @@
+{
+  "name": "capstone",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wsrun dev"
+  },
+  "workspaces": [
+    "capstone-api",
+    "capstone-web"
+  ],
+  "dependencies": {
+    "wsrun": "^5.0.2"
+  }
+}
