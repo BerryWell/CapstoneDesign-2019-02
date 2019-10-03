@@ -1,1 +1,4 @@
 18.236.129.135
+
+ssh -i "/home/nam/.ssh/MyKey/Capstone2019.pem" ec2-user@18.236.129.135
+
