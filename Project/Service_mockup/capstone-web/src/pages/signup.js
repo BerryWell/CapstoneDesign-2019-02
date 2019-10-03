@@ -61,14 +61,26 @@ TextMaskCustom.propTypes = {
 export default function SignUp() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
-    textmask: '(1  )    -    ',
+    phoneNumber: '(1  )    -    ',
+    id:'',
+    password:'',
+    name:'',
+    address:'',
   });
-  
+  const submitRef = React.createRef();
   const handleChange = name => event => {
+
     setValues({
       ...values,
       [name]: event.target.value,
     });
+  };
+  const isDisabled = () => {
+    return values.id === '' || 
+    values.password === '' || 
+    values.name === '' || 
+    values.address === '' || 
+    values.phoneNumber === '(1  )    -    ';
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -80,7 +92,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -91,6 +103,7 @@ export default function SignUp() {
                 label="ID"
                 name="id"
                 autoComplete="id"
+                onChange={handleChange('id')}
               />
             </Grid>
             <Grid item xs={12}>
@@ -102,6 +115,7 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
+                onChange={handleChange('password')}
                 autoComplete="current-password"
               />
             </Grid>
@@ -113,6 +127,7 @@ export default function SignUp() {
                 name="name"
                 label="Name"
                 id="name"
+                onChange={handleChange('name')}
                 autoComplete="name"
               />
             </Grid>
@@ -124,14 +139,15 @@ export default function SignUp() {
                 name="address"
                 label="Address"
                 id="address"
+                onChange={handleChange('address')}
                 autoComplete="address"
               />
             </Grid>
             <Grid item xs={12}>
               <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
               <Input
-                value={values.textmask}
-                onChange={handleChange('textmask')}
+                value={values.phoneNumber}
+                onChange={handleChange('phoneNumber')}
                 id="formatted-text-mask-input"
                 inputComponent={TextMaskCustom}
               />
@@ -143,6 +159,8 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            ref={submitRef}
+            disabled={isDisabled()}
           >
             Sign Up
           </Button>
@@ -160,3 +178,5 @@ export default function SignUp() {
     </Container>
   );
 }
+
+
