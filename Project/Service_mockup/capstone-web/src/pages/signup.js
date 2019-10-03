@@ -12,7 +12,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import MaskedInput from 'react-text-mask'
+import PropTypes from 'prop-types';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -38,9 +41,37 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+}
+
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+};
 export default function SignUp() {
   const classes = useStyles();
-
+  const [values, setValues] = React.useState({
+    textmask: '(1  )    -    ',
+  });
+  
+  const handleChange = name => event => {
+    setValues({
+      ...values,
+      [name]: event.target.value,
+    });
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -75,7 +106,7 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
               />
-            </Grid> 
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -99,16 +130,14 @@ export default function SignUp() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="phoneNumber"
-                label="Phone Number"
-                id="phoneNumber"
-                autoComplete="phoneNumber"
+              <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
+              <Input
+                value={values.textmask}
+                onChange={handleChange('textmask')}
+                id="formatted-text-mask-input"
+                inputComponent={TextMaskCustom}
               />
-            </Grid>     
+            </Grid>
           </Grid>
           <Button
             type="submit"
