@@ -30,5 +30,14 @@ function responseStores(res) {
     res.end(JSON.stringify(stores));
 }
 
+
+app.post('/signup', (req, res) => {
+
+    res.redirect();
+
+});
+
+
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

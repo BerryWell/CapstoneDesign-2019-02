@@ -15,3 +15,14 @@ export async function appendStore(store) {
     });
     return await response.json();
 }
+
+export async function signUp(profile){
+    const response = await fetch('http://localhost:3000/signup', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profile)
+    });
+    return await response.redirected();
+}
