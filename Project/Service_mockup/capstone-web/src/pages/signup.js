@@ -53,38 +53,15 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="id"
+                label="ID"
+                name="id"
+                autoComplete="id"
               />
             </Grid>
             <Grid item xs={12}>
@@ -98,7 +75,40 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
               />
-            </Grid>           
+            </Grid> 
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="name"
+                label="Name"
+                id="name"
+                autoComplete="name"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="address"
+                label="Address"
+                id="address"
+                autoComplete="address"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="phoneNumber"
+                label="Phone Number"
+                id="phoneNumber"
+                autoComplete="phoneNumber"
+              />
+            </Grid>     
           </Grid>
           <Button
             type="submit"
