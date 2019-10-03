@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
 const port = 3000;
+const sqlConfig = require('./config');
+const mysql = require('mysql');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -37,7 +38,21 @@ app.post('/signup', (req, res) => {
 
 });
 
+const connection = mysql.createConnection({
+    host: sqlConfig['development']['database']['host'],
+    user: sqlConfig['development']['database']['user'],
+    password: sqlConfig['development']['database']['password'],
+    port: sqlConfig['development']['database']['port'],
+    database: sqlConfig['development']['database']['database'],
+});
+connection.connect(function (err){
+    if(err){
+        console.error('mysql connection error');
 
-
+        console.error(err);
+        return;
+    }
+    console.log('connected as id ' + connection.threadId);
+});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
