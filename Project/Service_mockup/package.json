@@ -11,6 +11,7 @@
     "capstone-web"
   ],
   "dependencies": {
+    "express": "^4.17.1",
     "react-text-mask": "^5.4.3",
     "wsrun": "^5.0.2"
   }
