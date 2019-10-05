@@ -14,6 +14,7 @@ import MaskedInput from 'react-text-mask'
 import PropTypes from 'prop-types';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
+import { signUp } from '../api/stores';
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -62,11 +63,15 @@ export default function SignUp() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     phoneNumber: '(1  )    -    ',
-    id:'',
-    password:'',
-    name:'',
-    address:'',
+    id: '',
+    password: '',
+    name: '',
+    address: '',
+    email: '',
   });
+  const submitEvent = async (profile) => {
+    signUp(profile)
+  }
   const submitRef = React.createRef();
   const handleChange = name => event => {
 
@@ -76,12 +81,14 @@ export default function SignUp() {
     });
   };
   const isDisabled = () => {
-    return values.id === '' || 
-    values.password === '' || 
-    values.name === '' || 
-    values.address === '' || 
-    values.phoneNumber === '(1  )    -    ';
+    return values.id === '' ||
+      values.password === '' ||
+      values.name === '' ||
+      values.address === '' ||
+      values.email === '' ||
+      values.phoneNumber === '(1  )    -    ';
   };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -136,6 +143,18 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
+                name="email"
+                label="E-Mail"
+                id="email"
+                onChange={handleChange('email')}
+                autoComplete="email"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
                 name="address"
                 label="Address"
                 id="address"
@@ -148,7 +167,7 @@ export default function SignUp() {
               <Input
                 value={values.phoneNumber}
                 onChange={handleChange('phoneNumber')}
-                id="formatted-text-mask-input"
+                id="phoneNumber"
                 inputComponent={TextMaskCustom}
               />
             </Grid>
@@ -161,12 +180,15 @@ export default function SignUp() {
             className={classes.submit}
             ref={submitRef}
             disabled={isDisabled()}
+            onClick={() => {
+              signUp(values);
+            }}
           >
             Sign Up
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="login" variant="body2">
+              <Link href="/" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

@@ -16,7 +16,8 @@ export async function appendStore(store) {
     return await response.json();
 }
 
-export async function signUp(profile){
+export async function signUp(profile) {
+    console.log(profile);
     const response = await fetch('http://localhost:3000/signup', {
         method: 'post',
         headers: {
@@ -24,5 +25,6 @@ export async function signUp(profile){
         },
         body: JSON.stringify(profile)
     });
-    return await response.redirected();
+    return await response.json();
 }
+

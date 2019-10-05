@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
           >
             <main>{children}</main>
             <footer style={{ paddingTop: 10 }}>
-              © {new Date().getFullYear()}, 팀명을 여기다가 적으시죠
+              © {new Date().getFullYear()}, 캡스톤 판매자용 페이지
             </footer>
           </div>
         </div>
