@@ -1,30 +1,16 @@
+import axios from 'axios';
+
 export async function getStores() {
-    const response = await fetch('http://localhost:3000/stores', {
-        method: 'get',
-    });
-    return await response.json();
+    const res = await axios.get('http://localhost:3000/stores');
+    return res.data;
 }
 
 export async function appendStore(store) {
-    const response = await fetch('http://localhost:3000/store', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(store)
-    });
-    return await response.json();
+    const res = await axios.post('http://localhost:3000/store', store);
+    return res.data;
 }
 
 export async function signUp(profile) {
-    console.log(profile);
-    const response = await fetch('http://localhost:3000/signup', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(profile)
-    });
-    return await response.json();
+    const res = await axios.post('http://localhost:3000/signup', profile);
+    return res.data;
 }
-
