@@ -10,8 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-
-import Layout from '../components/layout'
 import { getStores, appendStore } from '../api/stores';
 
 const IndexPage = () => {
@@ -30,7 +28,7 @@ const IndexPage = () => {
     setStores(stores);
   };
   return (
-    <Layout>
+    <>
       <h1>캡스톤</h1>
       <Button variant="contained" color="primary" onClick={appendNewStore}>
         가게 추가하기
@@ -38,7 +36,7 @@ const IndexPage = () => {
       { stores ?
         stores.map((store, index) => <StoreCard {...store} key={index}/>) :
         <>가게 목록을 불러오는 중입니다...</> }
-    </Layout>
+    </>
   )
 }
 

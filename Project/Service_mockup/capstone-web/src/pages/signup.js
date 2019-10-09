@@ -13,8 +13,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
+import { useSnackbar } from 'notistack';
 
 import { signUp } from '../api/stores';
+
+const successSnackbarOption = {
+  variant: 'success',
+};
+const errorSnackbarOption = {
+  variant: 'error',
+};
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -43,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [values, setValues] = React.useState({
     phoneNumber: '',
     id: '',
@@ -69,10 +78,10 @@ export default function SignUp() {
   const onSubmitButtonClick = async () => {
     try {
       await signUp(values);
-      // 스낵바에 성공 메세지 보여주기
+      enqueueSnackbar('회원가입 성공하였습니다.', successSnackbarOption);
       navigate('/');
     } catch (err) {
-      // 스낵바에 실패 메세지 보여주기
+      enqueueSnackbar('에러가 발생하였습니다.', errorSnackbarOption);
     }
   };
 

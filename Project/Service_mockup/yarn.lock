@@ -646,6 +646,13 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime@^7.6.3":
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.3.tgz#935122c74c73d2240cafd32ddb5fc2a6cd35cf1f"
+  integrity sha512-kq6anf9JGjW8Nt5rYfEuGRaEAaH1mkv3Bbu6rYvLOpPh/RusSJXuKPEAoZ7L7gybZkchE8+NV5g9vKF4AGAtsA==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0", "@babel/template@^7.4.4", "@babel/template@^7.6.0":
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.6.0.tgz#7f0159c7f5012230dad64cca42ec9bdb5c9536e6"
@@ -2467,6 +2474,11 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
+
+classnames@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+  integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
 
 clean-css@^4.2.1:
   version "4.2.1"
@@ -4611,6 +4623,13 @@ gatsby-page-utils@^0.0.23:
     lodash "^4.17.15"
     micromatch "^3.1.10"
     slash "^3.0.0"
+
+gatsby-plugin-layout@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-layout/-/gatsby-plugin-layout-1.1.11.tgz#474e41ad6be0072ec495e14d0693240045f5c980"
+  integrity sha512-d6tNgjubefD5Q9Z3XESGW+yGl9E8EpE+Hf7cmXeRZ5g8DVA1D+9eltITEWGknL7brl5MEzlCgH9k+NT2z9z+BQ==
+  dependencies:
+    "@babel/runtime" "^7.6.3"
 
 gatsby-plugin-manifest@^2.1.1:
   version "2.2.20"
@@ -7215,6 +7234,16 @@ normalize-url@2.0.1:
 normalize-url@^3.0.0, normalize-url@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
+
+notistack@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/notistack/-/notistack-0.9.3.tgz#0d06f4928e525a62583ce2c6e42a61cd9e102c62"
+  integrity sha512-o7puNccTZT/1rYINUpBhLYg2p1dpA3HoJ/EW4jekHV7Ybe4JD7IW14CVjo1fsw8+mi5p6rt1HfqVZ4DpaJRPHw==
+  dependencies:
+    classnames "^2.2.6"
+    hoist-non-react-statics "^3.3.0"
+    prop-types "^15.7.2"
+    react-is "^16.8.6"
 
 npm-bundled@^1.0.1:
   version "1.0.6"
