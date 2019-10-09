@@ -1,4 +1,5 @@
 import React from 'react';
+import { navigate } from 'gatsby';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -52,7 +53,6 @@ export default function SignUp() {
   });
   const submitRef = React.createRef();
   const handleChange = name => event => {
-
     setValues({
       ...values,
       [name]: event.target.value,
@@ -66,6 +66,15 @@ export default function SignUp() {
       values.email === '' ||
       values.phoneNumber === '';
   };
+  const onSubmitButtonClick = async () => {
+    try {
+      await signUp(values);
+      // 스낵바에 성공 메세지 보여주기
+      navigate('/');
+    } catch (err) {
+      // 스낵바에 실패 메세지 보여주기
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -77,7 +86,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={e => e.preventDefault()}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -158,9 +167,7 @@ export default function SignUp() {
             className={classes.submit}
             ref={submitRef}
             disabled={isDisabled()}
-            onClick={() => {
-              signUp(values);
-            }}
+            onClick={onSubmitButtonClick}
           >
             Sign Up
           </Button>
