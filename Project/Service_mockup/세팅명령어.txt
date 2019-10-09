@@ -1,6 +1,0 @@
-nodejs 깔고
-npm install -g yarn
-yarn dev
-
-gatsby build
-
