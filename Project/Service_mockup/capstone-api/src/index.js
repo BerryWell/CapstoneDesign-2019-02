@@ -1,5 +1,5 @@
 const { app, port } = require('./app');
-const connection = require('./connection');
+const { connection } = require('./connection');
 
 require('./store');
 require('./signup');

@@ -1,5 +1,6 @@
-const sqlConfig = require('./config');
+const { promisify } = require('util');
 const mysql = require('mysql');
+const sqlConfig = require('./config');
 
 const connection = mysql.createConnection({
     host: sqlConfig['development']['database']['host'],
@@ -9,4 +10,5 @@ const connection = mysql.createConnection({
     database: sqlConfig['development']['database']['database'],
 });
 
-module.exports = connection;
+exports.connection = connection;
+exports.queryAsync = promisify(connection.query.bind(connection));
