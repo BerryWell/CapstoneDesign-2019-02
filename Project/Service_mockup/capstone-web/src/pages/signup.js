@@ -10,11 +10,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import MaskedInput from 'react-text-mask'
-import PropTypes from 'prop-types';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
+
 import { signUp } from '../api/stores';
+
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -40,38 +40,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function TextMaskCustom(props) {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
-      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={'\u2000'}
-      showMask
-    />
-  );
-}
-
-TextMaskCustom.propTypes = {
-  inputRef: PropTypes.func.isRequired,
-};
 export default function SignUp() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
-    phoneNumber: '(1  )    -    ',
+    phoneNumber: '',
     id: '',
     password: '',
     name: '',
     address: '',
     email: '',
   });
-  const submitEvent = async (profile) => {
-    signUp(profile)
-  }
   const submitRef = React.createRef();
   const handleChange = name => event => {
 
@@ -86,7 +64,7 @@ export default function SignUp() {
       values.name === '' ||
       values.address === '' ||
       values.email === '' ||
-      values.phoneNumber === '(1  )    -    ';
+      values.phoneNumber === '';
   };
 
   return (
@@ -168,7 +146,7 @@ export default function SignUp() {
                 value={values.phoneNumber}
                 onChange={handleChange('phoneNumber')}
                 id="phoneNumber"
-                inputComponent={TextMaskCustom}
+                placeholder='02-123-4567'
               />
             </Grid>
           </Grid>
@@ -200,5 +178,3 @@ export default function SignUp() {
     </Container>
   );
 }
-
-
