@@ -5,7 +5,7 @@ const port = 3000;
 const sqlConfig = require('./config');
 const mysql = require('mysql');
 const app = express();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 app.use(cors());
 app.use(bodyParser.json());
 
