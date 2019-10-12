@@ -60,7 +60,6 @@ export default function SignUp() {
     address: '',
     email: '',
   });
-  const submitRef = React.createRef();
   const handleChange = name => event => {
     setValues({
       ...values,
@@ -174,7 +173,6 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            ref={submitRef}
             disabled={isDisabled()}
             onClick={onSubmitButtonClick}
           >
