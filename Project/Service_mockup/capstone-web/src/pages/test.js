@@ -1,5 +1,11 @@
 // just a page for testing(sandbox)
 // delete when deploying
+
+// https://ui.toast.com/xtui-chart
+// TOAST UI를 사용해볼까?
+
+// 박스를 그려서 그 안에다가 배열을 출력한다.
+
 import React from 'react'
 
 import SEO from '../components/seo'
