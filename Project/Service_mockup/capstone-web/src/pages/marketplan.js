@@ -19,15 +19,20 @@ export default function SetLayout() {
         items: [],
         itemName: '',
     });
-    const handleChange = cells => setState({ cells });
-    const addItem = event => {
+    const handleChange = cells => setState({ ...values, 'cells':cells });
+    const addItem = () => {
         if (values.items.includes(values.itemName) !== true) {
             values.items.push(values.itemName);
             setState({ ...values, 'items': values.items });
         }
     };
     const removeItem = event => {
-
+       const index = values.items.indexOf(values.itemName);
+       if(index > -1){
+           values.items.splice(index, 1);
+           setState({ ...values, 'items': values.items });
+       }
+       
     };
     const handleItemInput = name => event => {
         setState({ ...values, [name]: event.target.value });
