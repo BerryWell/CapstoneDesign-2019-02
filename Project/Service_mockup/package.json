@@ -11,6 +11,9 @@
     "capstone-web"
   ],
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "react-table-drag-select": "^0.3.1",
     "wsrun": "^5.0.2"
   }
 }

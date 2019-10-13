@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: `캡스톤 프로젝트`,
-    description: `Kick off your next, great Gatsby project with this Material UI starter. This barebones starter ships with the main Gatsby and Material UI configuration files you might need.`,
+    description: `19년도 2학기 캡스톤 프로젝트. 쇼핑몰 이용자를 위한 경로 추천 소프트웨어`,
     author: `@dominicabela`,
   },
   plugins: [
