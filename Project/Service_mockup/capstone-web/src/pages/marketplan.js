@@ -19,24 +19,40 @@ export default function SetLayout() {
         items: [],
         itemName: '',
     });
-    const handleChange = cells => setState({ ...values, 'cells':cells });
+    const handleChange = cells => setState({ ...values, 'cells': cells });
     const addItem = () => {
         if (values.items.includes(values.itemName) !== true) {
             values.items.push(values.itemName);
+
+            setState({ ...values, 'items': values.items });
+            console.log(values.items);
+        }
+    };
+
+    const removeItem = (name) => {
+        console.log(name);
+        const index = values.items.indexOf(name);
+        if (index > -1) {
+            values.items.splice(index, 1);
             setState({ ...values, 'items': values.items });
         }
     };
-    const removeItem = event => {
-       const index = values.items.indexOf(values.itemName);
-       if(index > -1){
-           values.items.splice(index, 1);
-           setState({ ...values, 'items': values.items });
-       }
-       
-    };
     const handleItemInput = name => event => {
         setState({ ...values, [name]: event.target.value });
-        console.log(values.itemName);
+    }
+    const ItemBtnComponent = (props) => {
+        const doubleClick = () => {
+            removeItem(props.text);
+        }
+        return (
+            <Button
+                variant="contained"
+                color="primary"
+                onDoubleClick={doubleClick}
+            >
+                {props.text}
+            </Button>
+        );
     }
     return (
         <>
@@ -63,13 +79,7 @@ export default function SetLayout() {
                 <Grid item
                     xs='12'>
                     {values.items.map(value => (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            id={value}
-                            onClick={removeItem}>
-                            {value}
-                        </Button>
+                        <ItemBtnComponent text={value} key={value} />
                     ))}
                 </Grid>
                 <Grid item >
