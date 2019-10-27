@@ -4,41 +4,56 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 
-import  createMuiTheme from '@material-ui/core';
-import {Editors} from 'react-data-grid-addons';
+import createMuiTheme from '@material-ui/core';
+import { Editors } from 'react-data-grid-addons';
 import MyDataGrid from '../components/CustomDataGrid';
 import Cookies from 'universal-cookie';
 
-import { setMarketLayout } from '../api/stores';
+import { setMarketLayout, getCategory } from '../api/stores';
 
 const cookies = new Cookies();
 
 const randomMC = require('random-material-color');
-const {DropDownEditor} = Editors;
+const { DropDownEditor } = Editors;
 export default function SetLayout() {
-    
+
     const [values, setState] = React.useState({
         items: [],
         columns: [
-            { key: 0, name: 0 }, 
-            { key: 1, name: 1 }, 
-            { key: 2, name: 2 }, 
-            { key: 3, name: 3 }, 
+            { key: 0, name: 0 },
+            { key: 1, name: 1 },
+            { key: 2, name: 2 },
+            { key: 3, name: 3 },
             { key: 4, name: 4 }],
         rows: [],
         itemName: '',
         refresh: false,
         selectedItem: '',
-        autoincrementID:0,
+        autoincrementID: 0,
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
+    const loadItem = async () => {
+        const ret = await getCategory();
+
+        ret.map((value) => {
+            values.items.push({
+                name: value.name,
+                color: randomMC.getColor(),
+                id: value.name,
+                value: value.name,
+                uid: value.idcategory,
+            });
+        setState({...values, items:values.items});
+        });
+    }
     const handleChange = name => event => {
         setState({
-          ...values,
-          [name]: event.target.value,
+            ...values,
+            [name]: event.target.value,
         });
-      };
-    React.useEffect(()=>{
+    };
+
+    React.useEffect(() => {
         console.log("mounted");
         for (let i = 0; i < 5; i++) {
             let rowData = [];
@@ -48,11 +63,12 @@ export default function SetLayout() {
             values.rows[i] = rowData;
         }
         values.columns.forEach(element => {
-            element.editor = <DropDownEditor options={values.items}/>; 
+            element.editor = <DropDownEditor options={values.items} />;
         });
+        loadItem();
         setState({ ...values, rows: values.rows });
     }, []);
-   
+
     const removeItem = (uid) => {
         console.log(uid);
         const index = values.items.findIndex(element => element.uid === uid);
@@ -71,17 +87,17 @@ export default function SetLayout() {
 
             }
             else {
-                values.selectedItem = props.text;                
+                values.selectedItem = props.text;
             }
             setState({ ...values, 'selectedItem': values.selectedItem });
-  
+
         }
         return (
             <Button
                 variant="contained"
                 color="primary"
                 onDoubleClick={doubleClick}//doublecick, onclick 이벤트 중복 불가능, 체크박스로 모드를 분리해야함
-                onClick ={mouseClick}
+                onClick={mouseClick}
                 style={{
                     background: props.color
                 }}
@@ -90,9 +106,9 @@ export default function SetLayout() {
             </Button>
 
         );
-    
+
     };
-   
+
     const addItem = () => {
         if (values.items.some(element => element.name === values.itemName) === false) {
 
@@ -109,16 +125,16 @@ export default function SetLayout() {
             console.log(values.autoincrementID);
         }
     };
-    const savePlan = async () =>{
+    const savePlan = async () => {
         let userId = cookies.get('userId');
-        try{
+        try {
             await setMarketLayout(values.rows, userId);
             console.log("success");
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
-        
+
     };
     return (
         <>
@@ -141,22 +157,22 @@ export default function SetLayout() {
                         물품 추가
                     </Button>
                     <Button
-                        type="send"
+                        type="submit"
                         variant="contained"
                         color="primary"
                         onClick={savePlan}>
                         저장
                     </Button>
-                    
+
                 </Grid>
                 <Grid item
                     xs={12}>
                     {values.items.map(value => (
-                        <ItemBtnComponent 
-                        text={value.name} 
-                        key={value.name} 
-                        color={value.color} 
-                        uid={value.uid} />
+                        <ItemBtnComponent
+                            text={value.name}
+                            key={value.name}
+                            color={value.color}
+                            uid={value.uid} />
 
                     ))}
                 </Grid>
@@ -177,13 +193,13 @@ export default function SetLayout() {
                                     let top = args.topLeft.rowIdx;
                                     let bottom = args.bottomRight.rowIdx;
                                     console.log(left, top, right, bottom);
-                                    for ( let j = top; j <= bottom; j++) {
+                                    for (let j = top; j <= bottom; j++) {
                                         for (let i = left; i <= right; i++) {
                                             values.rows[j][i] = values.selectedItem;
                                         }
                                     }
                                     let newColumn = values.columns.slice();
-                                    setState({ ...values, refresh: true, rows: values.rows, columns:newColumn  });
+                                    setState({ ...values, refresh: true, rows: values.rows, columns: newColumn });
                                     // Refresh();
                                 }
                             }}
