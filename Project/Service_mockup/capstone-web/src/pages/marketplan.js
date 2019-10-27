@@ -24,6 +24,7 @@ export default function SetLayout() {
         itemName: '',
         refresh: false,
         selectedItem: '',
+        autoincrementID:0,
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
     React.useEffect(()=>{
@@ -41,8 +42,9 @@ export default function SetLayout() {
         setState({ ...values, rows: values.rows });
     }, []);
    
-    const removeItem = (_name, _color) => {
-        const index = values.items.findIndex(element => element.name === _name && element.color === _color);
+    const removeItem = (uid) => {
+        console.log(uid);
+        const index = values.items.findIndex(element => element.uid === uid);
         if (index > -1) {
             values.items.splice(index, 1);
             setState({ ...values, 'items': values.items });
@@ -50,36 +52,25 @@ export default function SetLayout() {
     };
     const ItemBtnComponent = (props) => {
         const doubleClick = () => {
-            removeItem(props.text, props.color);
+            removeItem(props.uid);
         }
-        const mouseUp = () => {
+        const mouseClick = () => {
             if (props.text === values.selectedItem) {
                 values.selectedItem = '';
 
             }
             else {
-                values.selectedItem = props.text;
-                return;
-                const left = values.selectedArea.left;
-                const top = values.selectedArea.top; 
-                const right = values.selectedArea.right; 
-                const bottom = values.selectedArea.bottom; 
-                console.log(left, right, top, bottom);
-                for (let i = left; i <= right; i++) {
-                    for (let j = top; j <= bottom; j++) {
-                        values.rows[i][j] = values.selectedItem;
-                    }
-                }
-                setState({ ...values, rows: values.rows });
-                                   
+                values.selectedItem = props.text;                
             }
+            setState({ ...values, 'selectedItem': values.selectedItem });
+  
         }
         return (
             <Button
                 variant="contained"
                 color="primary"
-                onDoubleClick={doubleClick}
-                onMouseUp={mouseUp}
+                onDoubleClick={doubleClick}//doublecick, onclick 이벤트 중복 불가능, 체크박스로 모드를 분리해야함
+                onClick ={mouseClick}
                 style={{
                     background: props.color
                 }}
@@ -88,22 +79,23 @@ export default function SetLayout() {
             </Button>
 
         );
-    }
-        const CellFormatter = ({ value }) => {
-        return <div>value:{value}</div>;
+    
     };
    
     const addItem = () => {
         if (values.items.some(element => element.name === values.itemName) === false) {
-            console.log("77");
+
             let randomColor = randomMC.getColor();
             values.items.push({
                 name: values.itemName,
                 color: randomColor,
                 id: values.itemName,
                 value: values.itemName,
+                uid: values.autoincrementID
             });
+            values.autoincrementID++;
             setState({ ...values, 'items': values.items });
+            console.log(values.autoincrementID);
         }
     };
     const handleChange = name => event => {
@@ -152,7 +144,12 @@ export default function SetLayout() {
                 <Grid item
                     xs={12}>
                     {values.items.map(value => (
-                        <ItemBtnComponent text={value.name} key={value.name} color={value.color} />
+                        <ItemBtnComponent 
+                        text={value.name} 
+                        key={value.name} 
+                        color={value.color} 
+                        uid={value.uid} />
+
                     ))}
                 </Grid>
                 <Grid item
