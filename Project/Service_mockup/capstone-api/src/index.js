@@ -20,7 +20,7 @@ app.get('/', (req, res) => res.send(JSON.stringify('Hello World!')));
 app.get('/items', (req, res) => {
     console.log({ 'req.body': req.body });
     try {
-        const result = await findItems();
+        const result = findItems();
         res.send(JSON.stringify(result));
     } catch (err) {
         console.log({ err });
