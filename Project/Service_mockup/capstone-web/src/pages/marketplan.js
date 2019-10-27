@@ -31,7 +31,7 @@ export default function SetLayout() {
         for (let i = 0; i < 5; i++) {
             let rowData = [];
             for (let j = 0; j < 5; j++) {
-                rowData[j] = j;
+                rowData[j] = '';
             }
             values.rows[i] = rowData;
         }
@@ -59,6 +59,7 @@ export default function SetLayout() {
             }
             else {
                 values.selectedItem = props.text;
+                return;
                 const left = values.selectedArea.left;
                 const top = values.selectedArea.top; 
                 const right = values.selectedArea.right; 
@@ -66,8 +67,7 @@ export default function SetLayout() {
                 console.log(left, right, top, bottom);
                 for (let i = left; i <= right; i++) {
                     for (let j = top; j <= bottom; j++) {
-                        values.rows[i][j] = 999;
-
+                        values.rows[i][j] = values.selectedItem;
                     }
                 }
                 setState({ ...values, rows: values.rows });
@@ -165,36 +165,19 @@ export default function SetLayout() {
                             rowsCount={values.rows.length}
                             minHeight={1080}
                             enableCellSelect={true}
-                            onGridRowsUpdated={({fromRow, toRow, updated})=>{
-                                /*setState(state => {
-                                    const rows = state.rows.slice();
-                                    for (let i = fromRow; i <= toRow; i++) {
-                                      rows[i] = { ...rows[i], ...updated };
-                                    }
-                                    return { rows };
-                                });*/
-                            }}
                             cellRangeSelection={{
                                 onComplete: args => {
-                                    let left = args.topLeft.rowIdx;
+                                    let left = args.topLeft.idx;
                                     let right = args.bottomRight.idx;
-                                    let top = args.topLeft.idx;
+                                    let top = args.topLeft.rowIdx;
                                     let bottom = args.bottomRight.rowIdx;
-                                    values.selectedArea.left = left
-                                    values.selectedArea.top = top;
-                                    values.selectedArea.right = right;
-                                    values.selectedArea.bottom = bottom;
-                                    console.log(left, right, top, bottom);
+                                    console.log(left, top, right, bottom);
                                     for ( let j = top; j <= bottom; j++) {
                                         for (let i = left; i <= right; i++) {
-                                            console.log(values.rows[i][j]);
-                                            values.rows[j][i] = 999;
-                                            console.log(values.rows[i][j]);
+                                            values.rows[j][i] = values.selectedItem;
                                         }
-                                        console.log(values.rows);
                                     }
                                     let newColumn = values.columns.slice();
-
                                     setState({ ...values, refresh: true, rows: values.rows, columns:newColumn  });
                                     // Refresh();
                                 }
