@@ -12,6 +12,7 @@ import android.widget.ExpandableListView;
 
 import com.example.customerapplication.item.Item;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -24,6 +25,8 @@ import retrofit2.Response;
 
 public class AddtoCartActivity extends AppCompatActivity {
     private ExpandableListView listView;
+    private String[] caArr = new String [3];
+    private String[][]arr = new String[3][3];
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item ){
@@ -49,34 +52,35 @@ public class AddtoCartActivity extends AppCompatActivity {
         Display newDisplay = getWindowManager().getDefaultDisplay();
         int width = newDisplay.getWidth();
 
+
+
         getItem();
 
         ArrayList<myGroup> DataList = new ArrayList<myGroup>();
         listView = (ExpandableListView)findViewById(R.id.mylist);
-        myGroup temp = new myGroup("FOOD");
-        temp.child.add("쌀/잡곡");
-        temp.child.add("채소");
-        temp.child.add("과일");
-        temp.child.add("정육/계란");
+        myGroup temp = new myGroup("육류");
+        temp.child.add("소고기");
+        temp.child.add("돼지고기");
+        temp.child.add("양고기");
         DataList.add(temp);
-        temp = new myGroup("LIVING");
-        temp.child.add("화장지/물티슈/위생");
-        temp.child.add("세제/탈취/제습");
-        temp.child.add("유아/출산용품");
-        temp.child.add("가구/수납/조명/보수");
+        temp = new myGroup("어류");
+        temp.child.add("고등어");
+        temp.child.add("꽁치");
+        temp.child.add("자갈치");
         DataList.add(temp);
-        temp = new myGroup("BEAUTY");
-        temp.child.add("헤어케어");
-        temp.child.add("페이셜 케어");
-        temp.child.add("메이크업");
-        temp.child.add("구강케어");
+        temp = new myGroup("공산품");
+        temp.child.add("치토스");
+        temp.child.add("포카칩");
+        temp.child.add("트윅스");
         DataList.add(temp);
-        temp = new myGroup("STYLE");
-        temp.child.add("성인/아동의류");
-        temp.child.add("언더웨어/양말");
-        temp.child.add("패션잡화");
-        temp.child.add("슈즈");
-        DataList.add(temp);
+        /*
+        for(int i=0;i<3;i++){
+            myGroup temp = new myGroup(caArr[i]);
+            for(int j=0;j<3;j++){
+                temp.child.add(arr[i][j]);
+            }
+            DataList.add(temp);
+        }*/
 
         ExpandAdapter adapter = new ExpandAdapter(getApplicationContext(),R.layout.group_row,R.layout.child_row,DataList);
         listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
@@ -87,12 +91,12 @@ public class AddtoCartActivity extends AppCompatActivity {
         //String email = editText_email.getText().toString();
         //String pwd = editText_password.getText().toString();
 
-        Call<JsonObject> res = Net.getInstance().getMemberFactoryIm().items();
+        Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().items();
             //Call<List<Item>> res = Net.getInstance().getMemberFactoryIm().items();   //--------- D
 
-            res.enqueue(new Callback<JsonObject>() {       // --------------------------- E
+            res.enqueue(new Callback<JsonArray>() {       // --------------------------- E
                 @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {   // ---------- F
+                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
                     if(response.isSuccessful()){
                         if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
                             //List<Item> items = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
@@ -100,8 +104,14 @@ public class AddtoCartActivity extends AppCompatActivity {
                             //Gson gson = new Gson();
                             //Item resItem = gson.fromJson(response.body(),Item.class);
                             Log.d("Main 통신", response.body().toString());
-                            Item dataJson= new Gson().fromJson(response.body(), Item.class);
-
+                            Item[] dataJson= new Gson().fromJson(response.body(), Item[].class);
+                            Log.d("Main 결과", dataJson[0].category);
+                            for(int i=0;i<3;i++){
+                                caArr[i]=dataJson[i*3].category;
+                                for(int j=0;j<3;j++){
+                                    arr[i][j] = dataJson[i*3+j].item;
+                                }
+                            }
 
                             // DO SOMETHING HERE with items!
 
@@ -114,7 +124,7 @@ public class AddtoCartActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {    //------------------G
+                public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
                     Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
                 }
             });

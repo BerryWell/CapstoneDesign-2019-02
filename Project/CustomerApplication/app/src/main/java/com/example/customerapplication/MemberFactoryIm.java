@@ -1,5 +1,6 @@
 package com.example.customerapplication;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -13,5 +14,5 @@ public interface MemberFactoryIm {
     @GET("/")
     Call<String> test();
     @GET("/items")  //매장별로 판매목록 받아서 보여줌
-    Call<JsonObject>items();
+    Call<JsonArray>items();
 }
