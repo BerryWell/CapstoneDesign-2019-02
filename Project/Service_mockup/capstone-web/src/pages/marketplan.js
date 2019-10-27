@@ -32,20 +32,7 @@ export default function SetLayout() {
         autoincrementID: 0,
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
-    const loadItem = async () => {
-        const ret = await getCategory();
 
-        ret.map((value) => {
-            values.items.push({
-                name: value.name,
-                color: randomMC.getColor(),
-                id: value.name,
-                value: value.name,
-                uid: value.idcategory,
-            });
-        setState({...values, items:values.items});
-        });
-    }
     const handleChange = name => event => {
         setState({
             ...values,
@@ -54,7 +41,22 @@ export default function SetLayout() {
     };
 
     React.useEffect(() => {
-        console.log("mounted");
+        const loadItem = async () => {
+            const ret = await getCategory();
+
+            ret.map((value) => {
+                values.items.push({
+                    name: value.name,
+                    color: randomMC.getColor(),
+                    id: value.name,
+                    value: value.name,
+                    uid: value.idcategory,
+                    [value.name]: value.idcategory,
+                });
+                
+            });
+            setState({ ...values, items: values.items });
+        }
         for (let i = 0; i < 5; i++) {
             let rowData = [];
             for (let j = 0; j < 5; j++) {
@@ -66,7 +68,7 @@ export default function SetLayout() {
             element.editor = <DropDownEditor options={values.items} />;
         });
         loadItem();
-        setState({ ...values, rows: values.rows });
+        console.log("useEffect");
     }, []);
 
     const removeItem = (uid) => {
@@ -125,11 +127,19 @@ export default function SetLayout() {
             console.log(values.autoincrementID);
         }
     };
-    const savePlan = async () => {
+    const savePlan = ()=>{
+        console.log("savePlan");
         let userId = cookies.get('userId');
         try {
-            await setMarketLayout(values.rows, userId);
-            console.log("success");
+            let rowData = cookies.get('data');
+            console.log({"raw":rowData});
+            rowData.forEach(row => {
+                row.forEach((_, index, theArray) => {
+                    theArray[index] = values.items[theArray[index]];
+                });
+            });
+            // await setMarketLayout(values.rows, userId, 4, 4);
+            
         }
         catch (err) {
             console.log(err);
@@ -157,7 +167,7 @@ export default function SetLayout() {
                         물품 추가
                     </Button>
                     <Button
-                        type="submit"
+                        type="button"
                         variant="contained"
                         color="primary"
                         onClick={savePlan}>
@@ -199,7 +209,11 @@ export default function SetLayout() {
                                         }
                                     }
                                     let newColumn = values.columns.slice();
-                                    setState({ ...values, refresh: true, rows: values.rows, columns: newColumn });
+                                    console.log({"in complete":values.rows});
+                                    cookies.set('data', values.rows);
+                                    setState({ ...values, columns: newColumn });
+                                    setState({ ...values, rows: values.rows });
+                                    
                                     // Refresh();
                                 }
                             }}
