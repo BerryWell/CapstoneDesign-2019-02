@@ -5,7 +5,12 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 
+import { getStocks } from '../api/stores';
+
 class ChartsPage extends React.Component {
+  // query 추가 필요
+
+
   state = {
     dataBar: {
       labels: ["과일", "야채", "과자"],

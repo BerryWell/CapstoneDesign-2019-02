@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "main": "src/index.js",
   "scripts": {
-    "dev": "node ."
+    "dev": "node .",
+    "build":"node ."
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
