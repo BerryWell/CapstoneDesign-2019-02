@@ -8,7 +8,6 @@ import { Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 
 import { getStocks } from '../api/stores';
-const dataset = getStocks();
 //const labels = JSON.parse(dataset[0]);
 //const dataset_parsed = JSON.parse(dataset);
 //console.log(dataset_parsed);
@@ -16,8 +15,6 @@ class ChartsPage extends React.Component {
 
   // data = getStocks(),
   // data: name, quantity
-
-  console.log(dataset);
   state = {
     dataBar: {
       labels: ["소고기", "돼지고기", "양고기"],
@@ -68,7 +65,9 @@ class ChartsPage extends React.Component {
       }
     }
   }
-
+  componentDidMount(){
+    getStocks().then(res=>console.log(res));
+  }
 
   render() {
     return (
