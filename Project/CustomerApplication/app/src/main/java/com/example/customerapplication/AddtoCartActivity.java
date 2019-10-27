@@ -4,12 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ExpandableListView;
 
+import com.example.customerapplication.item.Item;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddtoCartActivity extends AppCompatActivity {
     private ExpandableListView listView;
@@ -37,6 +48,8 @@ public class AddtoCartActivity extends AppCompatActivity {
 
         Display newDisplay = getWindowManager().getDefaultDisplay();
         int width = newDisplay.getWidth();
+
+        getItem();
 
         ArrayList<myGroup> DataList = new ArrayList<myGroup>();
         listView = (ExpandableListView)findViewById(R.id.mylist);
@@ -69,4 +82,43 @@ public class AddtoCartActivity extends AppCompatActivity {
         listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
         listView.setAdapter(adapter);
     }
+
+    private void getItem() {
+        //String email = editText_email.getText().toString();
+        //String pwd = editText_password.getText().toString();
+
+        Call<JsonObject> res = Net.getInstance().getMemberFactoryIm().items();
+            //Call<List<Item>> res = Net.getInstance().getMemberFactoryIm().items();   //--------- D
+
+            res.enqueue(new Callback<JsonObject>() {       // --------------------------- E
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {   // ---------- F
+                    if(response.isSuccessful()){
+                        if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                            //List<Item> items = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
+                            //여기서는 지정을 Call<지정타입> 이므로 List<Item> 가 리턴타입이 됨.
+                            //Gson gson = new Gson();
+                            //Item resItem = gson.fromJson(response.body(),Item.class);
+                            Log.d("Main 통신", response.body().toString());
+                            Item dataJson= new Gson().fromJson(response.body(), Item.class);
+
+
+                            // DO SOMETHING HERE with items!
+
+                        }else{
+                            Log.d("Main 통신", "실패 1 response 내용이 없음");
+                        }
+                    }else{
+                        Log.d("Main 통신", "실패 2 서버 에러");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {    //------------------G
+                    Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+                }
+            });
+
+        }
+
 }

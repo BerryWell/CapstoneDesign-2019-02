@@ -120,6 +120,7 @@ public class StoreActivity extends AppCompatActivity {
                         //String users = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
                         //여기서는 지정을 Call<지정타입> 이므로 List<User> 가 리턴타입이 됨.
                         Log.d("Main 통신", response.body());
+                        Toast.makeText(StoreActivity.this, "API 연결 성공", Toast.LENGTH_SHORT).show();
                         // DO SOMETHING HERE with users!
 
                     }else{

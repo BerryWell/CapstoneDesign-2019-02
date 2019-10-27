@@ -1,4 +1,4 @@
-package com.example.customerapplication;
+package com.example.customerapplication.item;
 
 public class User {
     int iditem;
