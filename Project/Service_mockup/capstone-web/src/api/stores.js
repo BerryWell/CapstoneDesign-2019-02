@@ -18,3 +18,8 @@ export async function signIn(profile){
     const res = await axios.post('http://localhost:3000/signin', profile);
     return res.data;
 }
+
+export async function getStocks(profile) {
+    const res = await axios.post('http://localhost:3000/marketplan', profile);
+    return res.data;
+}
