@@ -18,7 +18,7 @@
     <ExpandableListView
         android:id="@+id/mylist"
         android:layout_width="match_parent"
-        android:layout_height="650dp"
+        android:layout_height="520dp"
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" >
 
     </ExpandableListView>
@@ -40,5 +40,13 @@
         </LinearLayout>
     </ScrollView>
     -->
+
+    <Button
+        android:id="@+id/btn_shopping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="center|bottom"
+        android:text="확인" />
 
 </LinearLayout>

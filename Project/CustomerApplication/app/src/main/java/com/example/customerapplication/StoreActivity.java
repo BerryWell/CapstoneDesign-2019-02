@@ -20,6 +20,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 class ViewEx extends View
 {
@@ -33,7 +36,7 @@ class ViewEx extends View
     public void onDraw(Canvas canvas)
     {
 
-
+        //10*10 행렬 기준. 나중에 map.json 받은 후 파싱해서 가로 세로 구하고 파는 물건이면 1 되도록
         int[][] arr = new int[][]{{0,0,0,0,0,0,0,0,0,1},{0,1,1,1,1,1,1,1,0,1},{0,1,1,1,1,1,1,1,0,1},{0,0,0,0,0,0,0,0,0,1},
                 {0,0,0,0,0,0,0,0,0,1},{0,1,1,1,1,1,1,1,0,1},{0,1,1,1,1,1,1,1,0,1},{0,0,0,0,0,0,0,0,0,1},{1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1}};
 
@@ -86,6 +89,8 @@ public class StoreActivity extends AppCompatActivity {
         //Point size = new Point();
         //display.getSize(size);
 
+        dbTest();
+
         setContentView(R.layout.activity_store);
 
         Intent intent2 = getIntent();
@@ -102,6 +107,32 @@ public class StoreActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddtoCartActivity.class);
                 startActivity(intent); // 다음화면으로 넘어가기
+            }
+        });
+    }
+    private void dbTest() {
+        Call<String> res = Net.getInstance().getMemberFactoryIm().test();   //--------- D
+        res.enqueue(new Callback<String>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        //String users = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
+                        //여기서는 지정을 Call<지정타입> 이므로 List<User> 가 리턴타입이 됨.
+                        Log.d("Main 통신", response.body());
+                        Toast.makeText(StoreActivity.this, "API 연결 성공", Toast.LENGTH_SHORT).show();
+                        // DO SOMETHING HERE with users!
+
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러 "+ response.message() + call.request().url().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
             }
         });
     }
