@@ -15,6 +15,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { signIn } from '../api/stores';
 import { useSnackbar } from 'notistack';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
+
 const successSnackbarOption = {
   variant: 'success',
 };
@@ -65,6 +69,7 @@ export default function SignIn() {
       console.log(values);
       await signIn(values);
       enqueueSnackbar('로그인에 성공하였습니다.', successSnackbarOption);
+      cookies.set('userId', values.id, { path: '/' });
       navigate('/marketplan');
     } catch (err) {
       console.log(err);

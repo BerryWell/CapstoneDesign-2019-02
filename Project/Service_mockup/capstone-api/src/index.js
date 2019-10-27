@@ -5,7 +5,8 @@ const { connection } = require('./connection');
 
 require('./store');
 require('./signup');
-
+require('./marketplan');
+require('./category.js');
 connection.connect(function (err) {
     if (err) {
         console.error('mysql connection error');

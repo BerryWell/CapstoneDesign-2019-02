@@ -7,6 +7,11 @@ import Grid from '@material-ui/core/Grid';
 import  createMuiTheme from '@material-ui/core';
 import {Editors} from 'react-data-grid-addons';
 import MyDataGrid from '../components/CustomDataGrid';
+import Cookies from 'universal-cookie';
+
+import { setMarketLayout } from '../api/stores';
+
+const cookies = new Cookies();
 
 const randomMC = require('random-material-color');
 const {DropDownEditor} = Editors;
@@ -27,6 +32,12 @@ export default function SetLayout() {
         autoincrementID:0,
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
+    const handleChange = name => event => {
+        setState({
+          ...values,
+          [name]: event.target.value,
+        });
+      };
     React.useEffect(()=>{
         console.log("mounted");
         for (let i = 0; i < 5; i++) {
@@ -98,27 +109,17 @@ export default function SetLayout() {
             console.log(values.autoincrementID);
         }
     };
-    const handleChange = name => event => {
-        setState({
-          ...values,
-          [name]: event.target.value,
-        });
-      };
-    function GetSize() {
-        let count = values.rows.length; // change this line to your app logic
-
-        if (values.refresh) {
-            count++; // hack for update data-grid
-            //setState({ ...values, refresh: false });
+    const savePlan = async () =>{
+        let userId = cookies.get('userId');
+        try{
+            await setMarketLayout(values.rows, userId);
+            console.log("success");
         }
-
-        return count;
+        catch(err){
+            console.log(err);
+        }
+        
     };
-    function Refresh() {
-        setState({ ...values, refresh: true });
-    }
-
-
     return (
         <>
             <h1>매장 레이아웃 설정({values.selectedItem})</h1>
@@ -139,7 +140,14 @@ export default function SetLayout() {
                         onClick={addItem}>
                         물품 추가
                     </Button>
-
+                    <Button
+                        type="send"
+                        variant="contained"
+                        color="primary"
+                        onClick={savePlan}>
+                        저장
+                    </Button>
+                    
                 </Grid>
                 <Grid item
                     xs={12}>

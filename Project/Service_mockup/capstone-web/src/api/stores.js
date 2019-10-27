@@ -18,8 +18,14 @@ export async function signIn(profile){
     const res = await axios.post('http://localhost:3000/signin', profile);
     return res.data;
 }
-
+export async function getCategory(){
+    const res = await axios.get('http://localhost:3000/category');
+}
 export async function getStocks(profile) {
     const res = await axios.get('http://localhost:3000/dashboard_quantity', profile);
+    return res.data;
+}
+export async function setMarketLayout(rows, userId){
+    const res = await axios.post('http://localhost:3000/marketplan', { "rows":rows, "userId":userId});
     return res.data;
 }
