@@ -1,4 +1,6 @@
+const { promisify } = require('util');
 const { app, port } = require('./app');
+const { queryAsync } = require('./connection');
 const { connection } = require('./connection');
 
 require('./store');
@@ -17,10 +19,11 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 // API for Android
 app.get('/', (req, res) => res.send(JSON.stringify('Hello World!')));
 
-app.get('/items', (req, res) => {
+app.get('/items', async(req, res) => {
     console.log({ 'req.body': req.body });
     try {
-        const result = findItems();
+        const result = await findItems();
+        console.log(result);
         res.send(JSON.stringify(result));
     } catch (err) {
         console.log({ err });
