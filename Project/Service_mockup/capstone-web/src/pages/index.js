@@ -1,4 +1,5 @@
 import React from 'react';
+import { navigate } from 'gatsby';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +13,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import { signIn } from '../api/stores';
+import { useSnackbar } from 'notistack';
+const successSnackbarOption = {
+  variant: 'success',
+};
+const errorSnackbarOption = {
+  variant: 'error',
+};
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -41,7 +49,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignIn() {
   const classes = useStyles();
-
+  const { enqueueSnackbar } = useSnackbar();
+  const [values, setValues] = React.useState({
+    id: '',
+    password: '',
+  });
+  const onSubmitButtonClick = async () => {
+    try {
+      await signIn(values);
+      enqueueSnackbar('로그인에 성공하였습니다.', successSnackbarOption);
+      navigate('/marketplan');
+    } catch (err) {
+      enqueueSnackbar('에러가 발생하였습니다.', errorSnackbarOption);
+    }
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -58,10 +79,10 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="id"
+            label="ID"
+            name="id"
+            autoComplete="id"
             autoFocus
           />
           <TextField
@@ -85,7 +106,7 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            
+            onClick={onSubmitButtonClick}
           >
             Sign In
           </Button>

@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import "react-table-drag-select/style.css";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import ReactDataGrid from "react-data-grid";
 import { createMuiTheme } from '@material-ui/core';
+import { Editors } from 'react-data-grid-addons';
+
+const { DropDownEditor } = Editors;
 const randomMC = require('random-material-color');
 class MyDataGrid extends ReactDataGrid {
     componentDidMount() {
@@ -69,17 +72,15 @@ export default function SetLayout() {
 
         );
     }
-
+    const CellEditor = <DropDownEditor options={values.items}/>;
     const CellFormatter = ({ value }) => {
         return <div>value:{value}</div>;
     };
 
     //cell fill
+    
     for (let i = 0; i < 5; i++) {
-        values.columns.push({ key: i, name: i });
-    }
-    for (let i = 0; i < 5; i++) {
-        let rowData = new Array();
+        let rowData = [];
         for (let j = 0; j < 5; j++) {
             rowData[j] = j;
         }
@@ -91,6 +92,8 @@ export default function SetLayout() {
             values.items.push({
                 name: values.itemName,
                 color: randomColor,
+                id: values.itemName,
+                value: values.itemName,
                 theme: createMuiTheme({
                     palette: {
                         primary: {
@@ -168,6 +171,15 @@ export default function SetLayout() {
                             rowsCount={values.rows.length}
                             minHeight={1080}
                             enableCellSelect={true}
+                            onGridRowsUpdated={({fromRow, toRow, updated})=>{
+                                setState(state => {
+                                    const rows = state.rows.slice();
+                                    for (let i = fromRow; i <= toRow; i++) {
+                                      rows[i] = { ...rows[i], ...updated };
+                                    }
+                                    return { rows };
+                                });
+                            }}
                             cellRangeSelection={{
                                 onComplete: args => {
                                     let left = args.topLeft.rowIdx;
