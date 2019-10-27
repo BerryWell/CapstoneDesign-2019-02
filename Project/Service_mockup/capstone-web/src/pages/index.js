@@ -54,12 +54,20 @@ export default function SignIn() {
     id: '',
     password: '',
   });
+  const handleChange = name => event => {
+    setValues({
+      ...values,
+      [name]: event.target.value,
+    });
+  };
   const onSubmitButtonClick = async () => {
     try {
+      console.log(values);
       await signIn(values);
       enqueueSnackbar('로그인에 성공하였습니다.', successSnackbarOption);
       navigate('/marketplan');
     } catch (err) {
+      console.log(err);
       enqueueSnackbar('에러가 발생하였습니다.', errorSnackbarOption);
     }
   };
@@ -73,7 +81,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={e => e.preventDefault()}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -84,6 +92,7 @@ export default function SignIn() {
             name="id"
             autoComplete="id"
             autoFocus
+            onChange={handleChange('id')}
           />
           <TextField
             variant="outlined"
@@ -95,6 +104,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChange('password')}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

@@ -80,6 +80,7 @@ export default function SignUp() {
       enqueueSnackbar('회원가입 성공하였습니다.', successSnackbarOption);
       navigate('/');
     } catch (err) {
+      console.log(err);
       enqueueSnackbar('에러가 발생하였습니다.', errorSnackbarOption);
     }
   };
