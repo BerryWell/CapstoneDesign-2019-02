@@ -21,7 +21,13 @@ let users = [
 app.get('/test', (req, res) => {
   res.write("Hello world!");
   res.end();
-})
+});
+
+app.get('/categories', (req, res) => {
+  res.write();
+});
+
+
 
 app.get('/users', (req, res) => {
    console.log('who get in here/users');

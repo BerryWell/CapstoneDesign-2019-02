@@ -4,7 +4,7 @@ const { connection } = require('./connection');
 require('./store');
 require('./signup');
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req, res) => res.send(JSON.stringify('Hello World!')));
 
 connection.connect(function (err) {
     if (err) {
