@@ -3,40 +3,44 @@ import "react-table-drag-select/style.css";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import ReactDataGrid from "react-data-grid";
-import { createMuiTheme } from '@material-ui/core';
-import { Editors } from 'react-data-grid-addons';
 
-const { DropDownEditor } = Editors;
+import  createMuiTheme from '@material-ui/core';
+import {Editors} from 'react-data-grid-addons';
+import MyDataGrid from '../components/CustomDataGrid';
+
 const randomMC = require('random-material-color');
-class MyDataGrid extends ReactDataGrid {
-    componentDidMount() {
-        this._mounted = true;
-        this.dataGridComponent = document.getElementsByClassName('react-grid-Container')[0] //assumes only one react datagrid component exists
-        window.addEventListener('resize', this.metricsUpdated);
-        if (this.props.cellRangeSelection) {
-            this.dataGridComponent.addEventListener('mouseup', this.onWindowMouseUp);
-        }
-        this.metricsUpdated();
-    }
-
-    componentWillUnmount() {
-        this._mounted = false;
-        window.removeEventListener('resize', this.metricsUpdated);
-        this.dataGridComponent.removeEventListener('mouseup', this.onWindowMouseUp);
-    }
-}
+const {DropDownEditor} = Editors;
 export default function SetLayout() {
+    
     const [values, setState] = React.useState({
         items: [],
-        columns: [],
+        columns: [
+            { key: 0, name: 0 }, 
+            { key: 1, name: 1 }, 
+            { key: 2, name: 2 }, 
+            { key: 3, name: 3 }, 
+            { key: 4, name: 4 }],
         rows: [],
         itemName: '',
         refresh: false,
         selectedItem: '',
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
-
+    React.useEffect(()=>{
+        console.log("mounted");
+        for (let i = 0; i < 5; i++) {
+            let rowData = [];
+            for (let j = 0; j < 5; j++) {
+                rowData[j] = j;
+            }
+            values.rows[i] = rowData;
+        }
+        values.columns.forEach(element => {
+            element.editor = <DropDownEditor options={values.items}/>; 
+        });
+        setState({ ...values, rows: values.rows });
+    }, []);
+   
     const removeItem = (_name, _color) => {
         const index = values.items.findIndex(element => element.name === _name && element.color === _color);
         if (index > -1) {
@@ -55,6 +59,19 @@ export default function SetLayout() {
             }
             else {
                 values.selectedItem = props.text;
+                const left = values.selectedArea.left;
+                const top = values.selectedArea.top; 
+                const right = values.selectedArea.right; 
+                const bottom = values.selectedArea.bottom; 
+                console.log(left, right, top, bottom);
+                for (let i = left; i <= right; i++) {
+                    for (let j = top; j <= bottom; j++) {
+                        values.rows[i][j] = 999;
+
+                    }
+                }
+                setState({ ...values, rows: values.rows });
+                                   
             }
         }
         return (
@@ -72,58 +89,35 @@ export default function SetLayout() {
 
         );
     }
-    const CellEditor = <DropDownEditor options={values.items}/>;
-    const CellFormatter = ({ value }) => {
+        const CellFormatter = ({ value }) => {
         return <div>value:{value}</div>;
     };
-
-    //cell fill
-    
-    for (let i = 0; i < 5; i++) {
-        let rowData = [];
-        for (let j = 0; j < 5; j++) {
-            rowData[j] = j;
-        }
-        values.rows[i] = rowData;
-    }
+   
     const addItem = () => {
-        if (values.items.includes(values.itemName) !== true) {
+        if (values.items.some(element => element.name === values.itemName) === false) {
+            console.log("77");
             let randomColor = randomMC.getColor();
             values.items.push({
                 name: values.itemName,
                 color: randomColor,
                 id: values.itemName,
                 value: values.itemName,
-                theme: createMuiTheme({
-                    palette: {
-                        primary: {
-                            main: randomColor
-                        }
-                    },
-                    overrides: {
-                        ItemBtnComponent: {
-                            raisedPrimary: {
-                                color: randomColor
-                            }
-                        }
-                    }
-                })
             });
-
             setState({ ...values, 'items': values.items });
-            console.log(values.items);
         }
     };
-
-    const handleItemInput = name => event => {
-        setState({ ...values, [name]: event.target.value });
-    }
+    const handleChange = name => event => {
+        setState({
+          ...values,
+          [name]: event.target.value,
+        });
+      };
     function GetSize() {
         let count = values.rows.length; // change this line to your app logic
 
         if (values.refresh) {
             count++; // hack for update data-grid
-            setState({ ...values, refresh: false });
+            //setState({ ...values, refresh: false });
         }
 
         return count;
@@ -144,7 +138,7 @@ export default function SetLayout() {
                         name="itemName"
                         label="물품 이름"
                         id="itemName"
-                        onChange={handleItemInput('itemName')}
+                        onChange={handleChange('itemName')}
                     />
                     <Button
                         type="submit"
@@ -163,7 +157,7 @@ export default function SetLayout() {
                 </Grid>
                 <Grid item
                     xs={12}>
-                    <div>
+                    <div key={Math.random()}>
                         <MyDataGrid
                             width={20}
                             columns={values.columns}
@@ -172,13 +166,13 @@ export default function SetLayout() {
                             minHeight={1080}
                             enableCellSelect={true}
                             onGridRowsUpdated={({fromRow, toRow, updated})=>{
-                                setState(state => {
+                                /*setState(state => {
                                     const rows = state.rows.slice();
                                     for (let i = fromRow; i <= toRow; i++) {
                                       rows[i] = { ...rows[i], ...updated };
                                     }
                                     return { rows };
-                                });
+                                });*/
                             }}
                             cellRangeSelection={{
                                 onComplete: args => {
@@ -191,16 +185,17 @@ export default function SetLayout() {
                                     values.selectedArea.right = right;
                                     values.selectedArea.bottom = bottom;
                                     console.log(left, right, top, bottom);
-                                    for (let i = left; i <= right; i++) {
-                                        for (let j = top; j <= bottom; j++) {
+                                    for ( let j = top; j <= bottom; j++) {
+                                        for (let i = left; i <= right; i++) {
                                             console.log(values.rows[i][j]);
-                                            values.rows[i][j] = 999;
+                                            values.rows[j][i] = 999;
                                             console.log(values.rows[i][j]);
                                         }
                                         console.log(values.rows);
                                     }
+                                    let newColumn = values.columns.slice();
 
-                                    setState({ ...values, refresh: true, rows: values.rows });
+                                    setState({ ...values, refresh: true, rows: values.rows, columns:newColumn  });
                                     // Refresh();
                                 }
                             }}
