@@ -30,6 +30,8 @@ app.get('/items', (req, res) => {
 
 async function findItems(){
     return await queryAsync(
-        'SELECT * FROM category NATURAL JOIN item'
+        'SELECT category.name as category, item.name as item \
+        FROM category, item \
+        WHERE category.idcategory = item.category_idcategory'
     );
 }
