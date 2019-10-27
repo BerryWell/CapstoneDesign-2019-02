@@ -20,6 +20,6 @@ export async function signIn(profile){
 }
 
 export async function getStocks(profile) {
-    const res = await axios.post('http://localhost:3000/marketplan', profile);
+    const res = await axios.get('http://localhost:3000/dashboard_quantity', profile);
     return res.data;
 }

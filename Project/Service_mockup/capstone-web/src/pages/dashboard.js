@@ -1,22 +1,31 @@
 // 대시보드 페이지
 // 각 상품별 재고 현황을 그래프로 보여준다.
+// react-chartjs-2: chart.js를 react로 포팅한 것
+// 참고: https://www.chartjs.org
 
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 
 import { getStocks } from '../api/stores';
-
+const dataset = getStocks();
+//const labels = JSON.parse(dataset[0]);
+//const dataset_parsed = JSON.parse(dataset);
+//console.log(dataset_parsed);
 class ChartsPage extends React.Component {
-  // query 추가 필요
 
+  // data = getStocks(),
+  // data: name, quantity
 
+  console.log(dataset);
   state = {
     dataBar: {
-      labels: ["과일", "야채", "과자"],
+      labels: ["소고기", "돼지고기", "양고기"],
+      //labels: labels, 
       datasets: [
         {
           label: "재고(개)",
+          order: 1,
           data: [12, 19, 3],
           backgroundColor: [
             "rgba(255, 134,159,0.4)",

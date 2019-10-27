@@ -38,3 +38,22 @@ async function findItems(){
         WHERE category.idcategory = item.category_idcategory'
     );
 }
+
+app.get('/dashboard_quantity', async(req, res) => {
+    console.log({ 'req.body': req.body });
+    try {
+        const result = await findItems();
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed!' });
+    }
+});
+
+async function findItems(){
+    return await queryAsync(
+        'SELECT name, quantity \
+        FROM item'
+    );
+}
