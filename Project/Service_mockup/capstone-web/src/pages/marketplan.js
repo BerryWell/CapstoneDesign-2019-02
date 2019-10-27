@@ -29,19 +29,61 @@ export default function SetLayout() {
         columns: [],
         rows: [],
         itemName: '',
-        defaultColumnProperties: { width: 120 },
+        refresh: false,
+        selectedItem: '',
+        selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
 
-    for (let i = 0; i < 100; i++) {
+    const removeItem = (_name, _color) => {
+        const index = values.items.findIndex(element => element.name === _name && element.color === _color);
+        if (index > -1) {
+            values.items.splice(index, 1);
+            setState({ ...values, 'items': values.items });
+        }
+    };
+    const ItemBtnComponent = (props) => {
+        const doubleClick = () => {
+            removeItem(props.text, props.color);
+        }
+        const mouseUp = () => {
+            if (props.text === values.selectedItem) {
+                values.selectedItem = '';
+
+            }
+            else {
+                values.selectedItem = props.text;
+            }
+        }
+        return (
+            <Button
+                variant="contained"
+                color="primary"
+                onDoubleClick={doubleClick}
+                onMouseUp={mouseUp}
+                style={{
+                    background: props.color
+                }}
+            >
+                {props.text}
+            </Button>
+
+        );
+    }
+
+    const CellFormatter = ({ value }) => {
+        return <div>value:{value}</div>;
+    };
+
+    //cell fill
+    for (let i = 0; i < 5; i++) {
         values.columns.push({ key: i, name: i });
     }
-    values.columns.map(c => ({ ...c, ...values.defaultColumnProperties }));
-    for (let i = 0; i < 100; i++) {
-        let rowData = {};
-        for (let j = 0; j < 100; j++) {
-            rowData[j] = '';
+    for (let i = 0; i < 5; i++) {
+        let rowData = new Array();
+        for (let j = 0; j < 5; j++) {
+            rowData[j] = j;
         }
-        values.rows.push(rowData);
+        values.rows[i] = rowData;
     }
     const addItem = () => {
         if (values.items.includes(values.itemName) !== true) {
@@ -70,40 +112,27 @@ export default function SetLayout() {
         }
     };
 
-    const removeItem = (_name, _color) => {
-        console.log(_name, _color);
-        const index = values.items.findIndex(element => element.name === _name && element.color === _color);
-        if (index > -1) {
-            values.items.splice(index, 1);
-            setState({ ...values, 'items': values.items });
-        }
-    };
     const handleItemInput = name => event => {
         setState({ ...values, [name]: event.target.value });
     }
+    function GetSize() {
+        let count = values.rows.length; // change this line to your app logic
 
-    const ItemBtnComponent = (props) => {
-        const doubleClick = () => {
-            removeItem(props.text, props.color);
+        if (values.refresh) {
+            count++; // hack for update data-grid
+            setState({ ...values, refresh: false });
         }
-        return (
-            <Button
-                variant="contained"
-                color="primary"
-                onDoubleClick={doubleClick}
-                style={{
-                    background: props.color
-                }}
-            >
-                {props.text}
-            </Button>
 
-        );
+        return count;
+    };
+    function Refresh() {
+        setState({ ...values, refresh: true });
     }
+
 
     return (
         <>
-            <h1>매장 레이아웃 설정</h1>
+            <h1>매장 레이아웃 설정({values.selectedItem})</h1>
             <Grid container >
                 <Grid item >
                     <TextField
@@ -133,14 +162,35 @@ export default function SetLayout() {
                     xs={12}>
                     <div>
                         <MyDataGrid
+                            width={20}
                             columns={values.columns}
                             rowGetter={i => values.rows[i]}
-                            rowsCount={100}
+                            rowsCount={values.rows.length}
                             minHeight={1080}
+                            enableCellSelect={true}
                             cellRangeSelection={{
-                                onStart: args => { },
-                                onUpdate: args => { },
-                                onComplete: args => { }
+                                onComplete: args => {
+                                    let left = args.topLeft.rowIdx;
+                                    let right = args.bottomRight.idx;
+                                    let top = args.topLeft.idx;
+                                    let bottom = args.bottomRight.rowIdx;
+                                    values.selectedArea.left = left
+                                    values.selectedArea.top = top;
+                                    values.selectedArea.right = right;
+                                    values.selectedArea.bottom = bottom;
+                                    console.log(left, right, top, bottom);
+                                    for (let i = left; i <= right; i++) {
+                                        for (let j = top; j <= bottom; j++) {
+                                            console.log(values.rows[i][j]);
+                                            values.rows[i][j] = 999;
+                                            console.log(values.rows[i][j]);
+                                        }
+                                        console.log(values.rows);
+                                    }
+
+                                    setState({ ...values, refresh: true, rows: values.rows });
+                                    // Refresh();
+                                }
                             }}
                         />
                     </div>
