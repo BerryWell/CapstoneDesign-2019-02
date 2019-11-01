@@ -25,8 +25,8 @@ import retrofit2.Response;
 
 public class AddtoCartActivity extends AppCompatActivity {
     private ExpandableListView listView;
-    private String[] caArr = new String [3];
-    private String[][]arr = new String[3][3];
+    private String[] cateArr = new String [3];
+    private String[][]itemArr = new String[3][3];
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item ){
@@ -54,7 +54,7 @@ public class AddtoCartActivity extends AppCompatActivity {
 
 
 
-        getItem();
+        getItem(cateArr, itemArr);
 
         ArrayList<myGroup> DataList = new ArrayList<myGroup>();
         listView = (ExpandableListView)findViewById(R.id.mylist);
@@ -87,7 +87,7 @@ public class AddtoCartActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-    private void getItem() {
+    private void getItem(final String[] cateArr, final String[][]itemArr) {
         //String email = editText_email.getText().toString();
         //String pwd = editText_password.getText().toString();
 
@@ -107,9 +107,9 @@ public class AddtoCartActivity extends AppCompatActivity {
                             Item[] dataJson= new Gson().fromJson(response.body(), Item[].class);
                             Log.d("Main 결과", dataJson[0].category);
                             for(int i=0;i<3;i++){
-                                caArr[i]=dataJson[i*3].category;
+                                cateArr[i]=dataJson[i*3].category;
                                 for(int j=0;j<3;j++){
-                                    arr[i][j] = dataJson[i*3+j].item;
+                                    itemArr[i][j] = dataJson[i*3+j].item;
                                 }
                             }
 

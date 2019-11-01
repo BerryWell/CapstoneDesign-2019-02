@@ -13,7 +13,7 @@ public class Net {
     private Net() {
     }
     private Retrofit retrofit = new Retrofit.Builder()          //----------------- A
-            //.baseUrl("https://10.0.2.2:3000")
+            //.baseUrl("https://10.0.2.2:3000/index/")
             //.baseUrl("https://165.194.17.155:3000")
             .baseUrl("http://18.236.129.135:3000/index/")   //
             .addConverterFactory(GsonConverterFactory.create())

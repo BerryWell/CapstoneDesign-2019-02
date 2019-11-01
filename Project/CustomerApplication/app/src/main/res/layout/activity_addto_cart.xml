@@ -43,10 +43,10 @@
 
     <Button
         android:id="@+id/btn_shopping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_margin="10dp"
         android:layout_gravity="center|bottom"
-        android:text="확인" />
+        android:background="@drawable/done_black_36" />
 
 </LinearLayout>
