@@ -53,7 +53,7 @@ export default function SetLayout() {
                     uid: value.idcategory,
                     [value.name]: value.idcategory,
                 });
-                
+
             });
             setState({ ...values, items: values.items });
         }
@@ -127,19 +127,13 @@ export default function SetLayout() {
             console.log(values.autoincrementID);
         }
     };
-    const savePlan = ()=>{
+    const savePlan = async () => {
         console.log("savePlan");
         let userId = cookies.get('userId');
         try {
-            let rowData = cookies.get('data');
-            console.log({"raw":rowData});
-            rowData.forEach(row => {
-                row.forEach((_, index, theArray) => {
-                    theArray[index] = values.items[theArray[index]];
-                });
-            });
-            // await setMarketLayout(values.rows, userId, 4, 4);
-            
+
+            await setMarketLayout(values.rows, userId, values.rows.length, values.rows[0].length);
+
         }
         catch (err) {
             console.log(err);
@@ -202,18 +196,16 @@ export default function SetLayout() {
                                     let right = args.bottomRight.idx;
                                     let top = args.topLeft.rowIdx;
                                     let bottom = args.bottomRight.rowIdx;
-                                    console.log(left, top, right, bottom);
                                     for (let j = top; j <= bottom; j++) {
                                         for (let i = left; i <= right; i++) {
                                             values.rows[j][i] = values.selectedItem;
                                         }
                                     }
                                     let newColumn = values.columns.slice();
-                                    console.log({"in complete":values.rows});
-                                    cookies.set('data', values.rows);
+                                    let rowData = cookies.get('data');
                                     setState({ ...values, columns: newColumn });
                                     setState({ ...values, rows: values.rows });
-                                    
+
                                     // Refresh();
                                 }
                             }}
