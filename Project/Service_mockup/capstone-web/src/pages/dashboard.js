@@ -66,7 +66,10 @@ class ChartsPage extends React.Component {
     }
   }
   componentDidMount(){
-    getStocks().then(res=>console.log(res));
+    getStocks().then(res=>{
+      
+      console.log(res);
+    });
   }
 
   render() {
