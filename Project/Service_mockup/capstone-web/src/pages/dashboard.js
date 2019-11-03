@@ -13,7 +13,6 @@ import { getStocks } from '../api/stores';
 //const dataset_parsed = JSON.parse(datasets);
 //console.log(datasets);
 class ChartsPage extends React.Component {
-  // data: name, quantity
   state = {
     dataBar: {
       labels: ["소고기", "돼지고기", "양고기"],
@@ -66,8 +65,12 @@ class ChartsPage extends React.Component {
   componentDidMount(){
 
     getStocks().then(res=>{
+      // data: category, quantity
       //this.state.dataBar.labels = res['category'];
+      //this.state.datasets.data = res['quantity'];
       console.log(res);
+      console.log(res[0].category);
+      console.log(JSON.stringify(res));
     });
   }
 

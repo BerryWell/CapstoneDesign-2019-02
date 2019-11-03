@@ -34,9 +34,15 @@ app.get('/items', async(req, res) => {
 
 async function findItems(){
     return await queryAsync(
+        /*
         'SELECT category.name as category, item.name as item, item.quantity as quantity \
         FROM category, item \
         WHERE category.idcategory = item.category_idcategory'
+        */
+       'SELECT category.name as category, SUM(item.quantity) as quantity \
+        FROM category, item \
+        WHERE category.idcategory = item.category_idcategory \
+        GROUP BY category'
     );
 }
 
