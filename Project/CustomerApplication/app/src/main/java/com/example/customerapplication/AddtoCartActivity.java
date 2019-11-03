@@ -52,12 +52,11 @@ public class AddtoCartActivity extends AppCompatActivity {
         Display newDisplay = getWindowManager().getDefaultDisplay();
         int width = newDisplay.getWidth();
 
-
-
         getItem(cateArr, itemArr);
 
         ArrayList<myGroup> DataList = new ArrayList<myGroup>();
         listView = (ExpandableListView)findViewById(R.id.mylist);
+
         myGroup temp = new myGroup("육류");
         temp.child.add("소고기");
         temp.child.add("돼지고기");
@@ -75,9 +74,9 @@ public class AddtoCartActivity extends AppCompatActivity {
         DataList.add(temp);
         /*
         for(int i=0;i<3;i++){
-            myGroup temp = new myGroup(caArr[i]);
+            myGroup temp = new myGroup(cateArr[i]);
             for(int j=0;j<3;j++){
-                temp.child.add(arr[i][j]);
+                temp.child.add(itemArr[i][j]);
             }
             DataList.add(temp);
         }*/
