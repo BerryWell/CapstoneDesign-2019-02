@@ -13,67 +13,75 @@ import { getStocks } from '../api/stores';
 //const dataset_parsed = JSON.parse(datasets);
 //console.log(datasets);
 class ChartsPage extends React.Component {
+
+  // data = getStocks(),
   // data: name, quantity
-  state = {
-    dataBar: {
-      labels: ["소고기", "돼지고기", "양고기"],
-      datasets: [
-        {
-          label: "재고(개)",
-          order: 1,
-          data: [7, 19, 3],
-          backgroundColor: [
-            "rgba(255, 134,159,0.4)",
-            "rgba(98,  182, 239,0.4)",
-            "rgba(255, 218, 128,0.4)"
-          ],
-          borderWidth: 2,
-          borderColor: [
-            "rgba(255, 134, 159, 1)",
-            "rgba(98,  182, 239, 1)",
-            "rgba(255, 218, 128, 1)"
-          ]
-        }
-      ]
-    },
-    barChartOptions: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        xAxes: [
+
+  componentDidMount() {
+
+  }
+  constructor(props) {
+    //https://jsdev.kr/t/componentdidmount-setstate/4023 참고
+    super();
+    this.state = {
+      dataBar: {
+        //labels: labels, 
+        datasets: [
           {
-            barPercentage: 1,
-            gridLines: {
-              display: true,
-              color: "rgba(0, 0, 0, 0.1)"
-            }
-          }
-        ],
-        yAxes: [
-          {
-            gridLines: {
-              display: true,
-              color: "rgba(0, 0, 0, 0.1)"
-            },
-            ticks: {
-              beginAtZero: true
-            }
+            label: "재고(개)",
+            order: 1,
+            data: [],
+            backgroundColor: [],
+            borderWidth: 2,
+            borderColor: []
           }
         ]
+      },
+      barChartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              barPercentage: 1,
+              gridLines: {
+                display: true,
+                color: "rgba(0, 0, 0, 0.1)"
+              }
+            }
+          ],
+          yAxes: [
+            {
+              gridLines: {
+                display: true,
+                color: "rgba(0, 0, 0, 0.1)"
+              },
+              ticks: {
+                beginAtZero: true
+              }
+            }
+          ]
+        }
       }
     }
-  }
-  componentDidMount(){
+    getStocks().then(res => {
+      //state 내부 값 업데이트하는 법
+      //https://stackoverflow.com/questions/43040721/how-to-update-nested-state-properties-in-react
+      let dataBar = { ...this.state.dataBar };
 
-    getStocks().then(res=>{
-      //this.state.dataBar.labels = res['category'];
-      console.log(res);
+      res.map(element => {
+        const { category, item, quantity } = element;
+        dataBar.labels.push(item);
+        dataBar.datasets[0].data.push(quantity);
+        dataBar.datasets[0].backgroundColor.push("rgba(255, 134,159,0.4)");
+        dataBar.datasets[0].borderColor.push("rgba(255, 134, 159, 1)");
+        console.log(category, item, quantity);
+      });
+      this.setState({ dataBar });
     });
   }
-
   render() {
     console.log('dashboard loaded');
-    //console.log(this.state.dataBar);
     return (
       <MDBContainer>
         <h3 className="mt-5">재고 현황</h3>
