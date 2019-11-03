@@ -64,8 +64,10 @@ class ChartsPage extends React.Component {
     }
   }
   componentDidMount(){
+
     getStocks().then(res=>{
       //this.state.dataBar.labels = res['category'];
+      console.log(res);
     });
   }
 
