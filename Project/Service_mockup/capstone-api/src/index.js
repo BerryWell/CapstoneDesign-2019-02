@@ -51,10 +51,3 @@ app.get('/dashboard_quantity', async(req, res) => {
         res.status(403).send({ error: 'Something failed!' });
     }
 });
-
-async function findItems(){
-    return await queryAsync(
-        'SELECT name, quantity \
-        FROM item'
-    );
-}

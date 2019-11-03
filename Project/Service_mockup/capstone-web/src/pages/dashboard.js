@@ -8,9 +8,10 @@ import { Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 
 import { getStocks } from '../api/stores';
-//const labels = JSON.parse(dataset[0]);
-//const dataset_parsed = JSON.parse(dataset);
-//console.log(dataset_parsed);
+//const datasets = getStocks();
+//const labels = JSON.parse(datasets[0]);
+//const dataset_parsed = JSON.parse(datasets);
+//console.log(datasets);
 class ChartsPage extends React.Component {
 
   // data = getStocks(),
@@ -23,7 +24,7 @@ class ChartsPage extends React.Component {
         {
           label: "재고(개)",
           order: 1,
-          data: [12, 19, 3],
+          data: [7, 19, 3],
           backgroundColor: [
             "rgba(255, 134,159,0.4)",
             "rgba(98,  182, 239,0.4)",
@@ -67,12 +68,18 @@ class ChartsPage extends React.Component {
   }
   componentDidMount(){
     getStocks().then(res=>{
-      
-      console.log(res);
-    });
+      this.state.apple = res;
+    })
+    //this.state.dataBar = getStocks();
+    console.log(this.state.apple);
+    //getStocks().then(res=>{
+    //  
+    //  console.log(res);
+    //});
   }
 
   render() {
+    console.log('dashboard loaded');
     return (
       <MDBContainer>
         <h3 className="mt-5">재고 현황</h3>
