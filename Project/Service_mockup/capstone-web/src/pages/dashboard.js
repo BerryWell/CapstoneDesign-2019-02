@@ -13,13 +13,10 @@ import { getStocks } from '../api/stores';
 //const dataset_parsed = JSON.parse(datasets);
 //console.log(datasets);
 class ChartsPage extends React.Component {
-
-  // data = getStocks(),
   // data: name, quantity
   state = {
     dataBar: {
       labels: ["소고기", "돼지고기", "양고기"],
-      //labels: labels, 
       datasets: [
         {
           label: "재고(개)",
@@ -68,18 +65,13 @@ class ChartsPage extends React.Component {
   }
   componentDidMount(){
     getStocks().then(res=>{
-      this.state.apple = res;
-    })
-    //this.state.dataBar = getStocks();
-    console.log(this.state.apple);
-    //getStocks().then(res=>{
-    //  
-    //  console.log(res);
-    //});
+      //this.state.dataBar.labels = res['category'];
+    });
   }
 
   render() {
     console.log('dashboard loaded');
+    //console.log(this.state.dataBar);
     return (
       <MDBContainer>
         <h3 className="mt-5">재고 현황</h3>
