@@ -77,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         builder.setPositiveButton("예",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
+                        //Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), FloorActivity.class);
                         intent.putExtra("지점",marker.getTitle());
                         //Log.d("markertitle",marker.getTitle());
                         startActivity(intent); // 다음화면으로 넘어가기

@@ -25,8 +25,6 @@ import retrofit2.Response;
 
 public class AddtoCartActivity extends AppCompatActivity {
     private ExpandableListView listView;
-    private String[] cateArr = new String [3];
-    private String[][]itemArr = new String[3][3];
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item ){
@@ -52,11 +50,9 @@ public class AddtoCartActivity extends AppCompatActivity {
         Display newDisplay = getWindowManager().getDefaultDisplay();
         int width = newDisplay.getWidth();
 
-        getItem(cateArr, itemArr);
+        getItem(width);
 
-        ArrayList<myGroup> DataList = new ArrayList<myGroup>();
-        listView = (ExpandableListView)findViewById(R.id.mylist);
-
+        /*
         myGroup temp = new myGroup("육류");
         temp.child.add("소고기");
         temp.child.add("돼지고기");
@@ -72,23 +68,12 @@ public class AddtoCartActivity extends AppCompatActivity {
         temp.child.add("포카칩");
         temp.child.add("트윅스");
         DataList.add(temp);
-        /*
-        for(int i=0;i<3;i++){
-            myGroup temp = new myGroup(cateArr[i]);
-            for(int j=0;j<3;j++){
-                temp.child.add(itemArr[i][j]);
-            }
-            DataList.add(temp);
-        }*/
+        */
 
-        ExpandAdapter adapter = new ExpandAdapter(getApplicationContext(),R.layout.group_row,R.layout.child_row,DataList);
-        listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
-        listView.setAdapter(adapter);
+
     }
 
-    private void getItem(final String[] cateArr, final String[][]itemArr) {
-        //String email = editText_email.getText().toString();
-        //String pwd = editText_password.getText().toString();
+    private void getItem(final int width) {
 
         Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().items();
             //Call<List<Item>> res = Net.getInstance().getMemberFactoryIm().items();   //--------- D
@@ -105,15 +90,29 @@ public class AddtoCartActivity extends AppCompatActivity {
                             Log.d("Main 통신", response.body().toString());
                             Item[] dataJson= new Gson().fromJson(response.body(), Item[].class);
                             Log.d("Main 결과", dataJson[0].category);
+
+                            String[] cateArr = new String [3];
+                            String[][]itemArr = new String[3][3];
+
+                            ArrayList<myGroup> DataList = new ArrayList<myGroup>();
+                            listView = (ExpandableListView)findViewById(R.id.mylist);
                             for(int i=0;i<3;i++){
                                 cateArr[i]=dataJson[i*3].category;
                                 for(int j=0;j<3;j++){
                                     itemArr[i][j] = dataJson[i*3+j].item;
                                 }
                             }
+                            for(int i=0;i<3;i++){
+                                myGroup temp = new myGroup(cateArr[i]);
+                                for(int j=0;j<3;j++){
+                                    temp.child.add(itemArr[i][j]);
+                                }
+                                DataList.add(temp);
+                            }
 
-                            // DO SOMETHING HERE with items!
-
+                            ExpandAdapter adapter = new ExpandAdapter(getApplicationContext(),R.layout.group_row,R.layout.child_row,DataList);
+                            listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
+                            listView.setAdapter(adapter);
                         }else{
                             Log.d("Main 통신", "실패 1 response 내용이 없음");
                         }
