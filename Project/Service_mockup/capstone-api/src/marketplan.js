@@ -31,8 +31,10 @@ app.get('/marketplan', async (req, res) => {
     try {
         const requestid = req.query.id;
         const floor = req.query.floor;// 테이블에 플로어 id만 있고 해당 플로어가 몇층인지 없음. 
-        const result = await getMap(requestid);
-        console.log(result[0].map);
+        const mallId = req.query.mallId;
+        console.log(floor);
+        const result = await getMap(requestid, mallId, floor);
+        console.log(result);
         res.send(result[0].map);
     } catch (err) {
         console.log({ err });
@@ -40,10 +42,10 @@ app.get('/marketplan', async (req, res) => {
     }
 });
 
-async function getMap(idfloor) {
+async function getMap(idfloor, mallId, floor) {
     return await queryAsync(
-        'SELECT map FROM floor WHERE idfloor = ?',
-        [idfloor]
+        'SELECT map FROM floor WHERE idfloor = ? AND mall_idmall = ?',
+        [idfloor, mallId]
     );
 }
 
