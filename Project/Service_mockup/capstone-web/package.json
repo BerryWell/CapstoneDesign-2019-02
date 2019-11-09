@@ -31,6 +31,7 @@
     "react-data-grid": "^6.1.0",
     "react-data-grid-addons": "^6.1.0",
     "react-dom": "^16.8.6",
+    "react-geocode": "^0.2.1",
     "react-helmet": "^5.2.1",
     "react-modal": "^3.11.1",
     "react-table-drag-select": "^0.3.1",

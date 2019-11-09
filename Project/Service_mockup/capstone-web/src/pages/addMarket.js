@@ -9,6 +9,14 @@ import Box from '@material-ui/core/Box';
 import GoogleMap from '../components/GoogleMap';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Geocode from "react-geocode";
+const apiConfig = require('../config');
+
+Geocode.setApiKey(apiConfig['key']['googleMap']);
+Geocode.setLanguage("ko");
+Geocode.setRegion("ko");
+Geocode.enableDebug();
+
 const useStyles = makeStyles(theme => ({
     '@global': {
         body: {
@@ -37,18 +45,10 @@ export default function SetLayout() {
     const classes = useStyles();
     const [values, setValues] = React.useState({
         storeInfo: [],
-        markerSet: false,
         lat: 37.504073,
         lng: 126.956887,
+        addressFromLatLng: "",
     });
-
-    const bindResizeListener = (map, maps, bounds) => {
-        maps.event.addDomListenerOnce(map, 'idle', () => {
-            maps.event.addDomListener(window, 'resize', () => {
-                map.fitBounds(bounds);
-            });
-        });
-    };
 
     const apiIsLoaded = (map, maps) => {
         console.log("apiIsLoaded");
@@ -70,60 +70,69 @@ export default function SetLayout() {
     }
     return (
         <>
-            <h1>매장 레이아웃 설정({values.selectedItem})</h1>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        매장정보 입력
-        </Typography>
-                    <form className={classes.form} onSubmit={e => e.preventDefault()}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="mallName"
-                            label="매장명"
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="address"
-                            label="주소"
-                        />
+            <Typography component="h1" variant="h5">
+                매장정보 입력
+                    </Typography>
+            <form className={classes.form} onSubmit={e => e.preventDefault()}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="mallName"
+                    label="매장명"
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="address"
+                    label="상세주소"
+                />
 
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        //onClick={}
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                //onClick={}
+                >
+                    등록
+                        </Button>
+                <Typography component="h2" variant="h5">
+                    주소:{values.addressFromLatLng}
+                </Typography>
+                <Grid item>
+                    <div style={{ height: '100vh', width: '100vh' }}>
+                        <GoogleMap
+                            defaultZoom={10}
+                            defaultCenter={[37.504073, 126.956887]}
+                            onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
+                            onClick={(e) => {
+                                Geocode.fromLatLng(e.lat, e.lng).then(response => {
+                                    setValues({
+                                        addressFromLatLng: response.results[0].formatted_address,
+                                        lat: e.lat,
+                                        lng: e.lng
+                                    });
+
+                                }, error => {
+                                    setValues({
+                                        addressFromLatLng: "",
+                                        lat: e.lat,
+                                        lng: e.lng
+                                    });
+                                });
+                            }}
                         >
-                            등록
-          </Button>
-                        <Grid item>
-                            <div style={{ height: '100vh', width: '100vh' }}>
-                                <GoogleMap
-                                    defaultZoom={10}
-                                    defaultCenter={[37.504073, 126.956887]}
-                                    onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
-                                    onClick={(e) => {
-                                        setValues({ markerSet: true, lat: e.lat, lng: e.lng });
-                                    }}
-                                >
-                                    <Marker lat={values.lat} lng={values.lng} />
-                                </GoogleMap>
-                            </div>
-                        </Grid>
-                    </form>
-                </div>
-                <Box mt={8}>
-                </Box>
-            </Container>
+                            <Marker lat={values.lat} lng={values.lng} />
+                        </GoogleMap>
+                    </div>
+                </Grid>
+            </form>
+
 
 
         </>

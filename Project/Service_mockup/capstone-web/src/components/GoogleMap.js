@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GoogleMapReact from 'google-map-react';
 const apiConfig = require('../config');
-console.log(apiConfig['key']['googleMap']);
-
 const GoogleMap = ({ children, ...props }) => (
 
 
