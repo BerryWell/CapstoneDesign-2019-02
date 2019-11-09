@@ -11,20 +11,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { getStores, appendStore } from '../api/stores';
-import ReactModal from 'react-modal';
-import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import GoogleMap from '../components/GoogleMap';
-
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -50,10 +37,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 const IndexPage = () => {
-  const classes = useStyles();
   const [stores, setStores] = useState({
     showModal: false,
     storeInfo: [],
+    markerSet: false,
+    lat: 37.504073,
+    lng: 126.956887,
   });
   useEffect(() => {
     getStores().then(setStores);
@@ -62,88 +51,12 @@ const IndexPage = () => {
     setStores({ showModal: true });
 
   };
-  const handleCloseModal = () => {
-    setStores({ showModal: false });
-  };
-
-  // Re-center map when resizing the window
-  const bindResizeListener = (map, maps, bounds) => {
-    maps.event.addDomListenerOnce(map, 'idle', () => {
-      maps.event.addDomListener(window, 'resize', () => {
-        map.fitBounds(bounds);
-      });
-    });
-  };
-
-  // Fit map to its bounds after the api is loaded
-  const apiIsLoaded = (map, maps) => {
-    // Get bounds by our places
-    const bounds = new maps.LatLngBounds();
-    // Fit map to bounds
-    map.fitBounds(bounds);
-    // Bind the resize listener
-    bindResizeListener(map, maps, bounds);
-  };
   return (
     <>
       <h1>매장 리스트</h1>
       <Button variant="contained" color="primary" onClick={appendNewStore}>
         가게 추가하기
       </Button>
-      <ReactModal isOpen={stores.showModal} onRequestClose={handleCloseModal} shouldCloseOnOverlayClick={false}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <div className={classes.paper}>
-            <Typography component="h1" variant="h5">
-              매장정보 입력
-        </Typography>
-            <form className={classes.form} onSubmit={e => e.preventDefault()}>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="mallName"
-                label="매장명"
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="address"
-                label="주소"
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              //onClick={}
-              >
-                등록
-          </Button>
-              <Grid container>
-                <Grid item>
-                  <div style={{ height: '100vh', width: '100vh' }}>
-                    <GoogleMap
-                      defaultZoom={10}
-                      defaultCenter={[37.504073, 126.956887]}
-                      yesIWantToUseGoogleMapApiInternals
-                      onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
-                    >
-                    </GoogleMap>
-                  </div>
-                </Grid>
-              </Grid>
-            </form>
-          </div>
-          <Box mt={8}>
-          </Box>
-        </Container>
-      </ReactModal>
       {stores.storeInfo ?
         stores.storeInfo.map((store, index) => <StoreCard {...store} key={index} />) :
         <>가게 목록을 불러오는 중입니다...</>}
