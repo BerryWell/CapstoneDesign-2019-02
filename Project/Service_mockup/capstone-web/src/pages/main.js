@@ -127,14 +127,15 @@ const IndexPage = () => {
           </Button>
               <Grid container>
                 <Grid item>
-
-                  <GoogleMap
-                    defaultZoom={10}
-                    defaultCenter={[37.504073, 126.956887]}
-                    yesIWantToUseGoogleMapApiInternals
-                    onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
-                  >
-                  </GoogleMap>
+                  <div style={{ height: '100vh', width: '100vh' }}>
+                    <GoogleMap
+                      defaultZoom={10}
+                      defaultCenter={[37.504073, 126.956887]}
+                      yesIWantToUseGoogleMapApiInternals
+                      onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
+                    >
+                    </GoogleMap>
+                  </div>
                 </Grid>
               </Grid>
             </form>
