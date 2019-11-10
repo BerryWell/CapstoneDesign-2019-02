@@ -10,6 +10,7 @@ import GoogleMap from '../components/GoogleMap';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Geocode from "react-geocode";
+import { addMarketInfo } from '../api/stores';
 const apiConfig = require('../config');
 
 Geocode.setApiKey(apiConfig['key']['googleMap']);
@@ -44,7 +45,8 @@ const useStyles = makeStyles(theme => ({
 export default function SetLayout() {
     const classes = useStyles();
     const [values, setValues] = React.useState({
-        storeInfo: [],
+        name: "",
+        address: "",
         lat: 37.504073,
         lng: 126.956887,
         addressFromLatLng: "",
@@ -68,6 +70,23 @@ export default function SetLayout() {
             />
         </div>
     }
+    const sendMarketInfo = async () => {
+        try {
+            const { name, addressFromLatLng, address, lat, lng } = values;
+
+            await addMarketInfo(name, addressFromLatLng, address, lat, lng);
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    const handleChange = name => event => {
+        setValues({
+            ...values,
+            [name]: event.target.value,
+        });
+    };
     return (
         <>
             <Typography component="h1" variant="h5">
@@ -81,6 +100,7 @@ export default function SetLayout() {
                     fullWidth
                     id="mallName"
                     label="매장명"
+                    onChange={handleChange('name')}
                 />
                 <TextField
                     variant="outlined"
@@ -89,6 +109,7 @@ export default function SetLayout() {
                     fullWidth
                     id="address"
                     label="상세주소"
+                    onChange={handleChange('address')}
                 />
 
                 <Button
@@ -97,7 +118,7 @@ export default function SetLayout() {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                //onClick={}
+                    onClick={sendMarketInfo}
                 >
                     등록
                         </Button>

@@ -27,7 +27,14 @@ export async function getStocks(profile) {
     return res.data;
 }
 export async function setMarketLayout(rows, userId, size_width, size_height) {
-    console.log({ "setMarketLayoutROws": rows });
-    const res = await axios.post('http://localhost:3000/marketplan', { "rows": rows, "userId": userId, "size_width": size_width, "size_height": size_height });
+    const res = await axios.post('http://localhost:3000/marketplan',
+        { "rows": rows, "userId": userId, "size_width": size_width, "size_height": size_height });
+    return res.data;
+}
+
+export async function addMarketInfo(name, address, detailAddress, lat, lng) {
+    console.log(name, address, detailAddress, lat, lng);
+    const res = await axios.post('http://localhost:3000/addmarket',
+        { "name": name, "address": address, "detailAddress": detailAddress, "lat": lat, "lng": lng });
     return res.data;
 }
