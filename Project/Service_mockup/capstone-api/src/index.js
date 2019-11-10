@@ -53,8 +53,9 @@ async function getItemsByMall(id){
         'SELECT category.name as category, item.name as item, item.quantity as quantity \
         FROM category, item \
         WHERE cateogory.idcategory = item.category_idcategory \
-            AND mall_idmall = id \
-            AND mall_idmall = id'
+            AND cateogory.mall_idmall = id \
+            AND item.mall_idmall = id', 
+        [id]
     );
 }
 
