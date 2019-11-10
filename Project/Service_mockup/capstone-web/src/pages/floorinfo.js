@@ -75,7 +75,7 @@ const StyledTreeItem = withStyles(theme => ({
 
 const useStyles = makeStyles({
     root: {
-        height: 264,
+        height: 1000,
         flexGrow: 1,
         maxWidth: 400,
     },
@@ -145,19 +145,19 @@ export default function SetLayout() {
                         defaultExpandIcon={<PlusSquare />}
                         defaultEndIcon={<CloseSquare />}
                     >
-                        <StyledTreeItem nodeId="1" label="Main">
-                            <StyledTreeItem nodeId="2" label="Hello" />
-                            <StyledTreeItem nodeId="3" label="Subtree with children">
-                                <StyledTreeItem nodeId="6" label="Hello" />
-                                <StyledTreeItem nodeId="7" label="Sub-subtree with children">
-                                    <StyledTreeItem nodeId="9" label="Child 1" />
-                                    <StyledTreeItem nodeId="10" label="Child 2" />
-                                    <StyledTreeItem nodeId="11" label="Child 3" />
-                                </StyledTreeItem>
-                                <StyledTreeItem nodeId="8" label="Hello" />
-                            </StyledTreeItem>
-                            <StyledTreeItem nodeId="4" label="World" />
-                            <StyledTreeItem nodeId="5" label="Something something" />
+                        <StyledTreeItem nodeId="1" label="1층">
+                            <StyledTreeItem nodeId="2" label="육류" />
+                            <StyledTreeItem nodeId="3" label="어류"/>
+                            <StyledTreeItem nodeId="4" label="통조림" />
+                            <StyledTreeItem nodeId="5" label="옷" />
+                        </StyledTreeItem>
+                        
+                        <StyledTreeItem nodeId="6" label="2층">
+                            <StyledTreeItem nodeId="7" label="장난감" />
+                            <StyledTreeItem nodeId="8" label="식기"/>
+                            <StyledTreeItem nodeId="9" label="가구" />
+                            <StyledTreeItem nodeId="10" label="가전제품" />
+                            <StyledTreeItem nodeId="11" label="애완동물" />
                         </StyledTreeItem>
                     </TreeView>
                 </Grid>
