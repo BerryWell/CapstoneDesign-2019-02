@@ -7,6 +7,7 @@ require('./store');
 require('./signup');
 require('./marketplan');
 require('./category.js');
+require('./addMarket');
 connection.connect(function (err) {
     if (err) {
         console.error('mysql connection error');
@@ -20,7 +21,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 // API for Android
 app.get('/', (req, res) => res.send(JSON.stringify('Hello World!')));
 
-app.get('/items', async(req, res) => {
+app.get('/items', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
         const result = await findItems();
@@ -32,9 +33,9 @@ app.get('/items', async(req, res) => {
     }
 });
 
-async function findItems(){
+async function findItems() {
     return await queryAsync(
-        
+
         'SELECT category.name as category, item.name as item, item.quantity as quantity \
         FROM category, item \
         WHERE category.idcategory = item.category_idcategory'
@@ -47,7 +48,7 @@ async function findItems(){
     );
 }
 
-app.get('/dashboard_quantity', async(req, res) => {
+app.get('/dashboard_quantity', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
         const result = await findItems();

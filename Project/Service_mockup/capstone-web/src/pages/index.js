@@ -16,7 +16,6 @@ import Container from '@material-ui/core/Container';
 import { signIn } from '../api/stores';
 import { useSnackbar } from 'notistack';
 import Cookies from 'universal-cookie';
-
 const cookies = new Cookies();
 
 const successSnackbarOption = {
@@ -70,7 +69,7 @@ export default function SignIn() {
       await signIn(values);
       enqueueSnackbar('로그인에 성공하였습니다.', successSnackbarOption);
       cookies.set('userId', values.id, { path: '/' });
-      navigate('/marketplan');
+      navigate('/main');
     } catch (err) {
       console.log(err);
       enqueueSnackbar('에러가 발생하였습니다.', errorSnackbarOption);

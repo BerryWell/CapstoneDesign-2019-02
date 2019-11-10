@@ -202,11 +202,9 @@ export default function SetLayout() {
                                         }
                                     }
                                     let newColumn = values.columns.slice();
-                                    let rowData = cookies.get('data');
                                     setState({ ...values, columns: newColumn });
                                     setState({ ...values, rows: values.rows });
 
-                                    // Refresh();
                                 }
                             }}
                         />
