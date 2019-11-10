@@ -37,16 +37,16 @@ class ViewEx extends View
     {
 
         //10*10 행렬 기준. 나중에 map.json 받은 후 파싱해서 가로 세로 구하고 파는 물건이면 1 되도록
-        int[][] arr = new int[][]{{0,0,0,0,0,0,0,0,0,1},{0,1,1,1,1,1,1,1,0,1},{0,1,1,1,1,1,1,1,0,1},{0,0,0,0,0,0,0,0,0,1},
-                {0,0,0,0,0,0,0,0,0,1},{0,1,1,1,1,1,1,1,0,1},{0,1,1,1,1,1,1,1,0,1},{0,0,0,0,0,0,0,0,0,1},{1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1}};
+        int[][] arr = new int[][]{{0,0,1,1,1,1},{1,0,0,0,0,1},{1,0,0,1,0,1},{0,0,0,0,0,0}, {1,0,0,0,0,0}};
 
-        int floorX = 10;
-        int floorY = 10;
+        int floorX = 6;
+        int floorY = 5;
         
         int viewX = this.getWidth();
         int viewY = this.getHeight();
 
         canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(getResources().getColor(R.color.Ivory));
 
         Paint MyPaint = new Paint();
         MyPaint.setColor(Color.GRAY);
