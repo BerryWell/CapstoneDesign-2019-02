@@ -12,6 +12,9 @@ import Typography from '@material-ui/core/Typography';
 import Geocode from "react-geocode";
 import { addMarketInfo } from '../api/stores';
 import { useSnackbar } from 'notistack';
+import { navigate } from 'gatsby';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const apiConfig = require('../config');
 
@@ -83,11 +86,14 @@ export default function SetLayout() {
     }
     const sendMarketInfo = async () => {
         try {
-            await addMarketInfo(values);
+            let result = await addMarketInfo(values);
+            console.log(result["result"]["insertId"]);
+            cookies.set("editingMarketID", result["result"]["insertId"]);
             enqueueSnackbar('매장 등록 성공!', successSnackbarOption);
+            //navigate('/marketplan');
         }
         catch (err) {
-            enqueueSnackbar(err, errorSnackbarOption);
+            enqueueSnackbar("매장 등록 실패", errorSnackbarOption);
             console.log(err);
         }
     }
