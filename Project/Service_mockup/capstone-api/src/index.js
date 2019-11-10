@@ -51,10 +51,9 @@ async function findItems() {
 async function getItemsByMall(id){
     return await queryAsync(
         'SELECT category.name as category, item.name as item, item.quantity as quantity \
-        FROM category, item \
+        FROM category, item, floor, mall \
         WHERE category.idcategory = item.category_idcategory \
-            AND category.mall_idmall = id \
-            AND item.mall_idmall = id', 
+            AND mall.idmall = ?', 
         [id]
     );
 }
