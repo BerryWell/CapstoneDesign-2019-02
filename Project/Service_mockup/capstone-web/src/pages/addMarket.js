@@ -11,6 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Geocode from "react-geocode";
 import { addMarketInfo } from '../api/stores';
+import { useSnackbar } from 'notistack';
+
 const apiConfig = require('../config');
 
 Geocode.setApiKey(apiConfig['key']['googleMap']);
@@ -42,7 +44,15 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(3, 0, 2),
     },
 }));
+
+const successSnackbarOption = {
+    variant: 'success',
+  };
+  const errorSnackbarOption = {
+    variant: 'error',
+  };
 export default function SetLayout() {
+    const { enqueueSnackbar } = useSnackbar();
     const classes = useStyles();
     const [values, setValues] = React.useState({
         name: "",
@@ -74,9 +84,10 @@ export default function SetLayout() {
     const sendMarketInfo = async () => {
         try {
             await addMarketInfo(values);
-
+            enqueueSnackbar('매장 등록 성공!', successSnackbarOption);
         }
         catch (err) {
+            enqueueSnackbar(err, errorSnackbarOption);
             console.log(err);
         }
     }

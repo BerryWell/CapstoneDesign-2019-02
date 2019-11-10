@@ -12,7 +12,7 @@ app.post('/addmarket', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
         const { name, address, addressFromLatLng, lat, lng, max_floor } = req.body;
-        let allAddress = address + " " + addressFromLatLng;
+        let allAddress = addressFromLatLng + " " + address;
 
         const result = await getItemsByMall(name, allAddress, lat, lng, max_floor);
 
