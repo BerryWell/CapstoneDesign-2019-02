@@ -62,6 +62,7 @@ async function getItemsByMall(id){
 // ex. http://localhost:3000/item_quantity?id=1
 app.get('/item_quantity', async (req, res) => {
     console.log({'/item_quantity': req.body});
+    console.log({'/item_quantity': req.query});
     try {
         const result = await getItemsByMall(req.query.id);
         console.log(result);
