@@ -4,8 +4,9 @@
   "description": "capstone web frontend",
   "version": "0.0.0",
   "dependencies": {
-    "@material-ui/core": "^4.0.1",
+    "@material-ui/core": "^4.6.0",
     "@material-ui/icons": "^4.2.0",
+    "@material-ui/lab": "^4.0.0-alpha.31",
     "@material-ui/styles": "^4.0.1",
     "axios": "^0.19.0",
     "dotenv": "^8.2.0",
@@ -34,6 +35,7 @@
     "react-geocode": "^0.2.1",
     "react-helmet": "^5.2.1",
     "react-modal": "^3.11.1",
+    "react-spring": "^8.0.27",
     "react-table-drag-select": "^0.3.1",
     "redux": "^4.0.4",
     "styled-components": "^4.4.1",
