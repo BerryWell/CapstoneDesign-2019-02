@@ -1,9 +1,13 @@
 package com.example.customerapplication;
 
-public class MyData {
-    static String[] nameArray = {"Cupcake", "Donut", "Eclair", "Froyo",
-            "Gingerbread", "Honeycomb", "Ice Cream Sandwich",
-            "JellyBean", "Kitkat", "Lollipop", "육류, 어류, 채소, 과일, 가공식품"};
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    static Integer[] id_ = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+public class MyData {
+    static ArrayList<String[]> nameArray = new ArrayList<>(Arrays.asList(new String[][]{ {"의류", "언더웨어", "신발", "가방", },
+            {"음료", "과자", "가공식품", "냉동식품"},
+            {"축산", "수산", "농산물", "반찬", "김치"} }));
+
+    static Integer[] id_ = {3,2,1};
+
 }

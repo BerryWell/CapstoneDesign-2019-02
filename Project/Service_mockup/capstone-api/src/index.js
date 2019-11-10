@@ -50,13 +50,14 @@ async function findItems() {
 
 async function getItemsByMall(id){
     return await queryAsync(
-        'SELECT category.name as category, item.name as item, item.quantity as quantity \
-        FROM category, item, floor, mall \
-        WHERE category.idcategory = item.category_idcategory \
-            AND mall.idmall = ?', 
+        'SELECT floor.number as floor, GROUP_CONCAT(distinct category.name) as category \
+        FROM category, floor \
+        WHERE floor.mall_idmall = ? \
+            AND floor_idfloor = category.floor_idfloor \
+        ORDER BY floor DESC', 
         [id]
     );
-}
+}   
 
 // querystring 처리
 // ex. http://localhost:3000/item_quantity?id=1

@@ -51,7 +51,6 @@ public class AddtoCartActivity extends AppCompatActivity {
         int width = newDisplay.getWidth();
 
         getItem(width);
-
         /*
         myGroup temp = new myGroup("육류");
         temp.child.add("소고기");
@@ -69,8 +68,6 @@ public class AddtoCartActivity extends AppCompatActivity {
         temp.child.add("트윅스");
         DataList.add(temp);
         */
-
-
     }
 
     private void getItem(final int width) {
@@ -90,10 +87,8 @@ public class AddtoCartActivity extends AppCompatActivity {
                             Log.d("Main 통신", response.body().toString());
                             Item[] dataJson= new Gson().fromJson(response.body(), Item[].class);
                             Log.d("Main 결과", dataJson[0].category);
-
                             String[] cateArr = new String [3];
                             String[][]itemArr = new String[3][3];
-
                             ArrayList<myGroup> DataList = new ArrayList<myGroup>();
                             listView = (ExpandableListView)findViewById(R.id.mylist);
                             for(int i=0;i<3;i++){

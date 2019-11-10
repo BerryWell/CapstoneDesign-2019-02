@@ -40,7 +40,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         TextView textViewName = holder.textViewName;
         TextView textViewVersion = holder.textViewVersion;
         textViewName.setText(dataSet.get(listPosition).getIdfloor() + "F");
-        textViewVersion.setText(dataSet.get(listPosition).getCategory());
+        //textViewVersion.setText(dataSet.get(listPosition).getCategory());
+        textViewVersion.setText(dataSet.get(listPosition).getAllCategory());
     }
     @Override
     public int getItemCount() {

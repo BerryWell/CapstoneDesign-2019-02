@@ -9,20 +9,29 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.customerapplication.item.Floor;
+import com.example.customerapplication.item.Item;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FloorActivity extends AppCompatActivity {
 
     private static RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
     private static RecyclerView recyclerView;
     private static ArrayList<Floor> data;
     static View.OnClickListener myOnClickListener;
@@ -36,22 +45,24 @@ public class FloorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         toolbarTitle = intent.getStringExtra("지점");
 
+        //getItemsByMall(1);
+
         myOnClickListener = new MyOnClickListener(this);
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        /*recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         data = new ArrayList<Floor>();
-        for (int i = 0; i < MyData.nameArray.length; i++) {
+        for (int i = 0; i < MyData.id_.length; i++) {
             data.add(new Floor(
                     MyData.id_[i],
-                    MyData.nameArray[i]
+                    MyData.nameArray.get(i)
             ));
         }
         removedItems = new ArrayList<Integer>();
         adapter = new CustomAdapter(data);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
     }
     private class MyOnClickListener implements View.OnClickListener {
         private final Context context;
@@ -86,6 +97,47 @@ public class FloorActivity extends AppCompatActivity {
             adapter.notifyItemRemoved(selectedItemPosition);
         }*/
     }
+
+    private void getItemsByMall(final int id) {
+
+        Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().item_quantity(id);
+
+        res.enqueue(new Callback<JsonArray>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        Log.d("Main 통신", response.body().toString());
+                        Floor[] dataJson= new Gson().fromJson(response.body(), Floor[].class);
+                        Log.d("Main 결과", dataJson[0].category.get(0));
+                        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        data = new ArrayList<Floor>();
+                        for (int i = 0; i < dataJson.length; i++) {
+                            data.add(new Floor(dataJson[i].idfloor, dataJson[i].category));
+                        }
+                        removedItems = new ArrayList<Integer>();
+                        adapter = new CustomAdapter(data);
+                        recyclerView.setAdapter(adapter);
+
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
+
+    }
+
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

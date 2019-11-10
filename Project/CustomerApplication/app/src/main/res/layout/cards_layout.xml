@@ -35,6 +35,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:layout_weight="1"
+                android:paddingRight="20dp"
                 android:gravity="center"
                 android:text="Android Version"
                 android:textAppearance="?android:attr/textAppearanceMedium"
