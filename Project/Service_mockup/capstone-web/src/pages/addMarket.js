@@ -90,7 +90,7 @@ export default function SetLayout() {
             console.log(result["result"]["insertId"]);
             cookies.set("editingMarketID", result["result"]["insertId"]);
             enqueueSnackbar('매장 등록 성공!', successSnackbarOption);
-            //navigate('/marketplan');
+            navigate('/floorinfo');
         }
         catch (err) {
             enqueueSnackbar("매장 등록 실패", errorSnackbarOption);
