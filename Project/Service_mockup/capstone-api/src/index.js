@@ -53,7 +53,8 @@ async function getItemsByMall(id){
         'SELECT floor.number as floor, GROUP_CONCAT(distinct category.name) as category \
         FROM category, floor \
         WHERE floor.mall_idmall = ? \
-            AND floor_idfloor = category.floor_idfloor \
+            AND floor.idfloor = category.floor_idfloor \
+        GROUP BY floor \
         ORDER BY floor DESC', 
         [id]
     );

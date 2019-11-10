@@ -45,7 +45,7 @@ public class FloorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         toolbarTitle = intent.getStringExtra("지점");
 
-        //getItemsByMall(1);
+        getItemsByMall(1);
 
         myOnClickListener = new MyOnClickListener(this);
         /*recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -109,7 +109,7 @@ public class FloorActivity extends AppCompatActivity {
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
                         Log.d("Main 통신", response.body().toString());
                         Floor[] dataJson= new Gson().fromJson(response.body(), Floor[].class);
-                        Log.d("Main 결과", dataJson[0].category.get(0));
+                        Log.d("Main 결과", dataJson[0].category);
                         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setLayoutManager(layoutManager);
