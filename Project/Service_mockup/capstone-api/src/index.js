@@ -48,6 +48,30 @@ async function findItems() {
     );
 }
 
+async function getItemsByMall(id){
+    return await queryAsync(
+        'SELECT category.name as category, item.name as item, item.quantity as quantity \
+        FROM category, item \
+        WHERE cateogory.idcategory = item.category_idcategory \
+            AND mall_idmall = id \
+            AND mall_idmall = id'
+    );
+}
+
+// querystring 처리
+// ex. http://localhost:3000/item_quantity?id=1
+app.get('/item_quantity', async (req, res) => {
+    console.log({'/item_quantity': req.body});
+    try {
+        const result = await getItemsByMall(req.query.id);
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed! '});
+    }
+);
+
 app.get('/dashboard_quantity', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
