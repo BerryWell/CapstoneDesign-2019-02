@@ -50,6 +50,7 @@ export default function SetLayout() {
         lat: 37.504073,
         lng: 126.956887,
         addressFromLatLng: "",
+        maxFloor:0
     });
 
     const apiIsLoaded = (map, maps) => {
@@ -72,9 +73,7 @@ export default function SetLayout() {
     }
     const sendMarketInfo = async () => {
         try {
-            const { name, addressFromLatLng, address, lat, lng } = values;
-
-            await addMarketInfo(name, addressFromLatLng, address, lat, lng);
+            await addMarketInfo(values);
 
         }
         catch (err) {
@@ -111,7 +110,16 @@ export default function SetLayout() {
                     label="상세주소"
                     onChange={handleChange('address')}
                 />
-
+                <TextField
+                    id="maxFloor"
+                    label="층수"
+                    type="number"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    margin="normal"
+                    onChange={handleChange('maxFloor')}
+                />
                 <Button
                     type="submit"
                     fullWidth
