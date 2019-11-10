@@ -32,9 +32,8 @@ export async function setMarketLayout(rows, userId, size_width, size_height) {
     return res.data;
 }
 
-export async function addMarketInfo(name, address, detailAddress, lat, lng) {
-    console.log(name, address, detailAddress, lat, lng);
-    const res = await axios.post('http://localhost:3000/addmarket',
-        { "name": name, "address": address, "detailAddress": detailAddress, "lat": lat, "lng": lng });
+export async function addMarketInfo(info) {
+    console.log(info)
+    const res = await axios.post('http://localhost:3000/addmarket', info);
     return res.data;
 }

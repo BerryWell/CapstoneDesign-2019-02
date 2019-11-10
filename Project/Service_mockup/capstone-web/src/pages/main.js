@@ -12,6 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { getStores, appendStore } from '../api/stores';
 import { makeStyles } from '@material-ui/core/styles';
+import { navigate } from 'gatsby';
+
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -47,14 +49,14 @@ const IndexPage = () => {
   useEffect(() => {
     getStores().then(setStores);
   }, []);
-  const appendNewStore = async () => {
-    setStores({ showModal: true });
+  const navigateAddMarket = () => {
+    navigate('/addMarket');
 
   };
   return (
     <>
       <h1>매장 리스트</h1>
-      <Button variant="contained" color="primary" onClick={appendNewStore}>
+      <Button variant="contained" color="primary" onClick={navigateAddMarket}>
         가게 추가하기
       </Button>
       {stores.storeInfo ?

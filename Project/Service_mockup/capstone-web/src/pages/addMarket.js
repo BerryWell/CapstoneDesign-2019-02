@@ -11,6 +11,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Geocode from "react-geocode";
 import { addMarketInfo } from '../api/stores';
+import { useSnackbar } from 'notistack';
+import { navigate } from 'gatsby';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 const apiConfig = require('../config');
 
 Geocode.setApiKey(apiConfig['key']['googleMap']);
@@ -42,7 +47,15 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(3, 0, 2),
     },
 }));
+
+const successSnackbarOption = {
+    variant: 'success',
+  };
+  const errorSnackbarOption = {
+    variant: 'error',
+  };
 export default function SetLayout() {
+    const { enqueueSnackbar } = useSnackbar();
     const classes = useStyles();
     const [values, setValues] = React.useState({
         name: "",
@@ -50,6 +63,7 @@ export default function SetLayout() {
         lat: 37.504073,
         lng: 126.956887,
         addressFromLatLng: "",
+        maxFloor:0
     });
 
     const apiIsLoaded = (map, maps) => {
@@ -72,12 +86,14 @@ export default function SetLayout() {
     }
     const sendMarketInfo = async () => {
         try {
-            const { name, addressFromLatLng, address, lat, lng } = values;
-
-            await addMarketInfo(name, addressFromLatLng, address, lat, lng);
-
+            let result = await addMarketInfo(values);
+            console.log(result["result"]["insertId"]);
+            cookies.set("editingMarketID", result["result"]["insertId"]);
+            enqueueSnackbar('매장 등록 성공!', successSnackbarOption);
+            //navigate('/marketplan');
         }
         catch (err) {
+            enqueueSnackbar("매장 등록 실패", errorSnackbarOption);
             console.log(err);
         }
     }
@@ -111,7 +127,16 @@ export default function SetLayout() {
                     label="상세주소"
                     onChange={handleChange('address')}
                 />
-
+                <TextField
+                    id="maxFloor"
+                    label="층수"
+                    type="number"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    margin="normal"
+                    onChange={handleChange('maxFloor')}
+                />
                 <Button
                     type="submit"
                     fullWidth
