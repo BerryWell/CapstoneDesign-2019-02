@@ -37,10 +37,16 @@ class ViewEx extends View
     {
 
         //10*10 행렬 기준. 나중에 map.json 받은 후 파싱해서 가로 세로 구하고 파는 물건이면 1 되도록
-        int[][] arr = new int[][]{{0,0,1,1,1,1},{1,0,0,0,0,1},{1,0,0,1,0,1},{0,0,0,0,0,0}, {1,0,0,0,0,0}};
+        String[][] arr = new String[][]{
+                {"", "", "1", "1", "11", "0"},
+                {"3", "", "", "", "", "0"},
+                {"3", "", "", "2", "", "0"},
+                {"", "", "", "", "", ""},
+                {"4", "", "", "", "", ""}
+                };
 
-        int floorX = 6;
-        int floorY = 5;
+        int floorX = arr[0].length;
+        int floorY = arr.length;
         
         int viewX = this.getWidth();
         int viewY = this.getHeight();
@@ -53,7 +59,7 @@ class ViewEx extends View
         MyPaint.setStrokeWidth(viewX/(floorX + 2));
         for(int j=0;j<floorY;j++){
             for(int i=0;i<floorX;i++){
-                if(arr[j][i]==1)
+                if(!(arr[j][i].equals("")))
                     canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyPaint);
             }
         }
