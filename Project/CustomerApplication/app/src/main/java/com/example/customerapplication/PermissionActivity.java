@@ -37,7 +37,7 @@ public class PermissionActivity extends AppCompatActivity {
 
     private  boolean  checkAndRequestPermissions() {
         String [] permissions = new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION
         };
 
         List<String> listPermissionsNeeded = new ArrayList<>();

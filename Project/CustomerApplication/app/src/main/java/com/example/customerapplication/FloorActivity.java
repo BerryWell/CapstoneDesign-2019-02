@@ -71,6 +71,17 @@ public class FloorActivity extends AppCompatActivity {
         }
         @Override
         public void onClick(View v) {
+            int selectedItemPosition = recyclerView.getChildPosition(v);
+            RecyclerView.ViewHolder viewHolder
+                    = recyclerView.findViewHolderForPosition(selectedItemPosition);
+            TextView textViewFloor
+                    = viewHolder.itemView.findViewById(R.id.textViewName);
+            TextView textViewCategory
+                    = viewHolder.itemView.findViewById(R.id.textViewVersion);
+            String selectedFloor = (String) textViewFloor.getText();
+            String selectedCategory = (String) textViewCategory.getText();
+            Log.d("층수와 카테고리", selectedFloor + " " + selectedCategory);
+
             Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
             intent.putExtra("지점",toolbarTitle);
             startActivity(intent); // 다음화면으로 넘어가기

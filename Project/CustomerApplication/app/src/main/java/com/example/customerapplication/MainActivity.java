@@ -21,6 +21,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    private GpsTracker gpsTracker;
+
     private GoogleMap mMap;
 
     @Override
@@ -36,6 +38,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(final GoogleMap googleMap) {
 
         mMap = googleMap;
+
+        gpsTracker = new GpsTracker(this);
+
+        double latitude = gpsTracker.getLatitude();
+        double longitude = gpsTracker.getLongitude();
+
+        LatLng position = new LatLng(latitude, longitude);
+        Log.d("현재 위치: ",latitude + ", " + longitude);
 
         LatLng CHONGANG = new LatLng(37.503, 126.957);
         MarkerOptions markerOptions = new MarkerOptions();
@@ -57,7 +67,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap.setOnMarkerClickListener(this);
 
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        ////////////////////아래 데모 시 필히 지울 것
         mMap.moveCamera(CameraUpdateFactory.newLatLng(CHONGANG));
+        /////////////////
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
     }
 
