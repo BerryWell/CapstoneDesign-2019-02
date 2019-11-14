@@ -53,8 +53,7 @@ async function insertMember(id, password, name, address, phoneNumber) {
                 name, \
                 address, \
                 email, \
-                telephone, \
-                mall_idmall) values (?, ?, ?, ?, ?, ?, ?)',
-        [id, hash, name, address, '', phoneNumber, 1]
+                telephone) values (?, ?, ?, ?, ?, ?)',
+        [id, hash, name, address, '', phoneNumber]
     );
 }
