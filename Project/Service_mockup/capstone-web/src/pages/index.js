@@ -65,10 +65,9 @@ export default function SignIn() {
   };
   const onSubmitButtonClick = async () => {
     try {
-      console.log(values);
-      await signIn(values);
+      let resultID = await signIn(values);
       enqueueSnackbar('로그인에 성공하였습니다.', successSnackbarOption);
-      cookies.set('userId', values.id, { path: '/' });
+      cookies.set('userId', resultID.id, { path: '/' });
       navigate('/main');
     } catch (err) {
       console.log(err);

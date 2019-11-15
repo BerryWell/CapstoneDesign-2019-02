@@ -50,10 +50,10 @@ const useStyles = makeStyles(theme => ({
 
 const successSnackbarOption = {
     variant: 'success',
-  };
-  const errorSnackbarOption = {
+};
+const errorSnackbarOption = {
     variant: 'error',
-  };
+};
 export default function SetLayout() {
     const { enqueueSnackbar } = useSnackbar();
     const classes = useStyles();
@@ -63,9 +63,11 @@ export default function SetLayout() {
         lat: 37.504073,
         lng: 126.956887,
         addressFromLatLng: "",
-        maxFloor:0
-    });
+        maxFloor: 0,
+        userId: cookies.get('userId')
 
+    });
+    values.userId = cookies.get('userId');
     const apiIsLoaded = (map, maps) => {
         console.log("apiIsLoaded");
         // Get bounds by our places
