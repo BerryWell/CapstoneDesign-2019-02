@@ -60,6 +60,15 @@ async function getItemsByMall(id){
     );
 }   
 
+async function getItemsByFloor(id){
+    return await queryAsync(
+        'SELECT idcategory, name \
+        FROM cateogry \
+        WHERE category_idcategory = ?',
+        [id]
+    );
+}   
+
 // querystring 처리
 // ex. http://localhost:3000/item_quantity?id=1
 app.get('/item_quantity', async (req, res) => {
@@ -84,5 +93,19 @@ app.get('/dashboard_quantity', async (req, res) => {
     } catch (err) {
         console.log({ err });
         res.status(403).send({ error: 'Something failed!' });
+    }
+});
+
+
+app.get('/item_quantity_by_floor', async (req, res) => {
+    console.log({'/item_quantity': req.body});
+    console.log({'/item_quantity': req.query});
+    try {
+        const result = await getItemsByFloor(req.query.id);
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed! '});
     }
 });
