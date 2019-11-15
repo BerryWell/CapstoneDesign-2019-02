@@ -100,8 +100,9 @@ export default function SetLayout() {
         floorItem: [],
         shelves: [],
         shelveName: "",
-        curFloor: 1,
+        curFloor: 0,
         curShelf: "",
+        itemName: "",
         floorStructure: [],
     });
     const ref = useRef(false);
@@ -124,7 +125,7 @@ export default function SetLayout() {
     const saveShelve = () => {
         if (values.shelveName !== '') {
             values.shelves.push({ "key": values.shelveName });
-            let newFloorStructure = values.floorStructure;;
+            let newFloorStructure = values.floorStructure;
             if (!newFloorStructure[values.curFloor].children) {
                 newFloorStructure[values.curFloor].children = [];
             }
@@ -133,13 +134,25 @@ export default function SetLayout() {
         }
     }
     const saveItem = () => {
+        if (values.itemName !== '') {
+            let newFloorStructure = values.floorStructure;
+            console.log({ shelveName: values.shelveName, curShelf: newFloorStructure[values.curFloor] });
+            let shelf = newFloorStructure[values.curFloor].children.find(x => x.id === values.curShelf);
+            console.log(shelf);
+            if (shelf) {
+                if (!shelf.children) {
+                    shelf.children = []
+                }
+                shelf.children.push({ id: values.itemName, name: values.itemName });
 
+                setState({ ...values, itemName: "", floorStructure: newFloorStructure, selectedShelf: "" })
+            }
+        }
     }
 
 
 
     const getTreeItemsFromData = treeItems => {
-        console.log({ treeItems: treeItems });
         return treeItems.map(treeItemData => {
             let children = undefined;
             if (treeItemData.children && treeItemData.children.length > 0) {
@@ -167,9 +180,14 @@ export default function SetLayout() {
             </TreeView>
         );
     };
+    const changeFloor = name => event => {
+        setState({
+            ...values,
+            curFloor: event.target.value,
+            curShelf: ""
+        });
+    }
 
-
-    console.log({ floorStructurechildren: values.floorStructure, curFloor: values.curFloor, selectedfloor: values.floorStructure[values.curFloor].children });
     return (
         <>
             <h1>층별 품목 설정</h1>
@@ -181,7 +199,7 @@ export default function SetLayout() {
                             labelId="floorSelect"
                             id="floorSelect"
                             value={values.curFloor}
-                            onChange={handleChange('curFloor')}
+                            onChange={changeFloor('curFloor')}
                         >
 
                             {values.floorItem.map((element, key) => <MenuItem key={key.toString()} value={key.toString()}>{element.key}</MenuItem>)}
@@ -194,6 +212,7 @@ export default function SetLayout() {
                             name="shelveName"
                             label="가판대 이름"
                             id="shelveName"
+                            value={values.shelveName}
                             onChange={handleChange('shelveName')}
                         />
                         <Button
@@ -214,8 +233,10 @@ export default function SetLayout() {
                                 value={values.curShelf}
                                 onChange={handleChange('curShelf')}
                             >
-
-                                {values.floorStructure[values.curFloor].children ? values.floorStructure[values.curFloor].children.map((element) => <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.name}</MenuItem>) : "None"}
+                                {values.floorStructure[values.curFloor].children ?
+                                    values.floorStructure[values.curFloor].children.map((element) =>
+                                        <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.name}</MenuItem>) :
+                                    values.floorStructure[values.curFloor].children = []}
                             </Select>
                         </FormControl>
 
@@ -228,12 +249,14 @@ export default function SetLayout() {
                             name="itemName"
                             label="상품이름"
                             id="itemName"
+                            value={values.itemName}
                             onChange={handleChange('itemName')}
                         />
                         <Button
                             type="submit"
                             variant="contained"
                             color="primary"
+                            onClick={saveItem}
                         >
                             물품 추가
                     </Button>
