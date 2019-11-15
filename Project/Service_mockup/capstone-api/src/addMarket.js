@@ -11,10 +11,10 @@ async function getItemsByMall(name, address, lat, lng, max_floor, id) {
 app.post('/addmarket', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
-        const { name, address, addressFromLatLng, lat, lng, max_floor, userId } = req.body;
+        const { name, address, addressFromLatLng, lat, lng, maxFloor, userId } = req.body;
         let allAddress = addressFromLatLng + " " + address;
 
-        const result = await getItemsByMall(name, allAddress, lat, lng, max_floor, userId);
+        const result = await getItemsByMall(name, allAddress, lat, lng, maxFloor, userId);
 
         console.log(result);
         res.send({ result });
