@@ -23,3 +23,8 @@ app.post('/addmarket', async (req, res) => {
         res.status(403).send({ error: 'Something failed!' });
     }
 });
+//async function setItemList()
+app.post('/addmarketitem', async (req, res) => {
+
+    console.log(req.body);
+});

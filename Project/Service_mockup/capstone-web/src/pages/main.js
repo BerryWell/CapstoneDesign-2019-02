@@ -13,7 +13,8 @@ import Button from '@material-ui/core/Button';
 import { getStores, appendStore } from '../api/stores';
 import { makeStyles } from '@material-ui/core/styles';
 import { navigate } from 'gatsby';
-
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -46,13 +47,17 @@ const IndexPage = () => {
     lat: 37.504073,
     lng: 126.956887,
   });
+  const setCard = (data) => {
+    console.log(data);
+    setStores({ ...stores, storeInfo: data.result });
+  }
   useEffect(() => {
-    getStores().then(setStores);
+    getStores(cookies.get('userId')).then(setCard);
   }, []);
   const navigateAddMarket = () => {
     navigate('/addMarket');
-
   };
+
   return (
     <>
       <h1>매장 리스트</h1>
@@ -71,7 +76,7 @@ export default IndexPage;
 const StoreCard = ({
   name,
   address,
-  description
+  max_floor
 }) => {
   const settingMenuAnchorRef = useRef(null);
   const [settingMenuOpen, setSettingMenuOpen] = useState(false);
@@ -101,7 +106,7 @@ const StoreCard = ({
     />
     <CardContent>
       <Typography variant="body2" color="textSecondary" component="p">
-        {description}
+        {max_floor}층
       </Typography>
     </CardContent>
   </Card>;

@@ -17,8 +17,16 @@ import Grid from '@material-ui/core/Grid';
 import { FormControl } from '@material-ui/core';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { addMarketItemInfo } from '../api/stores';
+import { useSnackbar } from 'notistack';
 const cookies = new Cookies();
 
+const successSnackbarOption = {
+    variant: 'success',
+};
+const errorSnackbarOption = {
+    variant: 'error',
+};
 function MinusSquare(props) {
     return (
         <SvgIcon fontSize="inherit" {...props}>
@@ -94,7 +102,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function SetLayout() {
     const classes = useStyles();
-
+    const { enqueueSnackbar } = useSnackbar();
 
     const [values, setState] = React.useState({
         floorItem: [],
@@ -187,6 +195,18 @@ export default function SetLayout() {
             curShelf: ""
         });
     }
+    const sendData = async () => {
+        try {
+
+            let result = await addMarketItemInfo(values.floorStructure, cookies.get('editingMarketID'), cookies.get('userId'));
+
+        }
+        catch (err) {
+            enqueueSnackbar("아이템 등록 실패", errorSnackbarOption);
+            console.log(err);
+        }
+
+    }
 
     return (
         <>
@@ -268,7 +288,7 @@ export default function SetLayout() {
                     type="button"
                     variant="contained"
                     color="primary"
-                    onClick={saveShelve}
+                    onClick={sendData}
                 >
                     품목 저장
                             </Button>

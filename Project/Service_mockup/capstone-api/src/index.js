@@ -48,39 +48,39 @@ async function findItems() {
     );
 }
 
-async function getItemsByMall(id){
+async function getItemsByMall(id) {
     return await queryAsync(
         'SELECT floor.number as floor, GROUP_CONCAT(distinct category.name) as category \
         FROM category, floor \
         WHERE floor.mall_idmall = ? \
             AND floor.idfloor = category.floor_idfloor \
         GROUP BY floor \
-        ORDER BY floor DESC', 
+        ORDER BY floor DESC',
         [id]
     );
-}   
+}
 
-async function getItemsByFloor(id){
+async function getItemsByFloor(id) {
     return await queryAsync(
         'SELECT idcategory, name \
-        FROM cateogry \
+        FROM category \
         WHERE category_idcategory = ?',
         [id]
     );
-}   
+}
 
 // querystring 처리
 // ex. http://localhost:3000/item_quantity?id=1
 app.get('/item_quantity', async (req, res) => {
-    console.log({'/item_quantity': req.body});
-    console.log({'/item_quantity': req.query});
+    console.log({ '/item_quantity': req.body });
+    console.log({ '/item_quantity': req.query });
     try {
         const result = await getItemsByMall(req.query.id);
         console.log(result);
         res.send(result);
     } catch (err) {
         console.log({ err });
-        res.status(403).send({ error: 'Something failed! '});
+        res.status(403).send({ error: 'Something failed! ' });
     }
 });
 
@@ -98,14 +98,14 @@ app.get('/dashboard_quantity', async (req, res) => {
 
 
 app.get('/item_quantity_by_floor', async (req, res) => {
-    console.log({'/item_quantity': req.body});
-    console.log({'/item_quantity': req.query});
+    console.log({ '/item_quantity': req.body });
+    console.log({ '/item_quantity': req.query });
     try {
         const result = await getItemsByFloor(req.query.id);
         console.log(result);
         res.send(result);
     } catch (err) {
         console.log({ err });
-        res.status(403).send({ error: 'Something failed! '});
+        res.status(403).send({ error: 'Something failed! ' });
     }
 });
