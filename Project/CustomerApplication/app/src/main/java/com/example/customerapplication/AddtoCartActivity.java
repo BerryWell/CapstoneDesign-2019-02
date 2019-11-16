@@ -50,8 +50,9 @@ public class AddtoCartActivity extends AppCompatActivity {
         Display newDisplay = getWindowManager().getDefaultDisplay();
         int width = newDisplay.getWidth();
 
-        getItem(width);
-        /*
+        //getItem(width);
+        ArrayList<myGroup> DataList = new ArrayList<myGroup>();
+        listView = (ExpandableListView)findViewById(R.id.mylist);
         myGroup temp = new myGroup("육류");
         temp.child.add("소고기");
         temp.child.add("돼지고기");
@@ -67,7 +68,10 @@ public class AddtoCartActivity extends AppCompatActivity {
         temp.child.add("포카칩");
         temp.child.add("트윅스");
         DataList.add(temp);
-        */
+        ExpandAdapter adapter = new ExpandAdapter(getApplicationContext(),R.layout.group_row,R.layout.child_row,DataList);
+        listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
+        listView.setAdapter(adapter);
+
     }
 
     private void getItem(final int width) {

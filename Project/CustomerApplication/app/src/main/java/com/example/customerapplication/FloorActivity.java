@@ -44,25 +44,10 @@ public class FloorActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         toolbarTitle = intent.getStringExtra("지점");
-
-        getItemsByMall(1);
+        ////////////id도 intent로 받아와야 함
+        getItemsByMall(5);
 
         myOnClickListener = new MyOnClickListener(this);
-        /*recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        data = new ArrayList<Floor>();
-        for (int i = 0; i < MyData.id_.length; i++) {
-            data.add(new Floor(
-                    MyData.id_[i],
-                    MyData.nameArray.get(i)
-            ));
-        }
-        removedItems = new ArrayList<Integer>();
-        adapter = new CustomAdapter(data);
-        recyclerView.setAdapter(adapter);*/
     }
     private class MyOnClickListener implements View.OnClickListener {
         private final Context context;
@@ -74,16 +59,29 @@ public class FloorActivity extends AppCompatActivity {
             int selectedItemPosition = recyclerView.getChildPosition(v);
             RecyclerView.ViewHolder viewHolder
                     = recyclerView.findViewHolderForPosition(selectedItemPosition);
-            TextView textViewFloor
+
+            /*TextView textViewFloor
                     = viewHolder.itemView.findViewById(R.id.textViewName);
+            String selectedFloor = (String) textViewFloor.getText();
+            selectedFloor = selectedFloor.substring(0, selectedFloor.length()-1);   //1F에서 F 삭제*/
+
+            Floor selectedItem = data.get(selectedItemPosition);
+            String selectedId = selectedItem.getIdfloor();
+
             TextView textViewCategory
                     = viewHolder.itemView.findViewById(R.id.textViewVersion);
-            String selectedFloor = (String) textViewFloor.getText();
             String selectedCategory = (String) textViewCategory.getText();
-            Log.d("층수와 카테고리", selectedFloor + " " + selectedCategory);
+            Log.d("층의 id와 카테고리", selectedId + " " + selectedCategory);
+
+            String[] categoryArr = selectedCategory.split(","); //문자열을 배열로
+
+            Log.d("카테고리 1, 2", categoryArr[0] + " " + categoryArr[1]);
 
             Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
             intent.putExtra("지점",toolbarTitle);
+            intent.putExtra("층수", selectedId);
+            intent.putExtra("카테고리", categoryArr);
+
             startActivity(intent); // 다음화면으로 넘어가기
         }
         /*@Override
@@ -127,7 +125,7 @@ public class FloorActivity extends AppCompatActivity {
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         data = new ArrayList<Floor>();
                         for (int i = 0; i < dataJson.length; i++) {
-                            data.add(new Floor(dataJson[i].idfloor, dataJson[i].category));
+                            data.add(new Floor(dataJson[i].idfloor, dataJson[i].category, dataJson[i].number));
                         }
                         removedItems = new ArrayList<Integer>();
                         adapter = new CustomAdapter(data);

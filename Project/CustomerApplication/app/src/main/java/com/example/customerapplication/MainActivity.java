@@ -19,6 +19,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GpsTracker gpsTracker;
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbTest();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -76,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        //Toast.makeText(this, marker.getTitle() + "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        //builder.setTitle(" ");
 
         builder.setMessage("해당 매장으로 이동합니까?");
         builder.setNegativeButton("아니오",
@@ -93,14 +98,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
                         Intent intent = new Intent(getApplicationContext(), FloorActivity.class);
                         intent.putExtra("지점",marker.getTitle());
-                        //Log.d("markertitle",marker.getTitle());
                         startActivity(intent); // 다음화면으로 넘어가기
                     }
                 });
         builder.show();
 
-        //Toast.makeText(this, marker.getTitle() + "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
-
         return false;
+    }
+    private void dbTest() {
+        Call<String> res = Net.getInstance().getMemberFactoryIm().test();   //--------- D
+        res.enqueue(new Callback<String>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        //String users = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
+                        //여기서는 지정을 Call<지정타입> 이므로 List<User> 가 리턴타입이 됨.
+                        Log.d("Main 통신", response.body());
+                        Toast.makeText(MainActivity.this, "API 연결 성공", Toast.LENGTH_SHORT).show();
+                        // DO SOMETHING HERE with users!
+
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러 "+ response.message() + call.request().url().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
     }
 }

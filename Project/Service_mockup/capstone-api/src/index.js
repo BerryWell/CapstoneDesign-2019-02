@@ -50,11 +50,11 @@ async function findItems() {
 
 async function getItemsByMall(id){
     return await queryAsync(
-        'SELECT floor.number as floor, GROUP_CONCAT(distinct category.name) as category \
+        'SELECT floor.idfloor as id, GROUP_CONCAT(distinct category.name) as category, floor.number as floor \
         FROM category, floor \
         WHERE floor.mall_idmall = ? \
             AND floor.idfloor = category.floor_idfloor \
-        GROUP BY floor \
+        GROUP BY id, floor \
         ORDER BY floor DESC', 
         [id]
     );

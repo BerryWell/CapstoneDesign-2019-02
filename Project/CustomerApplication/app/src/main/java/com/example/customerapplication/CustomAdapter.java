@@ -39,7 +39,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
         TextView textViewName = holder.textViewName;
         TextView textViewVersion = holder.textViewVersion;
-        textViewName.setText(dataSet.get(listPosition).getIdfloor() + "F");
+        textViewName.setText(dataSet.get(listPosition).getNumber() + "F");
         textViewVersion.setText(dataSet.get(listPosition).getCategory());
         //textViewVersion.setText(dataSet.get(listPosition).getAllCategory());
     }
