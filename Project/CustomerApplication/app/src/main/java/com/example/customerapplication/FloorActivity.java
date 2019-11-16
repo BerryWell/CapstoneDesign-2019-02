@@ -44,7 +44,7 @@ public class FloorActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         toolbarTitle = intent.getStringExtra("지점");
-        ////////////id도 intent로 받아와야 함
+        ////////////Mall_id도 intent로 받아와야 함
         getItemsByMall(5);
 
         myOnClickListener = new MyOnClickListener(this);
@@ -108,9 +108,7 @@ public class FloorActivity extends AppCompatActivity {
     }
 
     private void getItemsByMall(final int id) {
-
         Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().item_quantity(id);
-
         res.enqueue(new Callback<JsonArray>() {       // --------------------------- E
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
@@ -130,7 +128,6 @@ public class FloorActivity extends AppCompatActivity {
                         removedItems = new ArrayList<Integer>();
                         adapter = new CustomAdapter(data);
                         recyclerView.setAdapter(adapter);
-
                     }else{
                         Log.d("Main 통신", "실패 1 response 내용이 없음");
                     }
@@ -138,13 +135,11 @@ public class FloorActivity extends AppCompatActivity {
                     Log.d("Main 통신", "실패 2 서버 에러");
                 }
             }
-
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
                 Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
             }
         });
-
     }
 
     /*@Override

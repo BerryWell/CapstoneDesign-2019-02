@@ -3,14 +3,19 @@ package com.example.customerapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 
+import com.example.customerapplication.item.DataItem;
 import com.example.customerapplication.item.Item;
+import com.example.customerapplication.item.SubCategoryItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,23 +23,23 @@ import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddtoCartActivity extends AppCompatActivity {
-    private ExpandableListView listView;
+    private Button btn;
+    private ExpandableListView lvCategory;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item ){
-        switch(item.getItemId()){
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    private ArrayList<DataItem> arCategory;
+    private ArrayList<SubCategoryItem> arSubCategory;
+    private ArrayList<ArrayList<SubCategoryItem>> arSubCategoryFinal;
+
+    private ArrayList<HashMap<String, String>> parentItems;
+    private ArrayList<ArrayList<HashMap<String, String>>> childItems;
+    private MyCategoriesExpandableListAdapter myCategoriesExpandableListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,76 +47,38 @@ public class AddtoCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addto_cart);
 
+        Intent intent2 = getIntent();
+        int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("장보기");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Display newDisplay = getWindowManager().getDefaultDisplay();
-        int width = newDisplay.getWidth();
+        btn = findViewById(R.id.btn_shopping);
 
-        //getItem(width);
-        ArrayList<myGroup> DataList = new ArrayList<myGroup>();
-        listView = (ExpandableListView)findViewById(R.id.mylist);
-        myGroup temp = new myGroup("육류");
-        temp.child.add("소고기");
-        temp.child.add("돼지고기");
-        temp.child.add("양고기");
-        DataList.add(temp);
-        temp = new myGroup("어류");
-        temp.child.add("고등어");
-        temp.child.add("꽁치");
-        temp.child.add("자갈치");
-        DataList.add(temp);
-        temp = new myGroup("공산품");
-        temp.child.add("치토스");
-        temp.child.add("포카칩");
-        temp.child.add("트윅스");
-        DataList.add(temp);
-        ExpandAdapter adapter = new ExpandAdapter(getApplicationContext(),R.layout.group_row,R.layout.child_row,DataList);
-        listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
-        listView.setAdapter(adapter);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddtoCartActivity.this,StoreActivity.class);
+                startActivity(intent);
+            }
+        });
 
+        setupReferences(idFloor);
     }
-
-    private void getItem(final int width) {
-
+/*
+    private void getItem() {
         Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().items();
-            //Call<List<Item>> res = Net.getInstance().getMemberFactoryIm().items();   //--------- D
-
-            res.enqueue(new Callback<JsonArray>() {       // --------------------------- E
+        res.enqueue(new Callback<JsonArray>() {       // --------------------------- E
                 @Override
                 public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
                     if(response.isSuccessful()){
-                        if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                            //List<Item> items = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
-                            //여기서는 지정을 Call<지정타입> 이므로 List<Item> 가 리턴타입이 됨.
-                            //Gson gson = new Gson();
-                            //Item resItem = gson.fromJson(response.body(),Item.class);
+                        if(response.body() != null){
                             Log.d("Main 통신", response.body().toString());
                             Item[] dataJson= new Gson().fromJson(response.body(), Item[].class);
                             Log.d("Main 결과", dataJson[0].category);
-                            String[] cateArr = new String [3];
-                            String[][]itemArr = new String[3][3];
-                            ArrayList<myGroup> DataList = new ArrayList<myGroup>();
-                            listView = (ExpandableListView)findViewById(R.id.mylist);
-                            for(int i=0;i<3;i++){
-                                cateArr[i]=dataJson[i*3].category;
-                                for(int j=0;j<3;j++){
-                                    itemArr[i][j] = dataJson[i*3+j].item;
-                                }
-                            }
-                            for(int i=0;i<3;i++){
-                                myGroup temp = new myGroup(cateArr[i]);
-                                for(int j=0;j<3;j++){
-                                    temp.child.add(itemArr[i][j]);
-                                }
-                                DataList.add(temp);
-                            }
-
-                            ExpandAdapter adapter = new ExpandAdapter(getApplicationContext(),R.layout.group_row,R.layout.child_row,DataList);
-                            listView.setIndicatorBounds(width-50, width); //이 코드를 지우면 화살표 위치가 바뀐다.
-                            listView.setAdapter(adapter);
+                            setupReferences();
                         }else{
                             Log.d("Main 통신", "실패 1 response 내용이 없음");
                         }
@@ -126,6 +93,122 @@ public class AddtoCartActivity extends AppCompatActivity {
                 }
             });
 
+        }*/
+    private void setupReferences(int id) {
+        lvCategory = findViewById(R.id.lvCategory);
+        arCategory = new ArrayList<>();
+        arSubCategory = new ArrayList<>();
+        parentItems = new ArrayList<>();
+        childItems = new ArrayList<>();
+        //중첩으로 db에서 불러오기 때문에 이해하기 어려울 수 있음... category 얻어내고 category 1개에 해당하는 item 다 담는거
+        Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().item_quantity_by_floor(id);
+        res.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                if(response.isSuccessful()){
+                    if(response.body() != null){
+                        Log.d("Main 통신", response.body().toString());
+                        DataItem[] dataJson= new Gson().fromJson(response.body(), DataItem[].class);
+                        Log.d("Main 결과", dataJson[0].categoryName);
+                        arCategory = new ArrayList<>();
+                        for (int i = 0; i < dataJson.length; i++) {
+                            //이걸 나중에 하는거지
+                            //dataJson[i].setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
+                            arCategory.add(dataJson[i]);
+                        }//for문 끗
+                        ((MyApp)getApplicationContext()).setArCategory(arCategory);
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러");
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
+
+        arCategory = ((MyApp)getApplicationContext()).getArCategory();
+        Log.d("TAG", "setupReferences: "+arCategory.size());
+        for(int i=0; i<arCategory.size(); i++){
+            Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(Integer.parseInt(arCategory.get(i).categoryId));
+            res2.enqueue(new Callback<JsonArray>() {
+                @Override
+                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                    if(response.isSuccessful()){
+                        if(response.body() != null){
+                            Log.d("Main 통신", response.body().toString());
+                            SubCategoryItem[] dataJson2= new Gson().fromJson(response.body(), SubCategoryItem[].class);
+                            Log.d("Main 결과", dataJson2[0].subCategoryName);
+                            arSubCategory = new ArrayList<>();
+                            for (int j = 0; j < dataJson2.length; j++) {
+                                dataJson2[j].setIsChecked(ConstantManager.CHECK_BOX_CHECKED_FALSE);
+                                arSubCategory.add(dataJson2[j]);
+                            }
+                            ((MyApp)getApplicationContext()).setArSubCategory(arSubCategory);
+                            //((MyApp)getApplicationContext()).getListArSubCategory().add(arSubCategory);
+                        }else{
+                            Log.d("Main 통신", "실패 1 response 내용이 없음");
+                        }
+                    }else{
+                        Log.d("Main 통신", "실패 2 서버 에러");
+                    }
+                }
+                @Override
+                public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
+                    Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+                }
+            });
+            arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
+            //arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getListArSubCategory().get(i));
         }
+
+        //dataJson[i].setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
+////
+        for(DataItem data : arCategory){
+//                        Log.i("Item id",item.id);
+            ArrayList<HashMap<String, String>> childArrayList =new ArrayList<HashMap<String, String>>();
+            HashMap<String, String> mapParent = new HashMap<String, String>();
+
+            mapParent.put(ConstantManager.Parameter.CATEGORY_ID,data.getCategoryId());
+            mapParent.put(ConstantManager.Parameter.CATEGORY_NAME,data.getCategoryName());
+
+            int countIsChecked = 0;
+            for(SubCategoryItem subCategoryItem : data.getSubCategory()) {
+
+                HashMap<String, String> mapChild = new HashMap<String, String>();
+                mapChild.put(ConstantManager.Parameter.SUB_ID,subCategoryItem.getSubId());
+                mapChild.put(ConstantManager.Parameter.SUB_CATEGORY_NAME,subCategoryItem.getSubCategoryName());
+                mapChild.put(ConstantManager.Parameter.CATEGORY_ID,subCategoryItem.getCategoryId());
+                mapChild.put(ConstantManager.Parameter.IS_CHECKED,subCategoryItem.getIsChecked());
+
+                if(subCategoryItem.getIsChecked().equalsIgnoreCase(ConstantManager.CHECK_BOX_CHECKED_TRUE)) {
+
+                    countIsChecked++;
+                }
+                childArrayList.add(mapChild);
+            }
+
+            if(countIsChecked == data.getSubCategory().size()) {
+
+                data.setIsChecked(ConstantManager.CHECK_BOX_CHECKED_TRUE);
+            }else {
+                data.setIsChecked(ConstantManager.CHECK_BOX_CHECKED_FALSE);
+            }
+
+            mapParent.put(ConstantManager.Parameter.IS_CHECKED,data.getIsChecked());
+            childItems.add(childArrayList);
+            parentItems.add(mapParent);
+
+        }
+
+        ConstantManager.parentItems = parentItems;
+        ConstantManager.childItems = childItems;
+
+        myCategoriesExpandableListAdapter = new MyCategoriesExpandableListAdapter(this,parentItems,childItems,false);
+        lvCategory.setAdapter(myCategoriesExpandableListAdapter);
+    }
 
 }

@@ -64,7 +64,8 @@ async function getItemsByFloor(id) {
     return await queryAsync(
         'SELECT idcategory, name \
         FROM category \
-        WHERE category_idfloor = ?',
+        WHERE floor_idfloor = ? \
+        ORDER BY idcategory ASC',
         [id]
     );
 }
@@ -73,7 +74,8 @@ async function getItemsByCategory(id) {
     return await queryAsync(
         'SELECT iditem, name \
         FROM item \
-        WHERE category_idcategory = ?',
+        WHERE category_idcategory = ? \
+        ORDER BY iditem ASC',
         [id]
     );
 }

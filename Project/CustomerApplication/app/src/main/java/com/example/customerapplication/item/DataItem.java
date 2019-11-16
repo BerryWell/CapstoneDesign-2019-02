@@ -2,10 +2,12 @@ package com.example.customerapplication.item;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class DataItem {
-    @SerializedName("category")
+    @SerializedName("idcategory")
     public String categoryId;
-    @SerializedName("category")
+    @SerializedName("name")
     public String categoryName;
     public String isChecked = "NO";
     public List<SubCategoryItem> subCategory;
@@ -43,5 +45,13 @@ public class DataItem {
 
     public void setSubCategory(List<SubCategoryItem> subCategory) {
         this.subCategory = subCategory;
+    }
+
+    @Override
+    public String toString() {
+        return "DataItem{" +
+                "idcategory='" + categoryId + '\'' +
+                ", name='" + categoryName + '\'' +
+                '}';
     }
 }

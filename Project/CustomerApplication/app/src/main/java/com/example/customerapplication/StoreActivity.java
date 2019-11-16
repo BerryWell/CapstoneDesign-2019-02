@@ -89,17 +89,13 @@ public class StoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        //ViewEx viewEx = new ViewEx(this);
-        //setContentView(viewEx);
-        //Display display = getWindowManager().getDefaultDisplay();
-        //Point size = new Point();
-        //display.getSize(size);
 
         setContentView(R.layout.activity_store);
 
         Intent intent2 = getIntent();
         String toolbarTitle = intent2.getStringExtra("지점");
-        int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
+        //int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
+        final String idFloor = intent2.getStringExtra("층수");
         String[] categoryNameArr = intent2.getStringArrayExtra("카테고리");
 
         Toolbar toolbar = findViewById(R.id.toolbar_store);
@@ -112,6 +108,8 @@ public class StoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddtoCartActivity.class);
+                intent.putExtra("층수", idFloor);
+                //intent.putExtra("카테고리", categoryArr);
                 startActivity(intent); // 다음화면으로 넘어가기
             }
         });
