@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export async function getStores() {
-    const res = await axios.get('http://localhost:3000/stores');
+export async function getStores(userId) {
+    const res = await axios.get('http://localhost:3000/stores?userid=' + userId);
     return res.data;
 }
 
@@ -31,9 +31,13 @@ export async function setMarketLayout(rows, userId, size_width, size_height) {
         { "rows": rows, "userId": userId, "size_width": size_width, "size_height": size_height });
     return res.data;
 }
-
 export async function addMarketInfo(info) {
     console.log(info)
     const res = await axios.post('http://localhost:3000/addmarket', info);
+    return res.data;
+}
+export async function addMarketItemInfo(info, marketId, userId) {
+    let data = { data: info, marketId: marketId, userId: userId }
+    const res = await axios.post('http://localhost:3000/addmarketitem', data);
     return res.data;
 }

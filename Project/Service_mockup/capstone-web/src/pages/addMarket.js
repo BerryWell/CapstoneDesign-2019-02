@@ -89,8 +89,9 @@ export default function SetLayout() {
     const sendMarketInfo = async () => {
         try {
             let result = await addMarketInfo(values);
-            console.log(result["result"]["insertId"]);
-            cookies.set("editingMarketID", result["result"]["insertId"]);
+            console.log(result);
+            cookies.set("editingMarketID", result.mallId);
+            cookies.set("editingMarketMaxFloor", values.maxFloor);
             enqueueSnackbar('매장 등록 성공!', successSnackbarOption);
             navigate('/floorinfo');
         }
@@ -118,6 +119,7 @@ export default function SetLayout() {
                     fullWidth
                     id="mallName"
                     label="매장명"
+                    value={values.name}
                     onChange={handleChange('name')}
                 />
                 <TextField
@@ -127,6 +129,7 @@ export default function SetLayout() {
                     fullWidth
                     id="address"
                     label="상세주소"
+                    value={values.address}
                     onChange={handleChange('address')}
                 />
                 <TextField

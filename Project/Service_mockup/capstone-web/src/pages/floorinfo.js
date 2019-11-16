@@ -1,18 +1,32 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import "react-table-drag-select/style.css";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
-import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import SvgIcon from '@material-ui/core/SvgIcon';
+import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import { useSpring, animated } from 'react-spring/web.cjs'; // web.cjs is required for IE 11 support
-//import { TransitionProps } from '@material-ui/core/transitions';
-import { Editors } from 'react-data-grid-addons';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Grid from '@material-ui/core/Grid';
+import { FormControl } from '@material-ui/core';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { addMarketItemInfo } from '../api/stores';
+import { useSnackbar } from 'notistack';
+const cookies = new Cookies();
+
+const successSnackbarOption = {
+    variant: 'success',
+};
+const errorSnackbarOption = {
+    variant: 'error',
+};
 function MinusSquare(props) {
     return (
         <SvgIcon fontSize="inherit" {...props}>
@@ -73,21 +87,42 @@ const StyledTreeItem = withStyles(theme => ({
     },
 }))(props => <TreeItem {...props} TransitionComponent={TransitionComponent} />);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     root: {
+        margin: theme.spacing(1),
         height: 1000,
         flexGrow: 1,
         maxWidth: 400,
     },
-});
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 400,
+    },
+}));
 
 export default function SetLayout() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [values, setState] = React.useState({
-
+        floorItem: [],
+        shelves: [],
+        shelveName: "",
+        curFloor: 0,
+        curShelf: "",
+        itemName: "",
+        floorStructure: [],
     });
+    const ref = useRef(false);
+    if (!ref.current) {
+        let maxFloor = cookies.get("editingMarketMaxFloor");
+        for (let i = 1; i <= maxFloor; i++) {
+            values.floorItem.push({ key: i.toString() });
+            values.floorStructure.push({ id: i.toString(), name: i.toString() });
+        }
+        ref.current = true;
 
+    }
     const handleChange = name => event => {
         setState({
             ...values,
@@ -95,75 +130,206 @@ export default function SetLayout() {
         });
     };
 
-    React.useEffect(() => {
+    const saveShelve = () => {
+        if (values.shelveName !== '') {
+            values.shelves.push({ "key": values.shelveName });
+            let newFloorStructure = values.floorStructure;
+            console.log(newFloorStructure[values.curFloor].children);
+            if (!newFloorStructure[values.curFloor].children) {
+                newFloorStructure[values.curFloor].children = [];
+            }
+            newFloorStructure[values.curFloor].children.push({ id: values.shelveName, name: values.shelveName });
+            setState({ ...values, shelveName: "", shelves: values.shelves, floorStructure: newFloorStructure });
+        }
+    }
+    const saveItem = () => {
+        if (values.itemName !== '') {
+            let newFloorStructure = values.floorStructure;
+            console.log({ shelveName: values.shelveName, curShelf: newFloorStructure[values.curFloor] });
+            let shelf = newFloorStructure[values.curFloor].children.find(x => x.id === values.curShelf);
+            console.log(shelf);
+            if (shelf) {
+                if (!shelf.children) {
+                    shelf.children = []
+                }
+                shelf.children.push({ id: values.itemName, name: values.itemName });
+
+                setState({ ...values, itemName: "", floorStructure: newFloorStructure, selectedShelf: "" })
+            }
+        }
+    }
 
 
-    }, []);
 
+    const getTreeItemsFromData = treeItems => {
+        return treeItems.map(treeItemData => {
+            let children = undefined;
+            console.log(treeItemData.children);
+            if (treeItemData.children && treeItemData.children.length > 0) {
+                children = getTreeItemsFromData(treeItemData.children);
+            }
+            return (
+                <TreeItem
+                    key={treeItemData.id}
+                    nodeId={treeItemData.id}
+                    label={treeItemData.name}
+                    children={children}
+                />
+            );
+        });
+
+
+    };
+    const DataTreeView = ({ treeItems }) => {
+        return (
+            <TreeView
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+            >
+                {getTreeItemsFromData(treeItems)}
+            </TreeView>
+        );
+    };
+    const changeFloor = name => event => {
+        setState({
+            ...values,
+            curFloor: event.target.value,
+            curShelf: ""
+        });
+    }
+    const sendData = async () => {
+        try {
+            console.log(values.floorStructure);
+            let result = await addMarketItemInfo(values.floorStructure, cookies.get('editingMarketID'), cookies.get('userId'));
+
+        }
+        catch (err) {
+            enqueueSnackbar("아이템 등록 실패", errorSnackbarOption);
+            console.log(err);
+        }
+
+    }
     return (
         <>
             <h1>층별 품목 설정</h1>
-            <Grid container >
-                <Grid item >
-                    <TextField
-                        variant="outlined"
-                        required
-                        name="itemName"
-                        label="물품 이름"
-                        id="itemName"
-                        onChange={handleChange('itemName')}
-                    />
-                    <TextField
-                        variant="outlined"
-                        required
-                        name="categoryName"
-                        label="가판대 이름"
-                        id="category"
-                        onChange={handleChange('itemName')}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                    >
-                        물품 추가
+            <form className={classes.formControl} onSubmit={e => e.preventDefault()}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <InputLabel id="FloorSelectLabel">층</InputLabel>
+                        <Select
+                            labelId="floorSelect"
+                            id="floorSelect"
+                            value={values.curFloor}
+                            onChange={changeFloor('curFloor')}
+                        >
+
+                            {values.floorItem.map((element, key) => <MenuItem key={key.toString()} value={key.toString()}>{element.key}</MenuItem>)}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            variant="outlined"
+                            required
+                            name="shelveName"
+                            label="가판대 이름"
+                            id="shelveName"
+                            value={values.shelveName}
+                            onChange={handleChange('shelveName')}
+                        />
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={saveShelve}
+                        >
+                            가판대 저장
                     </Button>
-                    <Button
-                        type="button"
-                        variant="contained"
-                        color="primary"
-                    >
-                        저장
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputLabel id="FloorSelectLabel">가판대</InputLabel>
+                        <FormControl className={classes.formControl}>
+                            <Select
+                                labelId="shelveSelect"
+                                id="shelveSelect"
+                                value={values.curShelf}
+                                onChange={handleChange('curShelf')}
+                            >
+                                {values.floorStructure[values.curFloor].children ?
+                                    values.floorStructure[values.curFloor].children.map((element) =>
+                                        <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.name}</MenuItem>) :
+                                    <></>}
+                            </Select>
+                        </FormControl>
+
+                    </Grid>
+                    <Grid item xs={12}>
+
+                        <TextField
+                            variant="outlined"
+                            required
+                            name="itemName"
+                            label="상품이름"
+                            id="itemName"
+                            value={values.itemName}
+                            onChange={handleChange('itemName')}
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            onClick={saveItem}
+                        >
+                            물품 추가
                     </Button>
 
+                    </Grid>
+                    <DataTreeView treeItems={values.floorStructure} />
                 </Grid>
-                <Grid item>
-                    <TreeView
-                        className={classes.root}
-                        defaultExpanded={['1']}
-                        defaultCollapseIcon={<MinusSquare />}
-                        defaultExpandIcon={<PlusSquare />}
-                        defaultEndIcon={<CloseSquare />}
-                    >
-                        <StyledTreeItem nodeId="1" label="1층">
-                            <StyledTreeItem nodeId="2" label="육류" />
-                            <StyledTreeItem nodeId="3" label="어류"/>
-                            <StyledTreeItem nodeId="4" label="통조림" />
-                            <StyledTreeItem nodeId="5" label="옷" />
-                        </StyledTreeItem>
-                        
-                        <StyledTreeItem nodeId="6" label="2층">
-                            <StyledTreeItem nodeId="7" label="장난감" />
-                            <StyledTreeItem nodeId="8" label="식기"/>
-                            <StyledTreeItem nodeId="9" label="가구" />
-                            <StyledTreeItem nodeId="10" label="가전제품" />
-                            <StyledTreeItem nodeId="11" label="애완동물" />
-                        </StyledTreeItem>
-                    </TreeView>
-                </Grid>
-            </Grid>
+                <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    onClick={sendData}
+                >
+                    품목 저장
+                            </Button>
+            </form>
+
+
 
 
         </>
     );
 }
+/**
+ *
+            <TreeView
+                className={classes.root}
+                defaultExpanded={['1']}
+                defaultCollapseIcon={<MinusSquare />}
+                defaultExpandIcon={<PlusSquare />}
+                defaultEndIcon={<CloseSquare />}
+            >
+                {values.floorItem.map((element, key) =>
+                    <StyledTreeItem key={key} nodeId={key.toString()} label={element.key}>
+                    </StyledTreeItem>
+                )}
+
+            </TreeView>
+ *
+ * <StyledTreeItem nodeId="1" label="1층">
+                    <StyledTreeItem nodeId="2" label="육류" />
+                    <StyledTreeItem nodeId="3" label="어류" />
+                    <StyledTreeItem nodeId="4" label="통조림" />
+                    <StyledTreeItem nodeId="5" label="옷" />
+                </StyledTreeItem>
+
+                <StyledTreeItem nodeId="6" label="2층">
+                    <StyledTreeItem nodeId="7" label="장난감" />
+                    <StyledTreeItem nodeId="8" label="식기" />
+                    <StyledTreeItem nodeId="9" label="가구" />
+                    <StyledTreeItem nodeId="10" label="가전제품" />
+                    <StyledTreeItem nodeId="11" label="애완동물" />
+                </StyledTreeItem>
+ *
+ */

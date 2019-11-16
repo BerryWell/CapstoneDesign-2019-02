@@ -1,4 +1,5 @@
 const app = require('./app').app;
+const { queryAsync } = require('./connection');
 
 const stores = [
     {
@@ -8,9 +9,21 @@ const stores = [
         description: '가게 1입니다.',
     },
 ];
-
-app.get('/stores', (req, res) => {
-    responseStores(res);
+async function getMallById(userId) {
+    return await queryAsync('SELECT name, address, max_floor \
+    FROM mall \
+    WHERE member_manager_idmember_manager = ?', [userId]);
+}
+app.get('/stores', async (req, res) => {
+    try {
+        const result = await getMallById(req.query.userid);
+        console.log(result);
+        res.send({ result });
+    }
+    catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed!' });
+    }
 });
 app.post('/store', (req, res) => {
     stores.push(req.body);
