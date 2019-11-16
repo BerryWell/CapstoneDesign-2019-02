@@ -54,7 +54,7 @@ async function getItemsByMall(id) {
         FROM category, floor \
         WHERE floor.mall_idmall = ? \
             AND floor.idfloor = category.floor_idfloor \
-        GROUP BY floor \
+        GROUP BY id, floor \
         ORDER BY floor DESC',
         [id]
     );
