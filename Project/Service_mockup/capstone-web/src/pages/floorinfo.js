@@ -134,6 +134,7 @@ export default function SetLayout() {
         if (values.shelveName !== '') {
             values.shelves.push({ "key": values.shelveName });
             let newFloorStructure = values.floorStructure;
+            console.log(newFloorStructure[values.curFloor].children);
             if (!newFloorStructure[values.curFloor].children) {
                 newFloorStructure[values.curFloor].children = [];
             }
@@ -163,6 +164,7 @@ export default function SetLayout() {
     const getTreeItemsFromData = treeItems => {
         return treeItems.map(treeItemData => {
             let children = undefined;
+            console.log(treeItemData.children);
             if (treeItemData.children && treeItemData.children.length > 0) {
                 children = getTreeItemsFromData(treeItemData.children);
             }
@@ -207,7 +209,6 @@ export default function SetLayout() {
         }
 
     }
-
     return (
         <>
             <h1>층별 품목 설정</h1>
@@ -256,7 +257,7 @@ export default function SetLayout() {
                                 {values.floorStructure[values.curFloor].children ?
                                     values.floorStructure[values.curFloor].children.map((element) =>
                                         <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.name}</MenuItem>) :
-                                    values.floorStructure[values.curFloor].children = []}
+                                    <></>}
                             </Select>
                         </FormControl>
 
