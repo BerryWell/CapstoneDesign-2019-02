@@ -64,6 +64,15 @@ async function getItemsByFloor(id) {
     return await queryAsync(
         'SELECT idcategory, name \
         FROM category \
+        WHERE category_idfloor = ?',
+        [id]
+    );
+}
+
+async function getItemsByCategory(id) {
+    return await queryAsync(
+        'SELECT iditem, name \
+        FROM item \
         WHERE category_idcategory = ?',
         [id]
     );
@@ -102,6 +111,19 @@ app.get('/item_quantity_by_floor', async (req, res) => {
     console.log({ '/item_quantity': req.query });
     try {
         const result = await getItemsByFloor(req.query.id);
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed! ' });
+    }
+});
+
+app.get('/item_quantity_by_category', async (req, res) => {
+    console.log({ '/item_quantity': req.body });
+    console.log({ '/item_quantity': req.query });
+    try {
+        const result = await getItemsByCategory(req.query.id);
         console.log(result);
         res.send(result);
     } catch (err) {
