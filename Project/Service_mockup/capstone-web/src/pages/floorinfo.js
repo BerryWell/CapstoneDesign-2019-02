@@ -199,7 +199,7 @@ export default function SetLayout() {
     }
     const sendData = async () => {
         try {
-
+            console.log(values.floorStructure);
             let result = await addMarketItemInfo(values.floorStructure, cookies.get('editingMarketID'), cookies.get('userId'));
 
         }
