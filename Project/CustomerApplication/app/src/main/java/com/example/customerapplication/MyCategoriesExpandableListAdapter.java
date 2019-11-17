@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MyCategoriesExpandableListAdapter extends BaseExpandableListAdapter {
-    private final ArrayList<ArrayList<HashMap<String, String>>> childItems;
-    private ArrayList<HashMap<String, String>> parentItems;
+    public static ArrayList<ArrayList<HashMap<String, String>>> childItems = null;
+    public static ArrayList<HashMap<String, String>> parentItems;
     //    private final ArrayList<HashMap<String, String>> childItems;
     private LayoutInflater inflater;
     private Activity activity;

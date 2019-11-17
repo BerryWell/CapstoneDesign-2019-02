@@ -10,6 +10,8 @@ public class SubCategoryItem {
     public String subId;
     @SerializedName("name")
     public String subCategoryName;
+    @SerializedName("category_idcategory")
+    public String parentCategoryId;
     public String isChecked;
 
     /*public SubCategoryItem(String iditem, String name){
@@ -50,11 +52,12 @@ public class SubCategoryItem {
 
     @Override
     public String toString() {
-        return "DataItem{" +
+        return "SubCategoryItem{" +
                 /*"category_idcategory='" + categoryId + '\'' +
                 ", iditem='" + subId + '\'' +*/
                 "iditem='" + categoryId + '\'' +
                 ", name='" + subCategoryName + '\'' +
+                ", category_idcategory='" + parentCategoryId + '\'' +
                 '}';
     }
 }

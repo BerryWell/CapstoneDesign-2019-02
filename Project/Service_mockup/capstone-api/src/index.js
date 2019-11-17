@@ -64,18 +64,16 @@ async function getItemsByFloor(id) {
     return await queryAsync(
         'SELECT idcategory, name \
         FROM category \
-        WHERE floor_idfloor = ? \
-        ORDER BY idcategory ASC',
+        WHERE floor_idfloor = ?',
         [id]
     );
 }
 
 async function getItemsByCategory(id) {
     return await queryAsync(
-        'SELECT iditem, name \
+        'SELECT iditem, name, category_idcategory \
         FROM item \
-        WHERE category_idcategory = ? \
-        ORDER BY iditem ASC',
+        WHERE floor_idfloor = ?',
         [id]
     );
 }

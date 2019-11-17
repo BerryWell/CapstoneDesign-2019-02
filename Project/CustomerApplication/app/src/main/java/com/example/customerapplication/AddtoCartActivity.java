@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.example.customerapplication.item.DataItem;
 import com.example.customerapplication.item.Item;
@@ -35,7 +36,7 @@ public class AddtoCartActivity extends AppCompatActivity {
 
     private ArrayList<DataItem> arCategory;
     private ArrayList<SubCategoryItem> arSubCategory;
-    private ArrayList<ArrayList<SubCategoryItem>> arSubCategoryFinal;
+    private ArrayList<SubCategoryItem> savedArSubCategory;
 
     private ArrayList<HashMap<String, String>> parentItems;
     private ArrayList<ArrayList<HashMap<String, String>>> childItems;
@@ -60,40 +61,28 @@ public class AddtoCartActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddtoCartActivity.this,StoreActivity.class);
-                startActivity(intent);
-            }
-        });
+                for (int i = 0; i < MyCategoriesExpandableListAdapter.parentItems.size(); i++ ){
+                    for (int j = 0; j < MyCategoriesExpandableListAdapter.childItems.get(i).size(); j++ ){
+                        String isChildChecked = MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.IS_CHECKED);
+                        if (isChildChecked.equalsIgnoreCase(ConstantManager.CHECK_BOX_CHECKED_TRUE))
+                        {
+                            //item의 name, iditem 출력
+                            Toast.makeText(AddtoCartActivity.this
+                                    , MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.SUB_CATEGORY_NAME)
+                                    + " " + MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.CATEGORY_ID)
+                                    , Toast.LENGTH_SHORT).show();
 
-        setupReferences(idFloor);
-    }
-/*
-    private void getItem() {
-        Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().items();
-        res.enqueue(new Callback<JsonArray>() {       // --------------------------- E
-                @Override
-                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
-                    if(response.isSuccessful()){
-                        if(response.body() != null){
-                            Log.d("Main 통신", response.body().toString());
-                            Item[] dataJson= new Gson().fromJson(response.body(), Item[].class);
-                            Log.d("Main 결과", dataJson[0].category);
-                            setupReferences();
-                        }else{
-                            Log.d("Main 통신", "실패 1 response 내용이 없음");
                         }
-                    }else{
-                        Log.d("Main 통신", "실패 2 서버 에러");
                     }
                 }
+                //Toast.makeText(MainActivity.this, "API 연결 성공", Toast.LENGTH_SHORT).show();
+                /*Intent intent = new Intent(AddtoCartActivity.this,StoreActivity.class);
+                startActivity(intent);*/
+            }
+        });
+        setupReferences(idFloor);
+    }
 
-                @Override
-                public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
-                    Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
-                }
-            });
-
-        }*/
     private void setupReferences(int id) {
         lvCategory = findViewById(R.id.lvCategory);
         arCategory = new ArrayList<>();
@@ -132,39 +121,49 @@ public class AddtoCartActivity extends AppCompatActivity {
 
         arCategory = ((MyApp)getApplicationContext()).getArCategory();
         Log.d("TAG", "setupReferences: "+arCategory.size());
-        for(int i=0; i<arCategory.size(); i++){
-            Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(Integer.parseInt(arCategory.get(i).categoryId));
-            res2.enqueue(new Callback<JsonArray>() {
-                @Override
-                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                    if(response.isSuccessful()){
-                        if(response.body() != null){
-                            Log.d("Main 통신", response.body().toString());
-                            SubCategoryItem[] dataJson2= new Gson().fromJson(response.body(), SubCategoryItem[].class);
-                            Log.d("Main 결과", dataJson2[0].subCategoryName);
-                            arSubCategory = new ArrayList<>();
-                            for (int j = 0; j < dataJson2.length; j++) {
-                                dataJson2[j].setIsChecked(ConstantManager.CHECK_BOX_CHECKED_FALSE);
-                                arSubCategory.add(dataJson2[j]);
-                            }
-                            ((MyApp)getApplicationContext()).setArSubCategory(arSubCategory);
-                            //((MyApp)getApplicationContext()).getListArSubCategory().add(arSubCategory);
-                        }else{
-                            Log.d("Main 통신", "실패 1 response 내용이 없음");
-                        }
-                    }else{
-                        Log.d("Main 통신", "실패 2 서버 에러");
-                    }
-                }
-                @Override
-                public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
-                    Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
-                }
-            });
-            arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
-            //arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getListArSubCategory().get(i));
-        }
 
+        Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(id);
+        res2.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                if(response.isSuccessful()){
+                    if(response.body() != null){
+                        Log.d("Main 통신", response.body().toString());
+                        SubCategoryItem[] dataJson2= new Gson().fromJson(response.body(), SubCategoryItem[].class);
+                        Log.d("Main 결과", dataJson2[0].subCategoryName);
+                        arSubCategory = new ArrayList<>();
+                        for (int j = 0; j < dataJson2.length; j++) {
+                            dataJson2[j].setIsChecked(ConstantManager.CHECK_BOX_CHECKED_FALSE);
+                            arSubCategory.add(dataJson2[j]);
+                        }
+                        ((MyApp)getApplicationContext()).setArSubCategory(arSubCategory);
+                        //((MyApp)getApplicationContext()).getListArSubCategory().add(arSubCategory);
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러");
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
+        //arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
+        //arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getListArSubCategory().get(i));
+
+        savedArSubCategory = ((MyApp)getApplicationContext()).getArSubCategory();
+
+        for(int i=0; i<arCategory.size(); i++){
+            arSubCategory = new ArrayList<>();
+            for(int j=0; j<savedArSubCategory.size();j++){
+                if(arCategory.get(i).getCategoryId().equals(savedArSubCategory.get(j).parentCategoryId)){
+                    arSubCategory.add(savedArSubCategory.get(j));
+                }
+            }
+            arCategory.get(i).setSubCategory(arSubCategory);
+        }
         //dataJson[i].setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
 ////
         for(DataItem data : arCategory){
