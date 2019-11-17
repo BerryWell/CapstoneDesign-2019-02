@@ -9,11 +9,8 @@ import CsvParse from 'react-csv-reader'
 //import SEO from '../components/seo'
 
 const keys = [
-  "header1",
-  "header2",
-  "header3",
-  "header4",
-  "header5",
+  "category",
+  "item"
 ]
 
 class Form extends React.Component {
@@ -22,9 +19,15 @@ class Form extends React.Component {
     this.state = { value: '' };
   }
 
-  onChangeHandler = event => {
-    console.log({"event":event.target.files[0]});
+  handleData = data => {
+    this.setState({ data });
+    console.log({data});
   }
+
+  handleError = error => {
+    console.log(error);
+  }
+
   render() {
     return (
       <>
@@ -50,10 +53,14 @@ class Form extends React.Component {
 
         <CsvParse
           keys={keys}
+          label="Upload the csv file."
           onDataUploaded={this.handleData}
+          //onFileLoaded={this.handleFile}
           onError={this.handleError}
           render={onChange => <input type="file" onChange={onChange} />}
         />
+
+
       </>
     );
   }
