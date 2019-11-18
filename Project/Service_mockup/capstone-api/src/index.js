@@ -131,3 +131,26 @@ app.get('/item_quantity_by_category', async (req, res) => {
         res.status(403).send({ error: 'Something failed! ' });
     }
 });
+
+async function uploadItems(item_name, quantity) {
+    return await queryAsync(
+        'INSERT ddd \
+        INTO item\
+        WHERE ',
+        [item_name], [quantity]
+    );
+}
+
+
+app.get('/uploadItems', async (req, res) => {
+    console.log({ '/uploadItems': req.body });
+    console.log({ '/uploadItems': req.query });
+    try {
+        const result = await uploadItems(req.query.item_name, req.query.quantity);
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed! ' });
+    }
+});
