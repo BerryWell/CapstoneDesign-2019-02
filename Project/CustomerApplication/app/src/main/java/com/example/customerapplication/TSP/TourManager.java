@@ -20,4 +20,8 @@ public class TourManager {
     public static int numberOfCities(){
         return destinationCities.size();
     }
+
+    public static void clearArrayList(){
+        destinationCities = new ArrayList<City>();
+    }
 }

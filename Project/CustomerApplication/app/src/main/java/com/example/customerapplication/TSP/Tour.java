@@ -79,6 +79,7 @@ public class Tour {
         return tour.size();
     }
 
+
     @Override
     public String toString() {
         String geneString = "|";

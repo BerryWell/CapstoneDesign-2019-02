@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,28 +63,31 @@ public class AddtoCartActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ArrayList<String> shoppingList = new ArrayList();
                 for (int i = 0; i < MyCategoriesExpandableListAdapter.parentItems.size(); i++ ){
                     for (int j = 0; j < MyCategoriesExpandableListAdapter.childItems.get(i).size(); j++ ){
                         String isChildChecked = MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.IS_CHECKED);
                         if (isChildChecked.equalsIgnoreCase(ConstantManager.CHECK_BOX_CHECKED_TRUE))
                         {
-                            //item의 name, iditem 출력
-                            Toast.makeText(AddtoCartActivity.this
+                            /*Toast.makeText(AddtoCartActivity.this
                                     , MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.SUB_CATEGORY_NAME)
                                     + " " + MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.CATEGORY_ID)
-                                    , Toast.LENGTH_SHORT).show();
-
+                                    , Toast.LENGTH_SHORT).show();*/
+                            shoppingList.add(MyCategoriesExpandableListAdapter.childItems.get(i).get(j).get(ConstantManager.Parameter.CATEGORY_ID));
                         }
                     }
                 }
-                //Toast.makeText(MainActivity.this, "API 연결 성공", Toast.LENGTH_SHORT).show();
-                /*Intent intent = new Intent(AddtoCartActivity.this,StoreActivity.class);
-                startActivity(intent);*/
+                if(!shoppingList.isEmpty()){
+                    Intent intent = new Intent(getApplicationContext(), TSPActivity.class);
+                    intent.putExtra("리스트", shoppingList);
+                    //intent.putExtra("카테고리", categoryArr);
+                    startActivity(intent); // 다음화면으로 넘어가기
+                }
+
             }
         });
         setupReferences(idFloor);
     }
-
     private void setupReferences(int id) {
         lvCategory = findViewById(R.id.lvCategory);
         arCategory = new ArrayList<>();
@@ -90,8 +95,44 @@ public class AddtoCartActivity extends AppCompatActivity {
         parentItems = new ArrayList<>();
         childItems = new ArrayList<>();
         //중첩으로 db에서 불러오기 때문에 이해하기 어려울 수 있음... category 얻어내고 category 1개에 해당하는 item 다 담는거
-        Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().item_quantity_by_floor(id);
-        res.enqueue(new Callback<JsonArray>() {
+        final Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().item_quantity_by_floor(id);
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    Response<JsonArray> response = res.execute();
+                    DataItem[] dataJson= new Gson().fromJson(response.body(), DataItem[].class);
+                    Log.d("Main 결과", dataJson[0].categoryName);
+                    arCategory = new ArrayList<>();
+                    for (int i = 0; i < dataJson.length; i++) {
+                        arCategory.add(dataJson[i]);
+                    }//for문 끗
+                    ((MyApp)getApplicationContext()).setArCategory(arCategory);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        try {
+            Thread.sleep(700);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        /*Call<JsonArray> res = Net.getInstance().getMemberFactoryIm().item_quantity_by_floor(id);
+        try {
+            Response<JsonArray> response = res.execute();
+            DataItem[] dataJson= new Gson().fromJson(response.body(), DataItem[].class);
+            Log.d("Main 결과", dataJson[0].categoryName);
+            arCategory = new ArrayList<>();
+            for (int i = 0; i < dataJson.length; i++) {
+                arCategory.add(dataJson[i]);
+            }//for문 끗
+            ((MyApp)getApplicationContext()).setArCategory(arCategory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        /*res.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if(response.isSuccessful()){
@@ -105,6 +146,7 @@ public class AddtoCartActivity extends AppCompatActivity {
                             //dataJson[i].setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
                             arCategory.add(dataJson[i]);
                         }//for문 끗
+
                         ((MyApp)getApplicationContext()).setArCategory(arCategory);
                     }else{
                         Log.d("Main 통신", "실패 1 response 내용이 없음");
@@ -117,13 +159,52 @@ public class AddtoCartActivity extends AppCompatActivity {
             public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
                 Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
             }
-        });
+        });*/
 
         arCategory = ((MyApp)getApplicationContext()).getArCategory();
         Log.d("TAG", "setupReferences: "+arCategory.size());
 
-        Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(id);
-        res2.enqueue(new Callback<JsonArray>() {
+        final Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(id);
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    Response<JsonArray> response = res2.execute();
+                    SubCategoryItem[] dataJson2= new Gson().fromJson(response.body(), SubCategoryItem[].class);
+                    arSubCategory = new ArrayList<>();
+                    for (int j = 0; j < dataJson2.length; j++) {
+                        dataJson2[j].setIsChecked(ConstantManager.CHECK_BOX_CHECKED_FALSE);
+                        arSubCategory.add(dataJson2[j]);
+                    }
+                    ((MyApp)getApplicationContext()).setArSubCategory(arSubCategory);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        try {
+            Thread.sleep(700);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        /*Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(id);
+
+        try {
+            Response<JsonArray> response = res2.execute();
+            SubCategoryItem[] dataJson2= new Gson().fromJson(response.body(), SubCategoryItem[].class);
+            arSubCategory = new ArrayList<>();
+            for (int j = 0; j < dataJson2.length; j++) {
+                dataJson2[j].setIsChecked(ConstantManager.CHECK_BOX_CHECKED_FALSE);
+                arSubCategory.add(dataJson2[j]);
+            }
+            ((MyApp)getApplicationContext()).setArSubCategory(arSubCategory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+*/
+        /*res2.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if(response.isSuccessful()){
@@ -149,9 +230,7 @@ public class AddtoCartActivity extends AppCompatActivity {
             public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
                 Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
             }
-        });
-        //arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
-        //arCategory.get(i).setSubCategory(((MyApp)getApplicationContext()).getListArSubCategory().get(i));
+        });*/
 
         savedArSubCategory = ((MyApp)getApplicationContext()).getArSubCategory();
 
@@ -164,10 +243,8 @@ public class AddtoCartActivity extends AppCompatActivity {
             }
             arCategory.get(i).setSubCategory(arSubCategory);
         }
-        //dataJson[i].setSubCategory(((MyApp)getApplicationContext()).getArSubCategory());
 ////
         for(DataItem data : arCategory){
-//                        Log.i("Item id",item.id);
             ArrayList<HashMap<String, String>> childArrayList =new ArrayList<HashMap<String, String>>();
             HashMap<String, String> mapParent = new HashMap<String, String>();
 

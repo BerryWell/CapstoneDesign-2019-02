@@ -15,8 +15,8 @@
             android:gravity="center|right">
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:visibility="visible"
                 android:background="@mipmap/icon_dot"/>
         </LinearLayout>

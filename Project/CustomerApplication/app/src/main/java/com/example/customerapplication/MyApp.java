@@ -26,6 +26,11 @@ public class MyApp extends Application {
     public void setArCategory(ArrayList<DataItem> item) {
         this.arCategory = item;
     }
+    public boolean isArCategory(){
+        if(arCategory==null)
+            return false;
+        return true;
+    }
     public ArrayList<SubCategoryItem> getArSubCategory() {
         if (arSubCategory == null) arSubCategory = new ArrayList<>();
         return arSubCategory;

@@ -20,12 +20,26 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 class ViewEx extends View
 {
+    int floorX;
+    int floorY;
+    int viewX;
+    int viewY;
+    /*int startX=0;
+    int startY=0;
+    int stopX=0;
+    int stopY=0;*/
+    ArrayList<Integer> citiesX;
+    ArrayList<Integer> citiesY;
+
+    public static String[][] arr ;
     public ViewEx(Context context)
     {
         super(context);
@@ -33,23 +47,38 @@ class ViewEx extends View
     public ViewEx(Context context, AttributeSet att){
         super(context, att);
     }
+
+    /*public void drawCityPath(int x1, int y1, int x2, int y2){
+        startX = viewX*(x1+1)/(floorX+1);
+        startY = (viewY-viewX)/2 + viewX*(y1+1)/(floorX+1);
+        stopX = viewX*(x2+1)/(floorX+1);
+        stopY = (viewY-viewX)/2 + viewX*(y2+1)/(floorX+1);
+        invalidate();
+    }*/
+    public void drawCityPath(ArrayList x, ArrayList y){
+        citiesX = y;
+        citiesY = x;
+        invalidate();
+    }
+
     public void onDraw(Canvas canvas)
     {
-
         //10*10 행렬 기준. 나중에 map.json 받은 후 파싱해서 가로 세로 구하고 파는 물건이면 1 되도록
-        String[][] arr = new String[][]{
-                {"", "", "1", "1", "11", "0"},
+        arr = new String[][]{
+                {"", "", "1", "1", "6", "0"},
                 {"3", "", "", "", "", "0"},
-                {"3", "", "", "2", "", "0"},
+                {"3", "", "", "2", "", "5"},
                 {"", "", "", "", "", ""},
                 {"4", "", "", "", "", ""}
                 };
 
-        int floorX = arr[0].length;
-        int floorY = arr.length;
-        
-        int viewX = this.getWidth();
-        int viewY = this.getHeight();
+        floorX = arr[0].length;
+        floorY = arr.length;
+
+        viewX = this.getWidth();
+        viewY = this.getHeight();
+
+        super.onDraw(canvas);
 
         canvas.drawColor(Color.WHITE);
         //canvas.drawColor(getResources().getColor(R.color.Ivory));
@@ -77,7 +106,24 @@ class ViewEx extends View
         mapEdge.lineTo(0,(viewY+viewX)/2);
         canvas.drawPath(mapEdge, mapEdgePaint);
 
+        Paint LinePaint = new Paint();
+        LinePaint.setColor(Color.RED);
+        LinePaint.setStrokeWidth(10f);
+        LinePaint.setStyle(Paint.Style.STROKE);
+
+        Path tspPath = new Path();
+       // canvas.drawLine(startX, startY, stopX, stopY, LinePaint);
+        if(citiesX!=null){
+            tspPath.moveTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
+            for(int i=0;i<citiesX.size();i++){
+                tspPath.lineTo(viewX*(citiesX.get(i)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(i)+1)/(floorX+1));
+            }
+            tspPath.lineTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
+            canvas.drawPath(tspPath, LinePaint);
+        }
+
     }
+
 }
 
 public class StoreActivity extends AppCompatActivity {
@@ -113,8 +159,7 @@ public class StoreActivity extends AppCompatActivity {
                 startActivity(intent); // 다음화면으로 넘어가기
             }
         });
+
     }
-
-
 
 }
