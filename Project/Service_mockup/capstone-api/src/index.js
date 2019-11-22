@@ -134,9 +134,8 @@ app.get('/item_quantity_by_category', async (req, res) => {
 
 async function uploadItems(item_name, quantity) {
     return await queryAsync(
-        'INSERT ddd \
-        INTO item\
-        WHERE ',
+        'INSERT INTO item(name, quantity) \
+        VALUES (?, ?) ',
         [item_name], [quantity]
     );
 }

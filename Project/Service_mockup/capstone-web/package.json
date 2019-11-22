@@ -25,6 +25,7 @@
     "google-maps-react": "^2.0.2",
     "mdbreact": "^4.21.0",
     "notistack": "^0.9.3",
+    "nwb": "^0.23.0",
     "papaparse": "^5.1.0",
     "prettier": "^1.18.2",
     "random-material-color": "^1.0.5",
