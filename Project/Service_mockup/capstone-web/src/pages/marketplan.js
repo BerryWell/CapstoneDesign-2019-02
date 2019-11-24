@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import "react-table-drag-select/style.css";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -43,8 +43,8 @@ export default function SetLayout() {
             [name]: event.target.value,
         });
     };
-
-    React.useEffect(() => {
+    const ref = useRef(false);
+    if (!ref.current) {
         const loadItem = async () => {
             const ret = await getCategory(cookies.get("editingMarketID"));
             console.log({ _ret: ret });
@@ -62,23 +62,29 @@ export default function SetLayout() {
             });
             setState({ ...values, items: values.items });
         }
-        for (let i = 0; i < 5; i++) {
-            let rowData = [];
-            for (let j = 0; j < 5; j++) {
-                rowData[j] = '';
+
+        for (let floorCnt = 1; floorCnt <= values.maxFloor; floorCnt++) {
+            values.floorSelect.push(floorCnt);
+            values.rows[floorCnt] = [];
+
+            for (let i = 0; i < 5; i++) {
+                let rowData = [];
+                for (let j = 0; j < 5; j++) {
+                    rowData[j] = '';
+                }
+                values.rows[floorCnt][i] = rowData;
             }
-            values.rows[i] = rowData;
         }
-        for (let i = 1; i <= values.maxFloor; i++) {
-            values.floorSelect.push(i);
-        }
+
         values.columns.forEach(element => {
             element.editor = <DropDownEditor options={values.items} />;
         });
         loadItem();
-        console.log("useEffect");
-    }, []);
+        ref.current = true;
+    }
+    React.useEffect(() => {
 
+    }, []);
     const ItemBtnComponent = (props) => {
 
         const mouseClick = () => {
@@ -112,7 +118,7 @@ export default function SetLayout() {
         let userId = cookies.get('userId');
         try {
 
-            await setMarketLayout(values.rows, userId, values.rows.length, values.rows[0].length);
+            //await setMarketLayout(values.rows, userId, values.rows.length, values.rows[1].length);
 
         }
         catch (err) {
@@ -158,6 +164,7 @@ export default function SetLayout() {
 
                             )
                         }
+                        return (<></>);
                     })}
                 </Grid>
                 <Grid item
@@ -166,8 +173,8 @@ export default function SetLayout() {
                         <MyDataGrid
                             width={20}
                             columns={values.columns}
-                            rowGetter={i => values.rows[i]}
-                            rowsCount={values.rows.length}
+                            rowGetter={i => values.rows[values.curFloor][i]}
+                            rowsCount={values.rows[1].length}
                             minHeight={1080}
                             enableCellSelect={true}
                             cellRangeSelection={{
@@ -178,7 +185,7 @@ export default function SetLayout() {
                                     let bottom = args.bottomRight.rowIdx;
                                     for (let j = top; j <= bottom; j++) {
                                         for (let i = left; i <= right; i++) {
-                                            values.rows[j][i] = values.selectedItem;
+                                            values.rows[values.curFloor][j][i] = values.selectedItem;
                                         }
                                     }
                                     let newColumn = values.columns.slice();
