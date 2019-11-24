@@ -7,25 +7,28 @@ const { queryAsync } = require('./connection');
 app.post('/marketplan', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
-        const { rows, size_width, size_height } = req.body;
-        const result = await setFloor(JSON.stringify(rows), size_width, size_height, '1');
 
-        console.log(result);
-        res.send({ result });
+        const { rows, mallId } = req.body;
+        let floorIds = await queryAsync('SELECT idfloor FROM floor WHERE mall_idmall = ?', [mallId]);
+        //0번쨰 층 null 제거
+        rows.shift();
+        console.log(rows);
+
+        for (let i = 0; i < rows.length; i++) {
+            if (!rows[i])
+                continue;
+            console.log(floorIds[i].idfloor);
+            await setFloor(JSON.stringify(rows[i]), floorIds[i].idfloor);
+        }
+        res.status(202).send({ result: "OK" });
     } catch (err) {
         console.log({ err });
         res.status(403).send({ error: 'Something failed!' });
     }
 });
-async function setFloor(map, size_width, size_height, mall_idmall) {
+async function setFloor(map, floorId) {
     return await queryAsync(
-        'INSERT INTO floor \
-            (map,\
-                size_width,\
-                size_height,\
-                mall_idmall)\
-                values (?, ?, ?, ?)',
-        [map, size_width, size_height, mall_idmall]);
+        'UPDATE floor SET map = ? WHERE idfloor = ?', [map, floorId]);
 }
 app.get('/marketplan', async (req, res) => {
     try {

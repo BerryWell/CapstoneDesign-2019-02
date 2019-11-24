@@ -33,33 +33,6 @@ app.post('/addmarket', async (req, res) => {
 async function setCategoryList(categoryInfo, idmall) {
     return await queryAsync('INSERT INTO category (name, floor_idfloor) values ?', [categoryInfo]);
 }
-async function setItemList(items, categories, idmall) {
-    //층이 여러개이므로 다수의 idfloor 리턴
-    let result = await queryAsync('SELECT idfloor FROM floor WHERE mall_idmall = ?', idmall);
-    console.log(result);
-    console.log(items);
-    console.log(categories);
-
-
-    //await setCategoryList(categories); // queryAsync('SELECT idcategory FROM category WHERE floor_idfloor = ?', floorId);
-
-    //let categoryId = await queryAsync('SELECT idcategory FROM category WHERE ')
-    for (let i = 0; i < result.length; i++) {
-        let floorId = result[i].idfloor;
-
-        //  console.log(result2);
-    }
-
-    return;
-    for (let i = 0; i < result.length; i++) {
-        //각 층에 있는 category의 id값 리턴
-        let id = await queryAsync('SELECT idcategory FROM category WHERE floor_idfloor = ?', result[i]);
-
-    }
-
-    return await queryAsync('INSERT INTO item (name, floor_idfloor, quantity, category_idcategory) values (?, ?, 0, ?)', [floorInfo]);
-    //category, item테이블에 카테고리, 아이템 추가해야함
-}
 //async function get
 app.post('/addmarketitem', async (req, res) => {
     let categories = [];
@@ -93,7 +66,7 @@ app.post('/addmarketitem', async (req, res) => {
         }
     }
     try {
-        //await setCategoryList(categories, mallId);
+        await setCategoryList(categories, mallId);
     }
     catch (err) {
         console.log({ err });

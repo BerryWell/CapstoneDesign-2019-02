@@ -26,9 +26,9 @@ export async function getStocks(profile) {
     const res = await axios.get('http://localhost:3000/dashboard_quantity', profile);
     return res.data;
 }
-export async function setMarketLayout(rows, userId, size_width, size_height) {
+export async function setMarketLayout(rows, mallId) {
     const res = await axios.post('http://localhost:3000/marketplan',
-        { "rows": rows, "userId": userId, "size_width": size_width, "size_height": size_height });
+        { "rows": rows, "mallId": mallId });
     return res.data;
 }
 export async function addMarketInfo(info) {

@@ -33,6 +33,7 @@ export default function SetLayout() {
         curFloor: 1,
         maxFloor: cookies.get("editingMarketMaxFloor"),
         floorSelect: [],
+        categoryNameIDMap: {},
 
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
@@ -58,7 +59,7 @@ export default function SetLayout() {
                     [value.name]: value.idcategory,
                     floor: value.number
                 });
-
+                values.categoryNameIDMap[value.name] = value.idcategory;
             });
             setState({ ...values, items: values.items });
         }
@@ -114,11 +115,24 @@ export default function SetLayout() {
 
     };
     const savePlan = async () => {
-        console.log("savePlan");
-        let userId = cookies.get('userId');
         try {
+            let inputRows = [...values.rows];
+            for (let floorIndex = 0; floorIndex < inputRows.length; floorIndex++) {
+                let floor = inputRows[floorIndex];
+                if (!floor)
+                    continue;
+                for (let i = 0; i < floor.length; i++) {
+                    let row = floor[i];
+                    for (let element = 0; element < row.length; element++) {
 
-            //await setMarketLayout(values.rows, userId, values.rows.length, values.rows[1].length);
+                        let id = values.categoryNameIDMap[row[element]];
+                        if (id) {
+                            row[element] = id;
+                        }
+                    }
+                }
+            }
+            let ret = await setMarketLayout(inputRows, cookies.get("editingMarketID"));
 
         }
         catch (err) {
@@ -134,7 +148,7 @@ export default function SetLayout() {
                     labelId="floorSelect"
                     id="floorSelect"
                     value={values.curFloor}
-                    onChange={event => setState({ ...values, curFloor: event.target.value })}
+                    onChange={event => setState({ ...values, curFloor: event.target.value, selectedItem: "" })}
                 >
 
                     {
