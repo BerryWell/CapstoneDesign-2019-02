@@ -121,7 +121,7 @@ class ViewEx extends View
         LinePaint.setColor(Color.RED);
         LinePaint.setStrokeWidth(10f);
         LinePaint.setStyle(Paint.Style.STROKE);
-
+        //TSP
         /*Path tspPath = new Path();
         if(citiesX!=null){
             tspPath.moveTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
@@ -131,6 +131,7 @@ class ViewEx extends View
             tspPath.lineTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
             canvas.drawPath(tspPath, LinePaint);
         }*/
+        //TSP + pathfinding
         if(pathArrayX!=null){
             for(int i=0;i<pathArrayX.size();i++){
                 Path tspPath = new Path();
