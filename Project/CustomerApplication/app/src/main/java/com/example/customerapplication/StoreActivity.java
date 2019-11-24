@@ -16,8 +16,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -38,6 +42,8 @@ class ViewEx extends View
     int stopY=0;*/
     ArrayList<Integer> citiesX;
     ArrayList<Integer> citiesY;
+    ArrayList<ArrayList<Integer>> pathArrayX;
+    ArrayList<ArrayList<Integer>> pathArrayY;
 
     public static String[][] arr ;
     public ViewEx(Context context)
@@ -58,6 +64,11 @@ class ViewEx extends View
     public void drawCityPath(ArrayList x, ArrayList y){
         citiesX = y;
         citiesY = x;
+        invalidate();
+    }
+    public void drawTotalPath(ArrayList<ArrayList<Integer>> x, ArrayList<ArrayList<Integer>> y){
+        pathArrayX = x;
+        pathArrayY = y;
         invalidate();
     }
 
@@ -111,8 +122,7 @@ class ViewEx extends View
         LinePaint.setStrokeWidth(10f);
         LinePaint.setStyle(Paint.Style.STROKE);
 
-        Path tspPath = new Path();
-       // canvas.drawLine(startX, startY, stopX, stopY, LinePaint);
+        /*Path tspPath = new Path();
         if(citiesX!=null){
             tspPath.moveTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
             for(int i=0;i<citiesX.size();i++){
@@ -120,10 +130,19 @@ class ViewEx extends View
             }
             tspPath.lineTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
             canvas.drawPath(tspPath, LinePaint);
+        }*/
+        if(pathArrayX!=null){
+            for(int i=0;i<pathArrayX.size();i++){
+                Path tspPath = new Path();
+                tspPath.moveTo(viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1));
+                for(int j=0; j<pathArrayX.get(i).size(); j++){
+                    tspPath.lineTo(viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1));
+                }
+                canvas.drawPath(tspPath, LinePaint);
+            }
         }
 
     }
-
 }
 
 public class StoreActivity extends AppCompatActivity {
