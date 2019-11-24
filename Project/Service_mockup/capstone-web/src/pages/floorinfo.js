@@ -19,6 +19,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { addMarketItemInfo } from '../api/stores';
 import { useSnackbar } from 'notistack';
+import { navigate } from 'gatsby';
 const cookies = new Cookies();
 
 const successSnackbarOption = {
@@ -201,7 +202,10 @@ export default function SetLayout() {
         try {
             console.log(values.floorStructure);
             let result = await addMarketItemInfo(values.floorStructure, cookies.get('editingMarketID'), cookies.get('userId'));
-
+            if (result) {
+                enqueueSnackbar("아이템 등록 성공", successSnackbarOption);
+                navigate('/marketplan');
+            }
         }
         catch (err) {
             enqueueSnackbar("아이템 등록 실패", errorSnackbarOption);
