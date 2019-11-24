@@ -132,11 +132,11 @@ app.get('/item_quantity_by_category', async (req, res) => {
     }
 });
 
-async function uploadItems(item_name, quantity) {
+async function uploadItems( item_name, quantity) {
     return await queryAsync(
-        'INSERT INTO item(name, quantity) \
-        VALUES (?, ?) ',
-        [item_name], [quantity]
+        'INSERT INTO item(category_idcategory, name, quantity, floor_idfloor) \
+        VALUES (1, ?, ?, 1) ',
+        [item_name, quantity]
     );
 }
 
@@ -144,7 +144,7 @@ app.post('/uploadItems', async (req, res) => {
     console.log({ '/uploadItems': req.body });
     console.log({ '/uploadItems': req.query });
     try {
-        const result = await uploadItems(req.query.item_name, req.query.quantity);
+        const result = await uploadItems( req.body.item, req.body.quantity);
         console.log(result);
         res.send(result);
     } catch (err) {

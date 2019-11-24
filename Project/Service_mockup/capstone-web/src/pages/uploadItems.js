@@ -41,8 +41,12 @@ class Form extends React.Component {
     console.log({ file });
 
     // DB 쿼리 넣기
-    uploadItems(keys[0],keys[1],keys[2]);
-    
+    //uploadItems(file["item"], file["quantity"]);
+    for(var i = 0; i < file.length; i++) {
+      var obj = file[i];
+      console.log(obj.item, obj.quantity);
+      uploadItems(obj.item, obj.quantity);
+    }
   }
 
   handleError = error => {
