@@ -9,12 +9,14 @@ import { navigate } from 'gatsby';
 // import Papa from 'papaparse'
 import CSVReader from 'react-csv-reader'
 //import SEO from '../components/seo'
+import { uploadItems } from '../api/stores';
 
 
 
 const keys = [
   "category",
-  "item"
+  "item", 
+  "quantity"
 ]
 
 const papaparseOptions = {
@@ -39,6 +41,7 @@ class Form extends React.Component {
     console.log({ file });
 
     // DB 쿼리 넣기
+    uploadItems(keys[0],keys[1],keys[2]);
     
   }
 
@@ -55,8 +58,9 @@ class Form extends React.Component {
         <p>This page is for uploading items by uploading a csv file.</p>      
 
       <CSVReader
+        keys={keys}
         cssClass="csv-reader-input"
-        label="Select CSV with secret Death Star statistics"
+        label="Upload a csv file."
         onFileLoaded={this.handleFile}
         onError={this.handleError}
         parserOptions={papaparseOptions}

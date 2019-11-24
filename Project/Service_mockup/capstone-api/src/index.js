@@ -140,8 +140,7 @@ async function uploadItems(item_name, quantity) {
     );
 }
 
-
-app.get('/uploadItems', async (req, res) => {
+app.post('/uploadItems', async (req, res) => {
     console.log({ '/uploadItems': req.body });
     console.log({ '/uploadItems': req.query });
     try {

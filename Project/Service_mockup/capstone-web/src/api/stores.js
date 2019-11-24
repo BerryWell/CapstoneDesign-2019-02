@@ -41,3 +41,9 @@ export async function addMarketItemInfo(info, marketId, userId) {
     const res = await axios.post('http://localhost:3000/addmarketitem', data);
     return res.data;
 }
+
+export async function uploadItems(category, item, quantity) {
+    const res = await axios.post('http://localhost:3000/uploadItems', 
+        { "category" : category, "item" : item, "quantity" : quantity });
+    return res.data;
+}
