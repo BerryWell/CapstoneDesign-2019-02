@@ -18,8 +18,8 @@ export async function signIn(profile) {
     const res = await axios.post('http://localhost:3000/signin', profile);
     return res.data;
 }
-export async function getCategory() {
-    const res = await axios.get('http://localhost:3000/category');
+export async function getCategory(marketId) {
+    const res = await axios.get('http://localhost:3000/category?marketid=' + marketId);
     return res.data;
 }
 export async function getStocks(profile) {
@@ -43,7 +43,7 @@ export async function addMarketItemInfo(info, marketId, userId) {
 }
 
 export async function uploadItems(item, quantity) {
-    const res = await axios.post('http://localhost:3000/uploadItems', 
-        { "item" : item, "quantity" : quantity });
+    const res = await axios.post('http://localhost:3000/uploadItems',
+        { "item": item, "quantity": quantity });
     return res.data;
 }

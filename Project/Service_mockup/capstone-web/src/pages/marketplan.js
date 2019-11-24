@@ -8,9 +8,9 @@ import createMuiTheme from '@material-ui/core';
 import { Editors } from 'react-data-grid-addons';
 import MyDataGrid from '../components/CustomDataGrid';
 import Cookies from 'universal-cookie';
-
+import Select from '@material-ui/core/Select';
 import { setMarketLayout, getCategory } from '../api/stores';
-
+import MenuItem from '@material-ui/core/MenuItem';
 const cookies = new Cookies();
 
 const randomMC = require('random-material-color');
@@ -30,6 +30,10 @@ export default function SetLayout() {
         refresh: false,
         selectedItem: '',
         autoincrementID: 0,
+        curFloor: 1,
+        maxFloor: cookies.get("editingMarketMaxFloor"),
+        floorSelect: [],
+
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
     });
 
@@ -42,8 +46,8 @@ export default function SetLayout() {
 
     React.useEffect(() => {
         const loadItem = async () => {
-            const ret = await getCategory();
-
+            const ret = await getCategory(cookies.get("editingMarketID"));
+            console.log({ _ret: ret });
             ret.map((value) => {
                 values.items.push({
                     name: value.name,
@@ -52,6 +56,7 @@ export default function SetLayout() {
                     value: value.name,
                     uid: value.idcategory,
                     [value.name]: value.idcategory,
+                    floor: value.number
                 });
 
             });
@@ -64,6 +69,9 @@ export default function SetLayout() {
             }
             values.rows[i] = rowData;
         }
+        for (let i = 1; i <= values.maxFloor; i++) {
+            values.floorSelect.push(i);
+        }
         values.columns.forEach(element => {
             element.editor = <DropDownEditor options={values.items} />;
         });
@@ -71,18 +79,8 @@ export default function SetLayout() {
         console.log("useEffect");
     }, []);
 
-    const removeItem = (uid) => {
-        console.log(uid);
-        const index = values.items.findIndex(element => element.uid === uid);
-        if (index > -1) {
-            values.items.splice(index, 1);
-            setState({ ...values, 'items': values.items });
-        }
-    };
     const ItemBtnComponent = (props) => {
-        const doubleClick = () => {
-            removeItem(props.uid);
-        }
+
         const mouseClick = () => {
             if (props.text === values.selectedItem) {
                 values.selectedItem = '';
@@ -91,14 +89,13 @@ export default function SetLayout() {
             else {
                 values.selectedItem = props.text;
             }
-            setState({ ...values, 'selectedItem': values.selectedItem });
+            setState({ ...values, selectedItem: values.selectedItem });
 
         }
         return (
             <Button
                 variant="contained"
                 color="primary"
-                onDoubleClick={doubleClick}//doublecick, onclick 이벤트 중복 불가능, 체크박스로 모드를 분리해야함
                 onClick={mouseClick}
                 style={{
                     background: props.color
@@ -109,23 +106,6 @@ export default function SetLayout() {
 
         );
 
-    };
-
-    const addItem = () => {
-        if (values.items.some(element => element.name === values.itemName) === false) {
-
-            let randomColor = randomMC.getColor();
-            values.items.push({
-                name: values.itemName,
-                color: randomColor,
-                id: values.itemName,
-                value: values.itemName,
-                uid: values.autoincrementID
-            });
-            values.autoincrementID++;
-            setState({ ...values, 'items': values.items });
-            console.log(values.autoincrementID);
-        }
     };
     const savePlan = async () => {
         console.log("savePlan");
@@ -144,22 +124,18 @@ export default function SetLayout() {
         <>
             <h1>매장 레이아웃 설정({values.selectedItem})</h1>
             <Grid container >
+                <Select
+                    labelId="floorSelect"
+                    id="floorSelect"
+                    value={values.curFloor}
+                    onChange={event => setState({ ...values, curFloor: event.target.value })}
+                >
+
+                    {
+                        values.floorSelect.map((element) => <MenuItem key={element.toString()} value={element.toString()}>{element}</MenuItem>)
+                    }
+                </Select>
                 <Grid item >
-                    <TextField
-                        variant="outlined"
-                        required
-                        name="itemName"
-                        label="물품 이름"
-                        id="itemName"
-                        onChange={handleChange('itemName')}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        onClick={addItem}>
-                        물품 추가
-                    </Button>
                     <Button
                         type="button"
                         variant="contained"
@@ -171,14 +147,18 @@ export default function SetLayout() {
                 </Grid>
                 <Grid item
                     xs={12}>
-                    {values.items.map(value => (
-                        <ItemBtnComponent
-                            text={value.name}
-                            key={value.name}
-                            color={value.color}
-                            uid={value.uid} />
+                    {values.items.map(value => {
+                        if (value.floor === Number(values.curFloor)) {
+                            return (
+                                <ItemBtnComponent
+                                    text={value.name}
+                                    key={value.name}
+                                    color={value.color}
+                                    uid={value.uid} />
 
-                    ))}
+                            )
+                        }
+                    })}
                 </Grid>
                 <Grid item
                     xs={12}>
