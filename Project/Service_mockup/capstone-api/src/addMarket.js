@@ -30,10 +30,33 @@ app.post('/addmarket', async (req, res) => {
         res.status(403).send({ error: 'Something failed!' });
     }
 });
-async function setCategoryList(categoryInfo) {
+async function setCategoryList(categoryInfo, idmall) {
     return await queryAsync('INSERT INTO category (name, floor_idfloor) values ?', [categoryInfo]);
 }
-async function setItemList(floorInfo) {
+async function setItemList(items, categories, idmall) {
+    //층이 여러개이므로 다수의 idfloor 리턴
+    let result = await queryAsync('SELECT idfloor FROM floor WHERE mall_idmall = ?', idmall);
+    console.log(result);
+    console.log(items);
+    console.log(categories);
+
+
+    //await setCategoryList(categories); // queryAsync('SELECT idcategory FROM category WHERE floor_idfloor = ?', floorId);
+
+    //let categoryId = await queryAsync('SELECT idcategory FROM category WHERE ')
+    for (let i = 0; i < result.length; i++) {
+        let floorId = result[i].idfloor;
+
+        //  console.log(result2);
+    }
+
+    return;
+    for (let i = 0; i < result.length; i++) {
+        //각 층에 있는 category의 id값 리턴
+        let id = await queryAsync('SELECT idcategory FROM category WHERE floor_idfloor = ?', result[i]);
+
+    }
+
     return await queryAsync('INSERT INTO item (name, floor_idfloor, quantity, category_idcategory) values (?, ?, 0, ?)', [floorInfo]);
     //category, item테이블에 카테고리, 아이템 추가해야함
 }
@@ -41,6 +64,16 @@ async function setItemList(floorInfo) {
 app.post('/addmarketitem', async (req, res) => {
     let categories = [];
     let items = {};
+    let mallId = req.body.marketId;
+    let floorInfo = await queryAsync('SELECT idfloor, number FROM floor WHERE mall_idmall = ?', mallId);
+    let floorIdPair = {};//key:floor value:floorId
+    for (let i = 0; i < floorInfo.length; i++) {
+        let floorId = floorInfo[i].idfloor;
+        let floor = floorInfo[i].number;
+        floorIdPair[floor] = floorId;
+
+    }
+    console.log(floorIdPair);
     for (let i = 0; i < req.body.data.length; i++) {
         let floorNum = (i + 1).toString();
         let curFloor = req.body.data[i];
@@ -48,7 +81,7 @@ app.post('/addmarketitem', async (req, res) => {
         if (curFloor.children) {
             for (let j = 0; j < curFloor.children.length; j++) {
                 let category = curFloor.children[j];
-                categories.push([category.name, floorNum]);
+                categories.push([category.name, floorIdPair[floorNum]]);
                 if (category.children) {
                     items[category.name] = [];
                     for (let k = 0; k < category.children.length; k++) {
@@ -60,22 +93,36 @@ app.post('/addmarketitem', async (req, res) => {
         }
     }
     try {
-        console.log(JSON.stringify(categories));
-        const result = await setCategoryList(categories);
-
-        console.log({ result_: result });
+        //await setCategoryList(categories, mallId);
     }
     catch (err) {
         console.log({ err });
         res.status(403).send({ error: 'Something failed during setting category' });
     }
     try {
+        console.log(items);
+        //각층
+        for (const [floor, floorId] of Object.entries(floorIdPair)) {
+            let categoryIds = await queryAsync('SELECT idcategory, name FROM category WHERE floor_idfloor  = ?', floorId);
+            if (categoryIds.length == 0)
+                continue;
+            let categoryMap = {};
+            categoryIds.map(element => categoryMap[element.name] = element.idcategory);
+            //카테고리 내 아이템마다
+            for (const [categoryName, categoryId] of Object.entries(categoryMap)) {
+                if (!items[categoryName])
+                    continue;
+                for (let i = 0; i < items[categoryName].length; i++) {
+                    let item = items[categoryName][i];
+                    await queryAsync('INSERT INTO item (name, category_idcategory, floor_idfloor) values (?, ?, ?)', [item[0], categoryMap[categoryName], floorId]);
+                }
+            }
+        }
+        res.status(200).send({ result: "OK" });
 
     }
     catch (err) {
         console.log({ err });
         res.status(403).send({ error: 'Something failed during setting item' });
     }
-    console.log(JSON.stringify(items));
-    console.log(req.body);
 });

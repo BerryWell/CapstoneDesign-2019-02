@@ -212,6 +212,7 @@ export default function SetLayout() {
     return (
         <>
             <h1>층별 품목 설정</h1>
+            <h2>※가판대 이름은 중복이 허용되지 않습니다</h2>
             <form className={classes.formControl} onSubmit={e => e.preventDefault()}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
