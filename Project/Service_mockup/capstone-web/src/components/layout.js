@@ -18,6 +18,8 @@ const Layout = ({ children, location }) => {
   </SnackbarProvider>;
   if (location.pathname === '/') return noShell;
   if (location.pathname === '/signup') return noShell;
+  if (location.pathname === '/signup/') return noShell;
+
   return (
     <SnackbarProvider>
       <StaticQuery
