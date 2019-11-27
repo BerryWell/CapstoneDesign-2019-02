@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -36,14 +37,8 @@ class ViewEx extends View
     int floorY;
     int viewX;
     int viewY;
-    /*int startX=0;
-    int startY=0;
-    int stopX=0;
-    int stopY=0;*/
-    ArrayList<Integer> citiesX;
-    ArrayList<Integer> citiesY;
-    ArrayList<ArrayList<Integer>> pathArrayX;
-    ArrayList<ArrayList<Integer>> pathArrayY;
+    float touchInfoX = -1;
+    float touchInfoY = -1;
 
     public static String[][] arr ;
     public ViewEx(Context context)
@@ -52,24 +47,6 @@ class ViewEx extends View
     }
     public ViewEx(Context context, AttributeSet att){
         super(context, att);
-    }
-
-    /*public void drawCityPath(int x1, int y1, int x2, int y2){
-        startX = viewX*(x1+1)/(floorX+1);
-        startY = (viewY-viewX)/2 + viewX*(y1+1)/(floorX+1);
-        stopX = viewX*(x2+1)/(floorX+1);
-        stopY = (viewY-viewX)/2 + viewX*(y2+1)/(floorX+1);
-        invalidate();
-    }*/
-    public void drawCityPath(ArrayList x, ArrayList y){
-        citiesX = y;
-        citiesY = x;
-        invalidate();
-    }
-    public void drawTotalPath(ArrayList<ArrayList<Integer>> x, ArrayList<ArrayList<Integer>> y){
-        pathArrayX = x;
-        pathArrayY = y;
-        invalidate();
     }
 
     public void onDraw(Canvas canvas)
@@ -81,7 +58,7 @@ class ViewEx extends View
                 {"3", "", "", "2", "", "5"},
                 {"", "", "", "", "", ""},
                 {"4", "", "", "", "", ""}
-                };
+        };
 
         floorX = arr[0].length;
         floorY = arr.length;
@@ -92,7 +69,6 @@ class ViewEx extends View
         super.onDraw(canvas);
 
         canvas.drawColor(Color.WHITE);
-        //canvas.drawColor(getResources().getColor(R.color.Ivory));
 
         Paint MyPaint = new Paint();
         MyPaint.setColor(Color.GRAY);
@@ -115,41 +91,43 @@ class ViewEx extends View
         mapEdge.lineTo(viewX,(viewY-viewX)/2);
         mapEdge.lineTo(viewX,(viewY+viewX)/2);
         mapEdge.lineTo(0,(viewY+viewX)/2);
+        mapEdge.lineTo(0,(viewY-viewX)/2);
         canvas.drawPath(mapEdge, mapEdgePaint);
-
-        Paint LinePaint = new Paint();
-        LinePaint.setColor(Color.RED);
-        LinePaint.setStrokeWidth(10f);
-        LinePaint.setStyle(Paint.Style.STROKE);
-        //TSP
-        /*Path tspPath = new Path();
-        if(citiesX!=null){
-            tspPath.moveTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
-            for(int i=0;i<citiesX.size();i++){
-                tspPath.lineTo(viewX*(citiesX.get(i)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(i)+1)/(floorX+1));
-            }
-            tspPath.lineTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
-            canvas.drawPath(tspPath, LinePaint);
-        }*/
-        //TSP + pathfinding
-        if(pathArrayX!=null){
-            for(int i=0;i<pathArrayX.size();i++){
-                Path tspPath = new Path();
-                tspPath.moveTo(viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1));
-                for(int j=0; j<pathArrayX.get(i).size(); j++){
-                    tspPath.lineTo(viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1));
-                }
-                canvas.drawPath(tspPath, LinePaint);
-            }
+        if (touchInfoX > 0 && touchInfoY > 0) {
+            canvas.drawCircle(touchInfoX - 5, touchInfoY - 5, 10, mapEdgePaint);
         }
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+        Log.d ("motionEvent", event.toString());
+        if (event.getAction()==MotionEvent.ACTION_UP){
+            //Log.d("motionEvent", event.getX() + ", " + event.getY());
+            Log.d("X의 i+1= ", (event.getX()*(floorX+1)/viewX)-0.5 + "");   //0,1,2,3,4,5 0이상 6미만 받기!
+            Log.d("Y의 j+1= ", ((floorX+1)*(2*event.getY()-viewY+viewX)/(2*viewX))-0.5 + "");   //0,1,2,3,4
+            touchInfoX = event.getX();
+            touchInfoY = event.getY();
+            int touchX = (int)((event.getX()*(floorX+1)/viewX)-0.5);
+            int touchY = (int)(((floorX+1)*(2*event.getY()-viewY+viewX)/(2*viewX))-0.5);
+            if(touchX>=0 && touchX<floorX && touchY>=0 && touchY<floorY){
+                if(!arr[touchY][touchX].equals("")){
+                    //Toast.makeText(StoreActivity.this, "",Toast.LENGTH_SHORT);
+                    //map json file에서 받을수도 있을듯!
+                    Log.d("터치된 상품의 iditem =", arr[touchY][touchX]); //iditem 받아서 item name 출력. 0, -1의 경우 예외처리 (벽, 정문 등...)
+                    invalidate();
+                }
+            }
+        }
+        //this.postInvalidate();
+        return true;
     }
 }
 
 public class StoreActivity extends AppCompatActivity {
 
     Button btn_select;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +144,6 @@ public class StoreActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar_store);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(toolbarTitle);
 
         btn_select = (Button)findViewById(R.id.btn_select);

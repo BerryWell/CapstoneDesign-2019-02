@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng position = new LatLng(latitude, longitude);
         Log.d("현재 위치: ",latitude + ", " + longitude);
 
+        //db에서 mall의 idmall, name, 위도, 경도 받아오기 -> intent로 idmall도 보내주기.
+
         LatLng CHONGANG = new LatLng(37.503, 126.957);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(CHONGANG);

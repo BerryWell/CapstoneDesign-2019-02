@@ -3,6 +3,7 @@ package com.example.customerapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,7 +57,7 @@ public class AddtoCartActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("장보기");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         btn = findViewById(R.id.btn_shopping);
 
@@ -77,17 +78,22 @@ public class AddtoCartActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if(!shoppingList.isEmpty()){
+                if(!shoppingList.isEmpty() && shoppingList.size()!=1){
                     Intent intent = new Intent(getApplicationContext(), TSPActivity.class);
                     intent.putExtra("리스트", shoppingList);
                     //intent.putExtra("카테고리", categoryArr);
                     startActivity(intent); // 다음화면으로 넘어가기
+                }
+                else{
+                    Toast.makeText(AddtoCartActivity.this
+                            , "두 개 이상의 품목을 선택하세요.", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
         setupReferences(idFloor);
     }
+
     private void setupReferences(int id) {
         lvCategory = findViewById(R.id.lvCategory);
         arCategory = new ArrayList<>();
@@ -114,7 +120,7 @@ public class AddtoCartActivity extends AppCompatActivity {
             }
         }).start();
         try {
-            Thread.sleep(700);
+            Thread.sleep(800);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -185,7 +191,7 @@ public class AddtoCartActivity extends AppCompatActivity {
         }).start();
 
         try {
-            Thread.sleep(700);
+            Thread.sleep(800);
         }catch (Exception e){
             e.printStackTrace();
         }
