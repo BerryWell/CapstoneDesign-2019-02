@@ -8,6 +8,7 @@ require('./signup');
 require('./marketplan');
 require('./category.js');
 require('./addMarket');
+require('./android_market');
 connection.connect(function (err) {
     if (err) {
         console.error('mysql connection error');
@@ -132,7 +133,7 @@ app.get('/item_quantity_by_category', async (req, res) => {
     }
 });
 
-async function uploadItems( item_name, quantity) {
+async function uploadItems(item_name, quantity) {
     return await queryAsync(
         'INSERT INTO item(category_idcategory, name, quantity, floor_idfloor) \
         VALUES (1, ?, ?, 1) ',
@@ -144,7 +145,7 @@ app.post('/uploadItems', async (req, res) => {
     console.log({ '/uploadItems': req.body });
     console.log({ '/uploadItems': req.query });
     try {
-        const result = await uploadItems( req.body.item, req.body.quantity);
+        const result = await uploadItems(req.body.item, req.body.quantity);
         console.log(result);
         res.send(result);
     } catch (err) {
@@ -152,3 +153,24 @@ app.post('/uploadItems', async (req, res) => {
         res.status(403).send({ error: 'Something failed! ' });
     }
 });
+
+async function findMalls() {
+    return await queryAsync(
+        'SELECT idmall, name, latitude, longitude \
+        FROM mall'
+    );
+}
+
+app.get('/findMalls', async (req, res) => {
+    console.log({ '/findMalls': req.body });
+    console.log({ '/findMalls': req.query });
+    try {
+        const result = await findMalls();
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err })
+        res.status(403).send({ error: 'Something failed!' });
+    }
+
+})
