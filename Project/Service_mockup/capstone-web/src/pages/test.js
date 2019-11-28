@@ -33,7 +33,7 @@ const test = () => (
     <h1>Test</h1>
     <p>Welcome to the test page.</p>
   </>
-) ss
+)
 
 
 export default test
