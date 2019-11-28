@@ -8,14 +8,32 @@
 
 import React from 'react'
 
-import SEO from '../components/seo'
+import Apple from 'react-dom'
 
+
+import SEO from '../components/seo'
+import { navigate } from 'gatsby';
+
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
+/*
+if ( !cookies.get( 'userId' ) ) {
+  console.log('not logged in');
+  navigate('/');
+}
+
+React.componentWillMount () {
+  console.log("componentWillMount");
+}
+*/
 const test = () => (
   <>
     <SEO title="Page two" />
     <h1>Test</h1>
     <p>Welcome to the test page.</p>
   </>
-)
+) ss
+
 
 export default test

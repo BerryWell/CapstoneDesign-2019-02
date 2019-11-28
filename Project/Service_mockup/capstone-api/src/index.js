@@ -152,3 +152,24 @@ app.post('/uploadItems', async (req, res) => {
         res.status(403).send({ error: 'Something failed! ' });
     }
 });
+
+async function findMalls() {
+    return await queryAsync(
+        'SELECT idmall, name, latitude, longitude \
+        FROM mall'
+    );
+}
+
+app.get('/findMalls', async (req, res) => {
+    console.log({ '/findMalls': req.body} );
+    console.log({ '/findMalls': req.query} );
+    try {
+        const result = await findMalls();
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log( { err } )
+        res.status(403).send({ error: 'Something failed!' });
+    }
+
+})
