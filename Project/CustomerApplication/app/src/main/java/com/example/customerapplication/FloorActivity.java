@@ -45,7 +45,8 @@ public class FloorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         toolbarTitle = intent.getStringExtra("지점");
         ////////////Mall_id도 intent로 받아와야 함
-        getItemsByMall(5);
+        int Mall_id = Integer.parseInt(intent.getStringExtra("ID"));
+        getItemsByMall(Mall_id);
 
         myOnClickListener = new MyOnClickListener(this);
     }

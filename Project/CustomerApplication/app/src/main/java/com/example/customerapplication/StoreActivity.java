@@ -5,12 +5,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,9 +25,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -39,6 +46,7 @@ class ViewEx extends View
     int viewY;
     float touchInfoX = -1;
     float touchInfoY = -1;
+
 
     public static String[][] arr ;
     public ViewEx(Context context)
@@ -93,8 +101,25 @@ class ViewEx extends View
         mapEdge.lineTo(0,(viewY+viewX)/2);
         mapEdge.lineTo(0,(viewY-viewX)/2);
         canvas.drawPath(mapEdge, mapEdgePaint);
+
         if (touchInfoX > 0 && touchInfoY > 0) {
+            int touchX = (int)((touchInfoX*(floorX+1)/viewX)-0.5);
+            int touchY = (int)(((floorX+1)*(2*touchInfoY-viewY+viewX)/(2*viewX))-0.5);
             canvas.drawCircle(touchInfoX - 5, touchInfoY - 5, 10, mapEdgePaint);
+            Paint pt = new Paint();
+            pt.setTextSize(120);
+            pt.setColor(0xFF000000);
+
+
+            /*Resources r= getResources();
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) r.getDrawable(R.drawable.shopping_cart);
+            Bitmap bitmap = bitmapDrawable.getBitmap();*/
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.shopping_cart);
+
+            canvas.drawBitmap(bitmap, touchInfoX,touchInfoY,null);
+            canvas.drawText("" + arr[touchY][touchX],touchInfoX,touchInfoY,pt);
+
         }
 
     }
@@ -116,6 +141,7 @@ class ViewEx extends View
                     //Toast.makeText(StoreActivity.this, "",Toast.LENGTH_SHORT);
                     //map json file에서 받을수도 있을듯!
                     Log.d("터치된 상품의 iditem =", arr[touchY][touchX]); //iditem 받아서 item name 출력. 0, -1의 경우 예외처리 (벽, 정문 등...)
+                    Snackbar.make(this, "터치된 상품의 iditem =" + arr[touchY][touchX], Snackbar.LENGTH_SHORT).show();
                     invalidate();
                 }
             }

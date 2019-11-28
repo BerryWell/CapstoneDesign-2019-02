@@ -26,4 +26,7 @@ public interface MemberFactoryIm {
 
     @GET("/item_quantity_by_category")
     Call<JsonArray> item_quantity_by_category(@Query("id") Integer id);
+
+    @GET("/findMalls")
+    Call<JsonArray> findMalls();
 }
