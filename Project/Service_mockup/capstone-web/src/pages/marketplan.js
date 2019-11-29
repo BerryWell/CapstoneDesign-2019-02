@@ -11,12 +11,24 @@ import Cookies from 'universal-cookie';
 import Select from '@material-ui/core/Select';
 import { setMarketLayout, getCategory } from '../api/stores';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import { useSnackbar } from 'notistack';
+
+import { navigate } from 'gatsby';
 const cookies = new Cookies();
 
 const randomMC = require('random-material-color');
 const { DropDownEditor } = Editors;
+
+const successSnackbarOption = {
+    variant: 'success',
+};
+const errorSnackbarOption = {
+    variant: 'error',
+};
 export default function SetLayout() {
 
+    const { enqueueSnackbar } = useSnackbar();
     const [values, setState] = React.useState({
         items: [],
         columns: [
@@ -133,13 +145,20 @@ export default function SetLayout() {
                 }
             }
             let ret = await setMarketLayout(inputRows, cookies.get("editingMarketID"));
-
+            if (ret) {
+                enqueueSnackbar('매장 등록 성공!', successSnackbarOption);
+                navigate('/main');
+            }
         }
         catch (err) {
+            enqueueSnackbar('매장 등록 실패', successSnackbarOption);
             console.log(err);
         }
 
     };
+    const setExit = () => {
+        setState({ ...values, selectedItem: -1 });
+    }
     return (
         <>
             <h1>매장 레이아웃 설정({values.selectedItem})</h1>
@@ -167,6 +186,15 @@ export default function SetLayout() {
                 </Grid>
                 <Grid item
                     xs={12}>
+                    {
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={setExit}>
+                            입구
+                    </Button>
+                    }
                     {values.items.map(value => {
                         if (value.floor === Number(values.curFloor)) {
                             return (
