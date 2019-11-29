@@ -82,6 +82,17 @@ const StoreCard = ({
   const [settingMenuOpen, setSettingMenuOpen] = useState(false);
   const openSettingMenu = () => setSettingMenuOpen(true);
   const closeSettingMenu = () => setSettingMenuOpen(false);
+  // 구현할 거
+  const changeMall = () => {
+    console.log('changeMall clicked!');
+    // 
+    setSettingMenuOpen(false);
+  }
+  const deleteMall = () => {
+    console.log('deleteMall clicked!');
+    // 
+    setSettingMenuOpen(false);
+  }
   return <Card>
     <CardHeader
       action={
