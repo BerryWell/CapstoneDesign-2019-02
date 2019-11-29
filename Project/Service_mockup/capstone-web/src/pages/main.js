@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import { getStores, appendStore } from '../api/stores';
+import { getStores, appendStore, modifyMalls, deleteMalls } from '../api/stores';
 import { makeStyles } from '@material-ui/core/styles';
 import { navigate } from 'gatsby';
 import Cookies from 'universal-cookie';
@@ -83,15 +83,15 @@ const StoreCard = ({
   const [settingMenuOpen, setSettingMenuOpen] = useState(false);
   const openSettingMenu = () => setSettingMenuOpen(true);
   const closeSettingMenu = () => setSettingMenuOpen(false);
-  // 구현할 거
-  const modifyMall = () => {
+  
+  const modifyMall = (id, column, value) => {
     console.log('modifyMall clicked!');
-    // 
+    modifyMalls(id, column, value);
     setSettingMenuOpen(false);
   }
-  const deleteMall = () => {
+  const deleteMall = (idmall) => {
     console.log('deleteMall clicked!');
-    // 
+    deleteMalls(idmall);
     setSettingMenuOpen(false);
   }
   return <Card>
