@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -117,14 +118,25 @@ class ViewExTSP extends View
             canvas.drawPath(tspPath, LinePaint);
         }*/
         //TSP + pathfinding
+        Paint pt = new Paint();
+        //pt.setTextSize(60);
+        pt.setTextSize(2*viewX/((floorX + 2)*5));
+        pt.setColor(0xFF000000);
+        pt.setStyle(Paint.Style.FILL_AND_STROKE);
+
         if(pathArrayX!=null){
             for(int i=0;i<pathArrayX.size();i++){
                 Path tspPath = new Path();
                 tspPath.moveTo(viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1));
+
                 for(int j=0; j<pathArrayX.get(i).size(); j++){
                     tspPath.lineTo(viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1));
+                    //canvas.drawText(arr[pathArrayY.get(i).get(j)][pathArrayX.get(i).get(j)] + "번품목",viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1),pt);
+
                 }
                 canvas.drawPath(tspPath, LinePaint);
+                canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
+                        ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
             }
         }
 

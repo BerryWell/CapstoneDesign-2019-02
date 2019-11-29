@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TSPActivity"></activity>
+        <activity android:name=".TSPActivity" />
         <activity
             android:name=".PermissionActivity"
             android:label="@string/app_name"
