@@ -174,3 +174,50 @@ app.get('/findMalls', async (req, res) => {
     }
 
 })
+
+
+async function modifyMalls(id, column, value) {
+    return await queryAsync(
+        'UPDATE mall \
+        SET ? = ? \
+        WHERE idmall = ?',
+        [column, value, id]
+    );
+}
+
+app.post('/modifyMalls', async (req, res) => {
+    console.log({ '/modifyMalls': req.body });
+    console.log({ '/modifyMalls': req.query });
+    try {
+        const result = await modifyMalls(req.query.id, req.query.column, req.query.value  );
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err })
+        res.status(403).send({ error: 'Something failed!' });
+    }
+
+})
+// 쿼리에 on cascade 추가해서 외래키 제약 고려해야 함
+async function deleteMalls(id) {
+    return await queryAsync(
+        'DELETE  \
+        FROM mall \
+        WHERE idmall = ?',
+        [id]
+    );
+}
+
+app.post('/deleteMalls', async (req, res) => {
+    console.log({ '/deleteMalls': req.body });
+    console.log({ '/deleteMalls': req.query });
+    try {
+        const result = await deleteMalls(req.query.id, req.query.column, req.query.value  );
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.log({ err })
+        res.status(403).send({ error: 'Something failed!' });
+    }
+
+})

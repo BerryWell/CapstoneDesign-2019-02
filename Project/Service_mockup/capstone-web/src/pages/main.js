@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+
 const IndexPage = () => {
   const [stores, setStores] = useState({
     showModal: false,
@@ -83,8 +84,8 @@ const StoreCard = ({
   const openSettingMenu = () => setSettingMenuOpen(true);
   const closeSettingMenu = () => setSettingMenuOpen(false);
   // 구현할 거
-  const changeMall = () => {
-    console.log('changeMall clicked!');
+  const modifyMall = () => {
+    console.log('modifyMall clicked!');
     // 
     setSettingMenuOpen(false);
   }
@@ -110,6 +111,8 @@ const StoreCard = ({
       open={settingMenuOpen}
       anchorEl={settingMenuAnchorRef.current}
       onClose={closeSettingMenu}
+      onModifyMall = { modifyMall }
+      onDeleteMall = { deleteMall }
     />
     <CardMedia
       image="/static/images/cards/paella.jpg"
@@ -127,14 +130,18 @@ const StoreCardSettingMenu = ({
   open,
   anchorEl,
   onClose,
+  onModifyMall, 
+  onDeleteMall
 }) => {
   return <Menu
     anchorEl={anchorEl}
     keepMounted
     open={open}
     onClose={onClose}
+    //onModifyMall = { onModifyMall }
+    //onDeleteMall = { onDeleteMall }
   >
-    <MenuItem onClick={onClose}>수정</MenuItem>
-    <MenuItem onClick={onClose}>삭제</MenuItem>
+    <MenuItem onClick={ onModifyMall }>수정</MenuItem>
+    <MenuItem onClick={ onDeleteMall }>삭제</MenuItem>
   </Menu>;
 };
