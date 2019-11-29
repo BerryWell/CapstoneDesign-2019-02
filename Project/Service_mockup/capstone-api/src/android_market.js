@@ -31,3 +31,31 @@ app.get('/markets/:id', async (req, res) => {
         res.status(403).send({ error: 'Something failed!' });
     }
 });
+
+app.get('/map/:id', async (req, res) => {
+    let id = req.params.id;
+
+    try {
+        let result = await queryAsync('SELECT map FROM floor WHERE idfloor = ?', [id]);
+        console.log(result);
+        res.status(200).send(result[0].map);
+    }
+    catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed!', log: err });
+    }
+});
+app.get('/flooritem/:id', async (req, res) => {
+    let id = req.params.id;
+
+
+    try {
+        let result = await queryAsync('SELECT name, category_idcategory FROM item WHERE floor_idfloor = ?', [id]);
+        console.log(result);
+        res.status(200).send(result);
+    }
+    catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed!', log: err });
+    }
+});
