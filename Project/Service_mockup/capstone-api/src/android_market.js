@@ -18,8 +18,16 @@ app.get('/markets', async (req, res) => {
     }
 });
 
-app.get('markets/:id', async (req, res) => {
+app.get('/markets/:id', async (req, res) => {
     let id = req.params.id;
+    try {
 
-
+        let categories = await queryAsync('SELECT name, idcategory FROM category, floor WHERE floor.mall_idmall = ? AND category.floor_idfloor = floor.idfloor', [id]);
+        let map = await queryAsync('SELECT map, number FROM floor WHERE floor.mall_idmall = ?', [id]);
+        let items = await queryAsync('SELECT item.name, category_idcategory, item.floor_idfloor FROM item, floor WHERE item.floor_idfloor = floor.idfloor AND floor.mall_idmall = ?', [id]);
+        res.status(200).send({ categories: categories, map: map, items: items });
+    } catch (err) {
+        console.log({ err });
+        res.status(403).send({ error: 'Something failed!' });
+    }
 });
