@@ -123,7 +123,7 @@ public class AddtoCartActivity extends AppCompatActivity {
             }
         }).start();
         try {
-            Thread.sleep(800);
+            Thread.sleep(900);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -194,7 +194,7 @@ public class AddtoCartActivity extends AppCompatActivity {
         }).start();
 
         try {
-            Thread.sleep(800);
+            Thread.sleep(900);
         }catch (Exception e){
             e.printStackTrace();
         }

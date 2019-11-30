@@ -96,6 +96,11 @@ class ViewEx extends View{
                 for(int i=0;i<floorX;i++){
                     if(!(arr[j][i].equals("")))
                         canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyPaint);
+                    if(arr[j][i].equals("-1")){
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mall_entrance);
+                        Bitmap resized = Bitmap.createScaledBitmap(bitmap, viewX/(floorX + 2), viewX/(floorX + 2), true);
+                        canvas.drawBitmap(resized, viewX*(i+1)/(floorX+1)-viewX/((floorX + 2)*2),(viewY-viewX)/2 + viewX*(j+1)/(floorX+1)-viewX/((floorX + 2)*2),null);
+                    }
                 }
             }
 
@@ -126,8 +131,7 @@ class ViewEx extends View{
                 pt.setColor(0xFF000000);
                 pt.setStyle(Paint.Style.FILL_AND_STROKE);
 
-                //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.shopping_cart);
-                //canvas.drawBitmap(bitmap, touchInfoX,touchInfoY,null);
+
                 canvas.drawText(arr[touchY][touchX] + "번품목",centerX-70,centerY-10,pt);
                 //canvas.drawText("생선물",centerX-70,centerY,pt);
             }
