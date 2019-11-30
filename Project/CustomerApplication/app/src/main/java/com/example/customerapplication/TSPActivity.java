@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -44,7 +46,9 @@ class ViewExTSP extends View
     ArrayList<Integer> citiesY;
     ArrayList<ArrayList<Integer>> pathArrayX;
     ArrayList<ArrayList<Integer>> pathArrayY;
-    //public String[][] arr = {};
+
+    boolean flag = false;
+
     String[][] arr = {
             {"", "", "", "", "", ""},
             {"", "", "", "", "", ""},
@@ -63,6 +67,7 @@ class ViewExTSP extends View
 
     public void setArr(String[][] ar){
         arr = ar;
+        flag = true;
         invalidate();
     }
 
@@ -97,38 +102,44 @@ class ViewExTSP extends View
 
         super.onDraw(canvas);
 
-        canvas.drawColor(Color.WHITE);
-        //canvas.drawColor(getResources().getColor(R.color.Ivory));
+        if(flag){
+            canvas.drawColor(Color.WHITE);
+            //canvas.drawColor(getResources().getColor(R.color.Ivory));
 
-        Paint MyPaint = new Paint();
-        MyPaint.setColor(Color.GRAY);
-        MyPaint.setStrokeWidth(viewX/(floorX + 2));
-        for(int j=0;j<floorY;j++){
-            for(int i=0;i<floorX;i++){
-                if(!(arr[j][i].equals("")))
-                    canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyPaint);
+            Paint MyPaint = new Paint();
+            MyPaint.setColor(Color.GRAY);
+            MyPaint.setStrokeWidth(viewX/(floorX + 2));
+            for(int j=0;j<floorY;j++){
+                for(int i=0;i<floorX;i++){
+                    if(!(arr[j][i].equals("")))
+                        canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyPaint);
+                    if(arr[j][i].equals("-1")){
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mall_entrance);
+                        Bitmap resized = Bitmap.createScaledBitmap(bitmap, viewX/(floorX + 2), viewX/(floorX + 2), true);
+                        canvas.drawBitmap(resized, viewX*(i+1)/(floorX+1)-viewX/((floorX + 2)*2),(viewY-viewX)/2 + viewX*(j+1)/(floorX+1)-viewX/((floorX + 2)*2),null);
+                    }
+                }
             }
-        }
 
-        Paint mapEdgePaint = new Paint();
-        mapEdgePaint.setColor(Color.BLACK);
-        mapEdgePaint.setStrokeWidth(5f);
-        mapEdgePaint.setStyle(Paint.Style.STROKE);
+            Paint mapEdgePaint = new Paint();
+            mapEdgePaint.setColor(Color.BLACK);
+            mapEdgePaint.setStrokeWidth(5f);
+            mapEdgePaint.setStyle(Paint.Style.STROKE);
 
-        Path mapEdge = new Path();
-        mapEdge.moveTo(0,(viewY-viewX)/2);
-        mapEdge.lineTo(0,(viewY-viewX)/2);
-        mapEdge.lineTo(viewX,(viewY-viewX)/2);
-        mapEdge.lineTo(viewX,(viewY+viewX)/2);
-        mapEdge.lineTo(0,(viewY+viewX)/2);
-        mapEdge.lineTo(0,(viewY-viewX)/2);
-        canvas.drawPath(mapEdge, mapEdgePaint);
+            Path mapEdge = new Path();
+            mapEdge.moveTo(0,(viewY-viewX)/2);
+            mapEdge.lineTo(0,(viewY-viewX)/2);
+            mapEdge.lineTo(viewX,(viewY-viewX)/2);
+            mapEdge.lineTo(viewX,(viewY+viewX)/2);
+            mapEdge.lineTo(0,(viewY+viewX)/2);
+            mapEdge.lineTo(0,(viewY-viewX)/2);
+            canvas.drawPath(mapEdge, mapEdgePaint);
 
-        Paint LinePaint = new Paint();
-        LinePaint.setColor(Color.RED);
-        LinePaint.setStrokeWidth(10f);
-        LinePaint.setStyle(Paint.Style.STROKE);
-        //TSP
+            Paint LinePaint = new Paint();
+            LinePaint.setColor(Color.RED);
+            LinePaint.setStrokeWidth(10f);
+            LinePaint.setStyle(Paint.Style.STROKE);
+            //TSP
         /*Path tspPath = new Path();
         if(citiesX!=null){
             tspPath.moveTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
@@ -138,26 +149,37 @@ class ViewExTSP extends View
             tspPath.lineTo(viewX*(citiesX.get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(citiesY.get(0)+1)/(floorX+1));
             canvas.drawPath(tspPath, LinePaint);
         }*/
-        //TSP + pathfinding
-        Paint pt = new Paint();
-        //pt.setTextSize(60);
-        pt.setTextSize(2*viewX/((floorX + 2)*5));
-        pt.setColor(0xFF000000);
-        pt.setStyle(Paint.Style.FILL_AND_STROKE);
+            //TSP + pathfinding
+            Paint pt = new Paint();
+            //pt.setTextSize(60);
+            pt.setTextSize(2*viewX/((floorX + 2)*5));
+            pt.setColor(0xFF000000);
+            pt.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        if(pathArrayX!=null){
-            for(int i=0;i<pathArrayX.size();i++){
-                Path tspPath = new Path();
-                tspPath.moveTo(viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1));
+            if(pathArrayX!=null){
+                for(int i=0;i<pathArrayX.size();i++){
+                    Path tspPath = new Path();
+                    tspPath.moveTo(viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1));
 
-                for(int j=0; j<pathArrayX.get(i).size(); j++){
-                    tspPath.lineTo(viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1));
-                    //canvas.drawText(arr[pathArrayY.get(i).get(j)][pathArrayX.get(i).get(j)] + "번품목",viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1),pt);
+                    for(int j=0; j<pathArrayX.get(i).size(); j++){
+                        tspPath.lineTo(viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1));
+                        //canvas.drawText(arr[pathArrayY.get(i).get(j)][pathArrayX.get(i).get(j)] + "번품목",viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1),pt);
+
+                    }
+                    canvas.drawPath(tspPath, LinePaint);
+                    canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
+                            ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
+
+                    /*if(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)].equals("-1")){
+                        canvas.drawText("입구"
+                                ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
+                    }
+                    else{
+                        canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
+                                ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
+                    }*/
 
                 }
-                canvas.drawPath(tspPath, LinePaint);
-                canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
-                        ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
             }
         }
 
@@ -194,7 +216,7 @@ public class TSPActivity extends AppCompatActivity {
         /////////////////하드코딩으로 받음 바꿀것!!!
         /*vw.floorX=6;
         vw.floorY=5;*/
-        vw.arr = new String[][]{
+        /*vw.arr = new String[][]{
                 {"", "", "1", "1", "6", "0"},
                 {"3", "", "", "", "", "0"},
                 {"3", "", "", "2", "", "5"},
@@ -202,12 +224,12 @@ public class TSPActivity extends AppCompatActivity {
                 {"4", "", "", "", "", ""}
         };
         vw.floorX= vw.arr[0].length;
-        vw.floorY= vw.arr.length;
+        vw.floorY= vw.arr.length;*/
 
         Intent intent2 = getIntent();
         String toolbarTitle = intent2.getStringExtra("지점");
         int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
-        ArrayList shoppingList = intent2.getStringArrayListExtra("리스트");
+        final ArrayList shoppingList = intent2.getStringArrayListExtra("리스트");
 
         Call<JsonObject> res = Net.getInstance().getMemberFactoryIm().map_id(idFloor);
         res.enqueue(new Callback<JsonObject>() {       // --------------------------- E
@@ -221,6 +243,107 @@ public class TSPActivity extends AppCompatActivity {
                         arr = new Gson().fromJson(dataJson.map, String[][].class);
                         Log.d("Main 통신", arr[0][1]);
                         vw.setArr(arr);
+
+                        boolean exitOuterLoop = false;
+                        TourManager.clearArrayList();
+
+                        for(int j = 0; j< vw.arr.length; j++){
+                            for(int k = 0; k< vw.arr[j].length; k++){
+                                if(vw.arr[j][k].equals("-1")){
+                                    City city = new City(j,k);
+                                    TourManager.addCity(city);
+                                    exitOuterLoop = true;
+                                    break;
+                                }
+                            }
+                            if(exitOuterLoop)
+                                break;
+                        }
+                        exitOuterLoop = false;
+
+                        for(int i=0; i<shoppingList.size();i++){
+                            for(int j = 0; j< vw.arr.length; j++){
+                                for(int k = 0; k< vw.arr[j].length; k++){
+                                    if(vw.arr[j][k].equals(shoppingList.get(i))){
+                                        City city = new City(j,k);
+                                        TourManager.addCity(city);
+                                        exitOuterLoop = true;
+                                        break;
+                                    }
+                                }
+                                if(exitOuterLoop)
+                                    break;
+                            }
+                            exitOuterLoop = false;
+                        }
+
+                        // Set initial temp
+                        double temp = 10000;
+
+                        // Cooling rate
+                        double coolingRate = 0.003;
+
+                        // Initialize intial solution
+                        Tour currentSolution = new Tour();
+                        currentSolution.generateIndividual();
+
+                        System.out.println("Initial solution distance: " + currentSolution.getDistance());
+
+                        // Set as current best
+                        Tour best = new Tour(currentSolution.getTour());
+
+                        // Loop until system has cooled
+                        while (temp > 1) {
+                            // Create new neighbour tour
+                            Tour newSolution = new Tour(currentSolution.getTour());
+
+                            // Get a random positions in the tour
+                            int tourPos1 = (int) (newSolution.tourSize() * Math.random());
+                            int tourPos2 = (int) (newSolution.tourSize() * Math.random());
+
+                            // Get the cities at selected positions in the tour
+                            City citySwap1 = newSolution.getCity(tourPos1);
+                            City citySwap2 = newSolution.getCity(tourPos2);
+
+                            // Swap them
+                            newSolution.setCity(tourPos2, citySwap1);
+                            newSolution.setCity(tourPos1, citySwap2);
+
+                            // Get energy of solutions
+                            int currentEnergy = currentSolution.getDistance();
+                            int neighbourEnergy = newSolution.getDistance();
+
+                            // Decide if we should accept the neighbour
+                            if (acceptanceProbability(currentEnergy, neighbourEnergy, temp) > Math.random()) {
+                                currentSolution = new Tour(newSolution.getTour());
+                            }
+
+                            // Keep track of the best solution found
+                            if (currentSolution.getDistance() < best.getDistance()) {
+                                best = new Tour(currentSolution.getTour());
+                            }
+
+                            // Cool system
+                            temp *= 1-coolingRate;
+                        }
+
+                        System.out.println("Final solution distance: " + best.getDistance());
+                        System.out.println("Tour: " + best);
+
+                        ArrayList<Integer> citiesX = new ArrayList<>();
+                        ArrayList<Integer> citiesY = new ArrayList<>();
+                        for(int i=0; i<best.tourSize(); i++){
+                            citiesX.add(best.getCity(i).getX());
+                            citiesY.add(best.getCity(i).getY());
+                        }
+                        vw.drawCityPath(citiesX,citiesY);
+
+                        for(int i=0; i<best.tourSize()-1;i++){
+                            pathFinding(best.getCity(i).getX(), best.getCity(i).getY(), best.getCity(i+1).getX(), best.getCity(i+1).getY());
+                        }
+                        pathFinding(best.getCity(best.tourSize()-1).getX(), best.getCity(best.tourSize()-1).getY(), best.getCity(0).getX(), best.getCity(0).getY());
+                        vw.drawTotalPath(pathArrayX,pathArrayY);
+
                     }else{
                         Log.d("Main 통신", "실패 1 response 내용이 없음");
                     }
@@ -234,91 +357,7 @@ public class TSPActivity extends AppCompatActivity {
             }
         });
 
-        boolean exitOuterLoop = false;
-        TourManager.clearArrayList();
 
-        for(int i=0; i<shoppingList.size();i++){
-            for(int j = 0; j< vw.arr.length; j++){
-                for(int k = 0; k< vw.arr[j].length; k++){
-                    if(vw.arr[j][k].equals(shoppingList.get(i))){
-                        City city = new City(j,k);
-                        TourManager.addCity(city);
-                        exitOuterLoop = true;
-                        break;
-                    }
-                }
-                if(exitOuterLoop)
-                    break;
-            }
-            exitOuterLoop = false;
-        }
-
-        // Set initial temp
-        double temp = 10000;
-
-        // Cooling rate
-        double coolingRate = 0.003;
-
-        // Initialize intial solution
-        Tour currentSolution = new Tour();
-        currentSolution.generateIndividual();
-
-        System.out.println("Initial solution distance: " + currentSolution.getDistance());
-
-        // Set as current best
-        Tour best = new Tour(currentSolution.getTour());
-
-        // Loop until system has cooled
-        while (temp > 1) {
-            // Create new neighbour tour
-            Tour newSolution = new Tour(currentSolution.getTour());
-
-            // Get a random positions in the tour
-            int tourPos1 = (int) (newSolution.tourSize() * Math.random());
-            int tourPos2 = (int) (newSolution.tourSize() * Math.random());
-
-            // Get the cities at selected positions in the tour
-            City citySwap1 = newSolution.getCity(tourPos1);
-            City citySwap2 = newSolution.getCity(tourPos2);
-
-            // Swap them
-            newSolution.setCity(tourPos2, citySwap1);
-            newSolution.setCity(tourPos1, citySwap2);
-
-            // Get energy of solutions
-            int currentEnergy = currentSolution.getDistance();
-            int neighbourEnergy = newSolution.getDistance();
-
-            // Decide if we should accept the neighbour
-            if (acceptanceProbability(currentEnergy, neighbourEnergy, temp) > Math.random()) {
-                currentSolution = new Tour(newSolution.getTour());
-            }
-
-            // Keep track of the best solution found
-            if (currentSolution.getDistance() < best.getDistance()) {
-                best = new Tour(currentSolution.getTour());
-            }
-
-            // Cool system
-            temp *= 1-coolingRate;
-        }
-
-        System.out.println("Final solution distance: " + best.getDistance());
-        System.out.println("Tour: " + best);
-
-        ArrayList<Integer> citiesX = new ArrayList<>();
-        ArrayList<Integer> citiesY = new ArrayList<>();
-        for(int i=0; i<best.tourSize(); i++){
-            citiesX.add(best.getCity(i).getX());
-            citiesY.add(best.getCity(i).getY());
-        }
-        vw.drawCityPath(citiesX,citiesY);
-
-        for(int i=0; i<best.tourSize()-1;i++){
-            pathFinding(best.getCity(i).getX(), best.getCity(i).getY(), best.getCity(i+1).getX(), best.getCity(i+1).getY());
-        }
-        pathFinding(best.getCity(best.tourSize()-1).getX(), best.getCity(best.tourSize()-1).getY(), best.getCity(0).getX(), best.getCity(0).getY());
-        vw.drawTotalPath(pathArrayX,pathArrayY);
 
     }
     public static double acceptanceProbability(int energy, int newEnergy, double temperature) {

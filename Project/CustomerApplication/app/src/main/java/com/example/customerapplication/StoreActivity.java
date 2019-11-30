@@ -131,9 +131,15 @@ class ViewEx extends View{
                 pt.setColor(0xFF000000);
                 pt.setStyle(Paint.Style.FILL_AND_STROKE);
 
+                if(arr[touchY][touchX].equals("-1")){
+                    canvas.drawText("입구",centerX-pt.getTextSize(),centerY-pt.getTextSize(),pt);
+                }
+                else{
+                    canvas.drawText(arr[touchY][touchX] + "번품목",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
+                    //canvas.drawText("생선물",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
+                }
 
-                canvas.drawText(arr[touchY][touchX] + "번품목",centerX-70,centerY-10,pt);
-                //canvas.drawText("생선물",centerX-70,centerY,pt);
+
             }
 
         }
