@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MemberFactoryIm {
@@ -29,4 +30,8 @@ public interface MemberFactoryIm {
 
     @GET("/findMalls")
     Call<JsonArray> findMalls();
+
+    @GET("/map/{id}")
+    Call<JsonObject> map_id(@Path("id") Integer id);
+
 }

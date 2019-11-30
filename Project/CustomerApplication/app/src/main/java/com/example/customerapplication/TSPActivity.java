@@ -37,8 +37,8 @@ class ViewExTSP extends View
     ArrayList<Integer> citiesY;
     ArrayList<ArrayList<Integer>> pathArrayX;
     ArrayList<ArrayList<Integer>> pathArrayY;
+    public String[][] arr ;
 
-    public static String[][] arr ;
     public ViewExTSP(Context context)
     {
         super(context);
@@ -60,13 +60,14 @@ class ViewExTSP extends View
     public void onDraw(Canvas canvas)
     {
         //10*10 행렬 기준. 나중에 map.json 받은 후 파싱해서 가로 세로 구하고 파는 물건이면 1 되도록
-        arr = new String[][]{
+
+        /*arr = new String[][]{
                 {"", "", "1", "1", "6", "0"},
                 {"3", "", "", "", "", "0"},
                 {"3", "", "", "2", "", "5"},
                 {"", "", "", "", "", ""},
                 {"4", "", "", "", "", ""}
-        };
+        };*/
 
         floorX = arr[0].length;
         floorY = arr.length;
@@ -167,11 +168,20 @@ public class TSPActivity extends AppCompatActivity {
         display.getSize(size);
         vw.viewX = size.x;
         vw.viewY = size.y;
+
+        //vw.invalidate();
         /////////////////하드코딩으로 받음 바꿀것!!!
         /*vw.floorX=6;
         vw.floorY=5;*/
-        vw.floorX=ViewEx.arr[0].length;
-        vw.floorY=ViewEx.arr.length;
+        vw.arr = new String[][]{
+                {"", "", "1", "1", "6", "0"},
+                {"3", "", "", "", "", "0"},
+                {"3", "", "", "2", "", "5"},
+                {"", "", "", "", "", ""},
+                {"4", "", "", "", "", ""}
+        };
+        vw.floorX= vw.arr[0].length;
+        vw.floorY= vw.arr.length;
 
         Intent intent2 = getIntent();
         String toolbarTitle = intent2.getStringExtra("지점");
@@ -182,9 +192,9 @@ public class TSPActivity extends AppCompatActivity {
         TourManager.clearArrayList();
 
         for(int i=0; i<shoppingList.size();i++){
-            for(int j=0; j< ViewEx.arr.length;j++){
-                for(int k=0; k<ViewEx.arr[j].length;k++){
-                    if(ViewEx.arr[j][k].equals(shoppingList.get(i))){
+            for(int j = 0; j< vw.arr.length; j++){
+                for(int k = 0; k< vw.arr[j].length; k++){
+                    if(vw.arr[j][k].equals(shoppingList.get(i))){
                         City city = new City(j,k);
                         TourManager.addCity(city);
                         exitOuterLoop = true;
@@ -274,11 +284,11 @@ public class TSPActivity extends AppCompatActivity {
         return Math.exp((energy - newEnergy) / temperature);
     }
     public void pathFinding(int Ai, int Aj, int Bi, int Bj){
-        boolean[][] booleanArr = new boolean[ViewEx.arr.length][ViewEx.arr[0].length];
+        boolean[][] booleanArr = new boolean[vw.arr.length][vw.arr[0].length];
 
-        for(int i=0;i<ViewEx.arr.length;i++){
-            for(int j=0;j<ViewEx.arr[i].length;j++){
-                if(ViewEx.arr[i][j].equals("")){
+        for(int i=0;i<vw.arr.length;i++){
+            for(int j=0;j<vw.arr[i].length;j++){
+                if(vw.arr[i][j].equals("")){
                     booleanArr[i][j] = true;
                 }
                 else{
@@ -289,7 +299,7 @@ public class TSPActivity extends AppCompatActivity {
         booleanArr[Ai][Aj] = true;
         booleanArr[Bi][Bj] = true;
 
-        cell = new Node[ViewEx.arr.length][ViewEx.arr[0].length];
+        cell = new Node[vw.arr.length][vw.arr[0].length];
         generateHValue(booleanArr, Ai, Aj, Bi, Bj, booleanArr.length, 10, 14, true);
         ArrayList<Integer> pathX = new ArrayList<>();
         ArrayList<Integer> pathY = new ArrayList<>();

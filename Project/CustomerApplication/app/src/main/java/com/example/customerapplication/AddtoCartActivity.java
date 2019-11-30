@@ -79,6 +79,8 @@ public class AddtoCartActivity extends AppCompatActivity {
                     }
                 }
                 if(!shoppingList.isEmpty() && shoppingList.size()!=1){
+                    String json = new Gson().toJson(shoppingList);
+                    Log.d("Json=> ", json);
                     Intent intent = new Intent(getApplicationContext(), TSPActivity.class);
                     intent.putExtra("리스트", shoppingList);
                     //intent.putExtra("카테고리", categoryArr);
