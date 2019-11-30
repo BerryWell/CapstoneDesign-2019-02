@@ -22,10 +22,17 @@ import com.example.customerapplication.Astar.Node;
 import com.example.customerapplication.TSP.City;
 import com.example.customerapplication.TSP.Tour;
 import com.example.customerapplication.TSP.TourManager;
+import com.example.customerapplication.item.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 class ViewExTSP extends View
 {
@@ -37,7 +44,14 @@ class ViewExTSP extends View
     ArrayList<Integer> citiesY;
     ArrayList<ArrayList<Integer>> pathArrayX;
     ArrayList<ArrayList<Integer>> pathArrayY;
-    public String[][] arr ;
+    //public String[][] arr = {};
+    String[][] arr = {
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""}
+    };
 
     public ViewExTSP(Context context)
     {
@@ -46,6 +60,12 @@ class ViewExTSP extends View
     public ViewExTSP(Context context, AttributeSet att){
         super(context, att);
     }
+
+    public void setArr(String[][] ar){
+        arr = ar;
+        invalidate();
+    }
+
     public void drawCityPath(ArrayList x, ArrayList y){
         citiesX = y;
         citiesY = x;
@@ -153,6 +173,7 @@ public class TSPActivity extends AppCompatActivity {
     ArrayList<ArrayList<Integer>> pathArrayY = new ArrayList<>();
     static boolean additionalPath = false;
 
+    public String[][] arr;
     private ViewExTSP vw;
 
     @Override
@@ -185,8 +206,33 @@ public class TSPActivity extends AppCompatActivity {
 
         Intent intent2 = getIntent();
         String toolbarTitle = intent2.getStringExtra("지점");
-        //int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
+        int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
         ArrayList shoppingList = intent2.getStringArrayListExtra("리스트");
+
+        Call<JsonObject> res = Net.getInstance().getMemberFactoryIm().map_id(idFloor);
+        res.enqueue(new Callback<JsonObject>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        Log.d("Main 통신", response.body().toString());
+                        Map dataJson= new Gson().fromJson(response.body(), Map.class);
+                        Log.d("Main 통신", dataJson.map);
+                        arr = new Gson().fromJson(dataJson.map, String[][].class);
+                        Log.d("Main 통신", arr[0][1]);
+                        vw.setArr(arr);
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러 "+ response.message() + call.request().url().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
 
         boolean exitOuterLoop = false;
         TourManager.clearArrayList();
