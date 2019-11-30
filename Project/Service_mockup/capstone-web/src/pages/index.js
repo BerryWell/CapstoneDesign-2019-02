@@ -56,6 +56,7 @@ export default function SignIn() {
   const [values, setValues] = React.useState({
     id: '',
     password: '',
+    isSending:false
   });
   const handleChange = name => event => {
     setValues({
@@ -65,12 +66,14 @@ export default function SignIn() {
   };
   const onSubmitButtonClick = async () => {
     try {
+      setValues({isSending:true});
       let resultID = await signIn(values);
       enqueueSnackbar('로그인에 성공하였습니다.', successSnackbarOption);
       cookies.set('userId', resultID.id, { path: '/' });
       navigate('/main');
     } catch (err) {
       console.log(err);
+      setValues({isSending:false});
       enqueueSnackbar('에러가 발생하였습니다.', errorSnackbarOption);
     }
   };
@@ -120,13 +123,14 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
             onClick={onSubmitButtonClick}
+            disabled={values.isSending}
           >
-            Sign In
+            로그인
           </Button>
           <Grid container>
             <Grid item>
               <Link href="signup" variant="body2">
-                {"Don't have an account? Sign Up"}
+                {"계정이 없으시면 가입"}
               </Link>
             </Grid>
           </Grid>

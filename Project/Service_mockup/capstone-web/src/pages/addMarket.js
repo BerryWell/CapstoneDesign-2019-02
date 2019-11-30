@@ -64,7 +64,8 @@ export default function SetLayout() {
         lng: 126.956887,
         addressFromLatLng: "",
         maxFloor: 0,
-        userId: cookies.get('userId')
+        userId: cookies.get('userId'),
+        isSending:false
 
     });
     values.userId = cookies.get('userId');
@@ -88,6 +89,7 @@ export default function SetLayout() {
     }
     const sendMarketInfo = async () => {
         try {
+            setValues({isSending:true});
             let result = await addMarketInfo(values);
             console.log(result);
             cookies.set("editingMarketID", result.mallId);
@@ -96,6 +98,7 @@ export default function SetLayout() {
             navigate('/floorinfo');
         }
         catch (err) {
+            setValues({isSending:false});
             enqueueSnackbar("매장 등록 실패", errorSnackbarOption);
             console.log(err);
         }
@@ -149,6 +152,7 @@ export default function SetLayout() {
                     color="primary"
                     className={classes.submit}
                     onClick={sendMarketInfo}
+                    disabled={values.isSending}
                 >
                     등록
                         </Button>

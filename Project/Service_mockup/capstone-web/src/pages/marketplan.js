@@ -47,7 +47,8 @@ export default function SetLayout() {
         floorSelect: [],
         categoryNameIDMap: {},
 
-        selectedArea: { left: 0, top: 0, right: 0, bottom: 0 }
+        selectedArea: { left: 0, top: 0, right: 0, bottom: 0 },
+        isSending:false
     });
 
     const handleChange = name => event => {
@@ -128,6 +129,7 @@ export default function SetLayout() {
     };
     const savePlan = async () => {
         try {
+            setState({...values, isSending:true});
             let inputRows = [...values.rows];
             for (let floorIndex = 0; floorIndex < inputRows.length; floorIndex++) {
                 let floor = inputRows[floorIndex];
@@ -151,6 +153,7 @@ export default function SetLayout() {
             }
         }
         catch (err) {
+            setState({...values, isSending:false});
             enqueueSnackbar('매장 등록 실패', successSnackbarOption);
             console.log(err);
         }
@@ -179,7 +182,8 @@ export default function SetLayout() {
                         type="button"
                         variant="contained"
                         color="primary"
-                        onClick={savePlan}>
+                        onClick={savePlan}
+                        disabled={values.isSending}>
                         저장
                     </Button>
 
