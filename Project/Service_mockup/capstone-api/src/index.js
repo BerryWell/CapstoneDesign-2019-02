@@ -63,9 +63,10 @@ async function getItemsByMall(id) {
 
 async function getItemsByFloor(id) {
     return await queryAsync(
-        'SELECT idcategory, name \
+        "SELECT idcategory, name \
         FROM category \
-        WHERE floor_idfloor = ?',
+        WHERE floor_idfloor = ? \
+            AND name NOT LIKE '%가판대'",
         [id]
     );
 }
@@ -208,11 +209,11 @@ async function deleteMalls(id) {
     );
 }
 
-app.post('/deleteMalls', async (req, res) => {
-    console.log({ '/deleteMalls': req.body });
-    console.log({ '/deleteMalls': req.query });
+app.get('/deleteMalls', async (req, res) => {
+    console.log({ 'req.body: /deleteMalls': req.body });
+    console.log({ 'req.query: /deleteMalls': req.query });
     try {
-        const result = await deleteMalls(req.query.id, req.query.column, req.query.value  );
+        const result = await deleteMalls(req.query.id);
         console.log(result);
         res.send(result);
     } catch (err) {

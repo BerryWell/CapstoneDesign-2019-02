@@ -49,13 +49,12 @@ export async function uploadItems(item, quantity) {
 }
 
 export async function modifyMalls(id, column, value) {
-    const res = await axios.post('http://localhost:3000/modifyMalls', 
+    const res = await axios.get('http://localhost:3000/modifyMalls', 
         { "id": id, "column": column,  "value": value });
     return res.data;
 }
 
 export async function deleteMalls(id) {
-    const res = await axios.post('http://localhost:3000/deleteMalls', 
-        { "id": id });
+    const res = await axios.get('http://localhost:3000/deleteMalls', { "id": id });
     return res.data;
 }
