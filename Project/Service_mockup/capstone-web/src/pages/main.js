@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import { getStores, appendStore, modifyMalls, deleteMalls } from '../api/stores';
+import { getStores, appendStore, modifyMalls, deleteMalls, testItemList } from '../api/stores';
 import { makeStyles } from '@material-ui/core/styles';
 import { navigate } from 'gatsby';
 import Cookies from 'universal-cookie';
@@ -58,9 +58,15 @@ const IndexPage = () => {
   const navigateAddMarket = () => {
     navigate('/addMarket');
   };
-
+  const testBtn = async () => {
+    let result = testItemList();
+    console.log(result);
+  }
   return (
     <>
+    <Button variant="contained" color="primary" onClick={testBtn}>
+        상점테스트버튼
+      </Button>
       <h1>매장 리스트</h1>
       <Button variant="contained" color="primary" onClick={navigateAddMarket}>
         가게 추가하기

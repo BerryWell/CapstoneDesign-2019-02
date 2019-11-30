@@ -58,3 +58,8 @@ export async function deleteMalls(id) {
     const res = await axios.post('http://localhost:3000/deleteMalls', { "id": id });
     return res.data;
 }
+export async function testItemList(){
+    const res = await axios.post('http://localhost:3000/itemstat/popularity', 
+        ["1", "2", "5", "3", "6", "4"]);
+    return res.data;
+}
