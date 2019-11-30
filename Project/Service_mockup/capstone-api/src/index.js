@@ -209,11 +209,11 @@ async function deleteMalls(id) {
     );
 }
 
-app.get('/deleteMalls', async (req, res) => {
+app.post('/deleteMalls', async (req, res) => {
     console.log({ 'req.body: /deleteMalls': req.body });
     console.log({ 'req.query: /deleteMalls': req.query });
     try {
-        const result = await deleteMalls(req.query.id);
+        const result = await deleteMalls(req.body.id.idmall);
         console.log(result);
         res.send(result);
     } catch (err) {

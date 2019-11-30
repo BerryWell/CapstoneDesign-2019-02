@@ -94,6 +94,7 @@ const StoreCard = ({
     console.log('deleteMall clicked!');
     deleteMalls(idmall);
     setSettingMenuOpen(false);
+    
   }
   return <Card>
     <CardHeader
@@ -124,6 +125,9 @@ const StoreCard = ({
       <Typography variant="body2" color="textSecondary" component="p">
         {max_floor}층
       </Typography>
+      <Typography variant="body2" color="textSecondary" component="p">
+        ID: { idmall }
+      </Typography>
     </CardContent>
   </Card>;
 }
@@ -141,12 +145,12 @@ const StoreCardSettingMenu = ({
     keepMounted
     open={open}
     onClose={onClose}
-    idmall={idmall}
+    //idmall={idmall}
     //onModifyMall = { onModifyMall }
     //onDeleteMall = { onDeleteMall }
   >
     <MenuItem onClick={ onModifyMall }>수정</MenuItem>
-    <MenuItem onClick={ onDeleteMall }>삭제</MenuItem>
-    <MenuItem onClick={ () => {console.log('hello')}  }>{idmall}</MenuItem>
+    <MenuItem onClick={ onDeleteMall.bind(this, {idmall}) }>삭제</MenuItem>
+    <MenuItem>{idmall}</MenuItem>
   </Menu>;
 };

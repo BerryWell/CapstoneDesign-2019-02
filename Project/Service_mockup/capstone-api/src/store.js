@@ -10,7 +10,7 @@ const stores = [
     },
 ];
 async function getMallById(userId) {
-    return await queryAsync('SELECT name, address, max_floor \
+    return await queryAsync('SELECT idmall, name, address, max_floor \
     FROM mall \
     WHERE member_manager_idmember_manager = ?', [userId]);
 }

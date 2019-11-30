@@ -55,6 +55,6 @@ export async function modifyMalls(id, column, value) {
 }
 
 export async function deleteMalls(id) {
-    const res = await axios.get('http://localhost:3000/deleteMalls', { "id": id });
+    const res = await axios.post('http://localhost:3000/deleteMalls', { "id": id });
     return res.data;
 }
