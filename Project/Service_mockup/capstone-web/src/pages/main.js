@@ -83,7 +83,8 @@ export default IndexPage;
 const StoreCard = ({
   name,
   address,
-  max_floor
+  max_floor,
+  idmall
 }) => {
   const settingMenuAnchorRef = useRef(null);
   const [settingMenuOpen, setSettingMenuOpen] = useState(false);
@@ -99,6 +100,7 @@ const StoreCard = ({
     console.log('deleteMall clicked!');
     deleteMalls(idmall);
     setSettingMenuOpen(false);
+    
   }
   return <Card>
     <CardHeader
@@ -119,6 +121,7 @@ const StoreCard = ({
       onClose={closeSettingMenu}
       onModifyMall = { modifyMall }
       onDeleteMall = { deleteMall }
+      idmall = { idmall }
     />
     <CardMedia
       image="/static/images/cards/paella.jpg"
@@ -127,6 +130,9 @@ const StoreCard = ({
     <CardContent>
       <Typography variant="body2" color="textSecondary" component="p">
         {max_floor}층
+      </Typography>
+      <Typography variant="body2" color="textSecondary" component="p">
+        ID: { idmall }
       </Typography>
     </CardContent>
   </Card>;
@@ -137,17 +143,20 @@ const StoreCardSettingMenu = ({
   anchorEl,
   onClose,
   onModifyMall, 
-  onDeleteMall
+  onDeleteMall,
+  idmall
 }) => {
   return <Menu
     anchorEl={anchorEl}
     keepMounted
     open={open}
     onClose={onClose}
+    //idmall={idmall}
     //onModifyMall = { onModifyMall }
     //onDeleteMall = { onDeleteMall }
   >
     <MenuItem onClick={ onModifyMall }>수정</MenuItem>
-    <MenuItem onClick={ onDeleteMall }>삭제</MenuItem>
+    <MenuItem onClick={ onDeleteMall.bind(this, {idmall}) }>삭제</MenuItem>
+    <MenuItem>{idmall}</MenuItem>
   </Menu>;
 };

@@ -64,7 +64,7 @@ app.get('/map/:id', async (req, res) => {
     try {
         let result = await queryAsync('SELECT map FROM floor WHERE idfloor = ?', [id]);
         console.log(result);
-        res.status(200).send(result[0].map);
+        res.status(200).send(result[0]);
     }
     catch (err) {
         console.log({ err });

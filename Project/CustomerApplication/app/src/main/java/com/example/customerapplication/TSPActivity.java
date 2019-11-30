@@ -22,10 +22,17 @@ import com.example.customerapplication.Astar.Node;
 import com.example.customerapplication.TSP.City;
 import com.example.customerapplication.TSP.Tour;
 import com.example.customerapplication.TSP.TourManager;
+import com.example.customerapplication.item.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 class ViewExTSP extends View
 {
@@ -37,8 +44,15 @@ class ViewExTSP extends View
     ArrayList<Integer> citiesY;
     ArrayList<ArrayList<Integer>> pathArrayX;
     ArrayList<ArrayList<Integer>> pathArrayY;
+    //public String[][] arr = {};
+    String[][] arr = {
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""},
+            {"", "", "", "", "", ""}
+    };
 
-    public static String[][] arr ;
     public ViewExTSP(Context context)
     {
         super(context);
@@ -46,6 +60,12 @@ class ViewExTSP extends View
     public ViewExTSP(Context context, AttributeSet att){
         super(context, att);
     }
+
+    public void setArr(String[][] ar){
+        arr = ar;
+        invalidate();
+    }
+
     public void drawCityPath(ArrayList x, ArrayList y){
         citiesX = y;
         citiesY = x;
@@ -60,13 +80,14 @@ class ViewExTSP extends View
     public void onDraw(Canvas canvas)
     {
         //10*10 행렬 기준. 나중에 map.json 받은 후 파싱해서 가로 세로 구하고 파는 물건이면 1 되도록
-        arr = new String[][]{
+
+        /*arr = new String[][]{
                 {"", "", "1", "1", "6", "0"},
                 {"3", "", "", "", "", "0"},
                 {"3", "", "", "2", "", "5"},
                 {"", "", "", "", "", ""},
                 {"4", "", "", "", "", ""}
-        };
+        };*/
 
         floorX = arr[0].length;
         floorY = arr.length;
@@ -152,6 +173,7 @@ public class TSPActivity extends AppCompatActivity {
     ArrayList<ArrayList<Integer>> pathArrayY = new ArrayList<>();
     static boolean additionalPath = false;
 
+    public String[][] arr;
     private ViewExTSP vw;
 
     @Override
@@ -167,24 +189,58 @@ public class TSPActivity extends AppCompatActivity {
         display.getSize(size);
         vw.viewX = size.x;
         vw.viewY = size.y;
+
+        //vw.invalidate();
         /////////////////하드코딩으로 받음 바꿀것!!!
         /*vw.floorX=6;
         vw.floorY=5;*/
-        vw.floorX=ViewEx.arr[0].length;
-        vw.floorY=ViewEx.arr.length;
+        vw.arr = new String[][]{
+                {"", "", "1", "1", "6", "0"},
+                {"3", "", "", "", "", "0"},
+                {"3", "", "", "2", "", "5"},
+                {"", "", "", "", "", ""},
+                {"4", "", "", "", "", ""}
+        };
+        vw.floorX= vw.arr[0].length;
+        vw.floorY= vw.arr.length;
 
         Intent intent2 = getIntent();
         String toolbarTitle = intent2.getStringExtra("지점");
-        //int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
+        int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
         ArrayList shoppingList = intent2.getStringArrayListExtra("리스트");
+
+        Call<JsonObject> res = Net.getInstance().getMemberFactoryIm().map_id(idFloor);
+        res.enqueue(new Callback<JsonObject>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        Log.d("Main 통신", response.body().toString());
+                        Map dataJson= new Gson().fromJson(response.body(), Map.class);
+                        Log.d("Main 통신", dataJson.map);
+                        arr = new Gson().fromJson(dataJson.map, String[][].class);
+                        Log.d("Main 통신", arr[0][1]);
+                        vw.setArr(arr);
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러 "+ response.message() + call.request().url().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
 
         boolean exitOuterLoop = false;
         TourManager.clearArrayList();
 
         for(int i=0; i<shoppingList.size();i++){
-            for(int j=0; j< ViewEx.arr.length;j++){
-                for(int k=0; k<ViewEx.arr[j].length;k++){
-                    if(ViewEx.arr[j][k].equals(shoppingList.get(i))){
+            for(int j = 0; j< vw.arr.length; j++){
+                for(int k = 0; k< vw.arr[j].length; k++){
+                    if(vw.arr[j][k].equals(shoppingList.get(i))){
                         City city = new City(j,k);
                         TourManager.addCity(city);
                         exitOuterLoop = true;
@@ -274,11 +330,11 @@ public class TSPActivity extends AppCompatActivity {
         return Math.exp((energy - newEnergy) / temperature);
     }
     public void pathFinding(int Ai, int Aj, int Bi, int Bj){
-        boolean[][] booleanArr = new boolean[ViewEx.arr.length][ViewEx.arr[0].length];
+        boolean[][] booleanArr = new boolean[vw.arr.length][vw.arr[0].length];
 
-        for(int i=0;i<ViewEx.arr.length;i++){
-            for(int j=0;j<ViewEx.arr[i].length;j++){
-                if(ViewEx.arr[i][j].equals("")){
+        for(int i=0;i<vw.arr.length;i++){
+            for(int j=0;j<vw.arr[i].length;j++){
+                if(vw.arr[i][j].equals("")){
                     booleanArr[i][j] = true;
                 }
                 else{
@@ -289,7 +345,7 @@ public class TSPActivity extends AppCompatActivity {
         booleanArr[Ai][Aj] = true;
         booleanArr[Bi][Bj] = true;
 
-        cell = new Node[ViewEx.arr.length][ViewEx.arr[0].length];
+        cell = new Node[vw.arr.length][vw.arr[0].length];
         generateHValue(booleanArr, Ai, Aj, Bi, Bj, booleanArr.length, 10, 14, true);
         ArrayList<Integer> pathX = new ArrayList<>();
         ArrayList<Integer> pathY = new ArrayList<>();

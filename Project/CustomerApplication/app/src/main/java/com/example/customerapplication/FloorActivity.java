@@ -77,6 +77,7 @@ public class FloorActivity extends AppCompatActivity {
             String[] categoryArr = selectedCategory.split(","); //문자열을 배열로
 
             Log.d("카테고리 1, 2", categoryArr[0] + " " + categoryArr[1]);
+            ((MyApp)getApplicationContext()).setSelectedId(Integer.parseInt(selectedId));
 
             Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
             intent.putExtra("지점",toolbarTitle);
@@ -116,6 +117,7 @@ public class FloorActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
                         Log.d("Main 통신", response.body().toString());
+                        Log.d("Main 통신 주소", call.request().url().toString());
                         Floor[] dataJson= new Gson().fromJson(response.body(), Floor[].class);
                         Log.d("Main 결과", dataJson[0].category);
                         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);

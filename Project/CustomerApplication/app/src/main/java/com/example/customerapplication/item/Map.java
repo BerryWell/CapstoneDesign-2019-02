@@ -6,12 +6,13 @@ import java.util.ArrayList;
 
 public class Map {
     @SerializedName("map")
-    public ArrayList<String[]> map;
+    //public ArrayList<String[]> map;
+    public String map;
 
     @Override
     public String toString() {
         return "Map{" +
-                "category='" + map + '\'' +
+                "Map='" + map + '\'' +
                 '}';
     }
 }
