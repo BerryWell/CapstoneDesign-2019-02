@@ -283,7 +283,7 @@ export default function SetLayout() {
                     type="button"
                     variant="contained"
                     color="primary"
-                    onClick={() => { navigate('/uploaditems') }}
+                    onClick={() => { navigate('/uploadItems') }}
                 >
                     CSV에서 읽어들이기
                             </Button>
