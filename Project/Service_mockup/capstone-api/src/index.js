@@ -187,7 +187,7 @@ async function modifyMalls(id, column, value) {
     );
 }
 
-app.post('/modifyMalls', async (req, res) => {
+app.get('/modifyMalls', async (req, res) => {
     console.log({ '/modifyMalls': req.body });
     console.log({ '/modifyMalls': req.query });
     try {

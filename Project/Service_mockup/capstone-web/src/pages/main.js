@@ -10,6 +10,11 @@ import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import { getStores, appendStore, modifyMalls, deleteMalls, testItemList } from '../api/stores';
 import { makeStyles } from '@material-ui/core/styles';
 import { navigate } from 'gatsby';
@@ -137,9 +142,6 @@ const StoreCard = ({
       <Typography variant="body2" color="textSecondary" component="p">
         {max_floor}층
       </Typography>
-      <Typography variant="body2" color="textSecondary" component="p">
-        ID: {idmall}
-      </Typography>
     </CardContent>
   </Card>;
 }
@@ -164,6 +166,5 @@ const StoreCardSettingMenu = ({
     <MenuItem onClick={() => { cookies.set('dashboardMallId', idmall); navigate('/dashboard/') }}>통계현황</MenuItem>
     <MenuItem onClick={onModifyMall}>수정</MenuItem>
     <MenuItem onClick={onDeleteMall.bind(this, { idmall })}>삭제</MenuItem>
-    <MenuItem>{idmall}</MenuItem>
   </Menu>;
 };
