@@ -22,8 +22,8 @@ export async function getCategory(marketId) {
     const res = await axios.get('http://localhost:3000/category?marketid=' + marketId);
     return res.data;
 }
-export async function getStocks(profile) {
-    const res = await axios.get('http://localhost:3000/dashboard_quantity', profile);
+export async function getStocks(mallId) {
+    const res = await axios.get('http://localhost:3000/dashboard_quantity/' + mallId);
     return res.data;
 }
 export async function getPopularity(mallId) {

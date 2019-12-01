@@ -79,7 +79,7 @@ class ChartsPage extends React.Component {
         }
       }
     }
-    getStocks().then(res => {
+    getStocks(cookies.get('dashboardMallId')).then(res => {
       //state 내부 값 업데이트하는 법
       //https://stackoverflow.com/questions/43040721/how-to-update-nested-state-properties-in-react
       let dataBar = { ...this.state.dataBar };

@@ -34,12 +34,13 @@ app.get('/items', async (req, res) => {
     }
 });
 
-async function findItems() {
+async function findItems(id) {
     return await queryAsync(
 
         'SELECT category.name as category, item.name as item, item.quantity as quantity \
-        FROM category, item \
-        WHERE category.idcategory = item.category_idcategory'
+        FROM category, item, floor \
+        WHERE category.idcategory = item.category_idcategory AND floor.idfloor = item.floor_idfloor AND mall_idmall = ?',
+        [id]
         /*
        'SELECT category.name as category, SUM(item.quantity) as quantity \
         FROM category, item \
@@ -96,10 +97,10 @@ app.get('/item_quantity', async (req, res) => {
     }
 });
 
-app.get('/dashboard_quantity', async (req, res) => {
+app.get('/dashboard_quantity/:id', async (req, res) => {
     console.log({ 'req.body': req.body });
     try {
-        const result = await findItems();
+        const result = await findItems(req.params.id);
         console.log(result);
         res.send(result);
     } catch (err) {
@@ -191,7 +192,7 @@ app.get('/modifyMalls', async (req, res) => {
     console.log({ '/modifyMalls': req.body });
     console.log({ '/modifyMalls': req.query });
     try {
-        const result = await modifyMalls(req.query.id, req.query.column, req.query.value  );
+        const result = await modifyMalls(req.query.id, req.query.column, req.query.value);
         console.log(result);
         res.send(result);
     } catch (err) {
