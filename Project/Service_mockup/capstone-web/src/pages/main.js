@@ -64,7 +64,7 @@ const IndexPage = () => {
   }
   return (
     <>
-    <Button variant="contained" color="primary" onClick={testBtn}>
+      <Button variant="contained" color="primary" onClick={testBtn}>
         상점테스트버튼
       </Button>
       <h1>매장 리스트</h1>
@@ -90,7 +90,7 @@ const StoreCard = ({
   const [settingMenuOpen, setSettingMenuOpen] = useState(false);
   const openSettingMenu = () => setSettingMenuOpen(true);
   const closeSettingMenu = () => setSettingMenuOpen(false);
-  
+
   const modifyMall = (id, column, value) => {
     console.log('modifyMall clicked!');
     modifyMalls(id, column, value);
@@ -100,7 +100,7 @@ const StoreCard = ({
     console.log('deleteMall clicked!');
     deleteMalls(idmall);
     setSettingMenuOpen(false);
-    
+
   }
   return <Card>
     <CardHeader
@@ -119,9 +119,9 @@ const StoreCard = ({
       open={settingMenuOpen}
       anchorEl={settingMenuAnchorRef.current}
       onClose={closeSettingMenu}
-      onModifyMall = { modifyMall }
-      onDeleteMall = { deleteMall }
-      idmall = { idmall }
+      onModifyMall={modifyMall}
+      onDeleteMall={deleteMall}
+      idmall={idmall}
     />
     <CardMedia
       image="/static/images/cards/paella.jpg"
@@ -132,7 +132,7 @@ const StoreCard = ({
         {max_floor}층
       </Typography>
       <Typography variant="body2" color="textSecondary" component="p">
-        ID: { idmall }
+        ID: {idmall}
       </Typography>
     </CardContent>
   </Card>;
@@ -142,7 +142,7 @@ const StoreCardSettingMenu = ({
   open,
   anchorEl,
   onClose,
-  onModifyMall, 
+  onModifyMall,
   onDeleteMall,
   idmall
 }) => {
@@ -151,12 +151,13 @@ const StoreCardSettingMenu = ({
     keepMounted
     open={open}
     onClose={onClose}
-    //idmall={idmall}
-    //onModifyMall = { onModifyMall }
-    //onDeleteMall = { onDeleteMall }
+  //idmall={idmall}
+  //onModifyMall = { onModifyMall }
+  //onDeleteMall = { onDeleteMall }
   >
-    <MenuItem onClick={ onModifyMall }>수정</MenuItem>
-    <MenuItem onClick={ onDeleteMall.bind(this, {idmall}) }>삭제</MenuItem>
+    <MenuItem onClick={() => { cookies.set('dashboardMallId', idmall); navigate('/dashboard/') }}>통계현황</MenuItem>
+    <MenuItem onClick={onModifyMall}>수정</MenuItem>
+    <MenuItem onClick={onDeleteMall.bind(this, { idmall })}>삭제</MenuItem>
     <MenuItem>{idmall}</MenuItem>
   </Menu>;
 };

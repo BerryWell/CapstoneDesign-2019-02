@@ -26,6 +26,10 @@ export async function getStocks(profile) {
     const res = await axios.get('http://localhost:3000/dashboard_quantity', profile);
     return res.data;
 }
+export async function getPopularity(mallId) {
+    const res = await axios.get('http://localhost:3000/markets/popularity/' + mallId);
+    return res.data;
+}
 export async function setMarketLayout(rows, mallId) {
     const res = await axios.post('http://localhost:3000/marketplan',
         { "rows": rows, "mallId": mallId });
@@ -49,8 +53,8 @@ export async function uploadItems(item, quantity) {
 }
 
 export async function modifyMalls(id, column, value) {
-    const res = await axios.get('http://localhost:3000/modifyMalls', 
-        { "id": id, "column": column,  "value": value });
+    const res = await axios.get('http://localhost:3000/modifyMalls',
+        { "id": id, "column": column, "value": value });
     return res.data;
 }
 
@@ -58,8 +62,8 @@ export async function deleteMalls(id) {
     const res = await axios.post('http://localhost:3000/deleteMalls', { "id": id });
     return res.data;
 }
-export async function testItemList(){
-    const res = await axios.post('http://localhost:3000/itemstat/popularity', 
+export async function testItemList() {
+    const res = await axios.post('http://localhost:3000/itemstat/popularity',
         ["1", "2", "5", "3", "6", "4"]);
     return res.data;
 }
