@@ -136,19 +136,16 @@ app.get('/item_quantity_by_category', async (req, res) => {
     }
 });
 
-async function uploadItems(item_name, quantity) {
-    return await queryAsync(
-        'INSERT INTO item(category_idcategory, name, quantity, floor_idfloor) \
-        VALUES (1, ?, ?, 1) ',
-        [item_name, quantity]
-    );
-}
-
 app.post('/uploadItems', async (req, res) => {
     console.log({ '/uploadItems': req.body });
     console.log({ '/uploadItems': req.query });
     try {
-        const result = await uploadItems(req.body.item, req.body.quantity);
+        const { data, marketId } = req.body;
+        for (let i = 0; i < data.length; i++) {
+            const { category, item, quantity, floor } = data[i];
+            const result = await queryAsync("INSERT IGNORE INTO category(name, floor_idfloor) VALUES(?, (SELECT idfloor FROM floor WHERE mall_idmall = ? AND number = ?))", [category, marketId, floor]);
+            const result2 = await queryAsync("INSERT IGNORE INTO item(category_idcategory, name, quantity, floor_idfloor) VALUES (?, ?, ?, (SELECT idfloor FROM floor WHERE mall_idmall = ? AND number = ?))", [result.insertId, item, quantity, marketId, floor]);
+        }
         console.log(result);
         res.send(result);
     } catch (err) {

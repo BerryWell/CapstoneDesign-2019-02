@@ -279,6 +279,14 @@ export default function SetLayout() {
                 >
                     품목 저장
                             </Button>
+                <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => { navigate('/uploaditems') }}
+                >
+                    CSV에서 읽어들이기
+                            </Button>
             </form>
 
 

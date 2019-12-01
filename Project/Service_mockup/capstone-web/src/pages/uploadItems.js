@@ -11,12 +11,16 @@ import CSVReader from 'react-csv-reader'
 //import SEO from '../components/seo'
 import { uploadItems } from '../api/stores';
 
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 
 
 const keys = [
   "category",
-  "item", 
-  "quantity"
+  "item",
+  "quantity",
+  "floor"
 ]
 
 const papaparseOptions = {
@@ -42,11 +46,8 @@ class Form extends React.Component {
 
     // DB 쿼리 넣기
     //uploadItems(file["item"], file["quantity"]);
-    for(var i = 0; i < file.length; i++) {
-      var obj = file[i];
-      console.log(obj.item, obj.quantity);
-      uploadItems(obj.item, obj.quantity);
-    }
+    //cookies.set("editingMarketMaxFloor"
+    uploadItems(file, cookies.get("editingMarketID"));
   }
 
   handleError = error => {
@@ -59,18 +60,18 @@ class Form extends React.Component {
     return (
       <>
         <h1>Upload items</h1>
-        <p>This page is for uploading items by uploading a csv file.</p>      
+        <p>This page is for uploading items by uploading a csv file.</p>
 
-      <CSVReader
-        keys={keys}
-        cssClass="csv-reader-input"
-        label="Upload a csv file."
-        onFileLoaded={this.handleFile}
-        onError={this.handleError}
-        parserOptions={papaparseOptions}
-        inputId="ObiWan"
-        inputStyle={{color: 'red'}}
-      />
+        <CSVReader
+          keys={keys}
+          cssClass="csv-reader-input"
+          label="Upload a csv file."
+          onFileLoaded={this.handleFile}
+          onError={this.handleError}
+          parserOptions={papaparseOptions}
+          inputId="ObiWan"
+          inputStyle={{ color: 'red' }}
+        />
 
       </>
     );
