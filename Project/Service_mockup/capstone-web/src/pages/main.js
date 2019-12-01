@@ -98,7 +98,9 @@ const StoreCard = ({
 
   const modifyMall = (id, column, value) => {
     console.log('modifyMall clicked!');
-    modifyMalls(id, column, value);
+    console.log(id);
+    navigate('/modifyMall'+'?'+id.idmall);
+    //modifyMalls(id, column, value);
     setSettingMenuOpen(false);
   }
   const deleteMall = async (idmall) => {
@@ -164,7 +166,7 @@ const StoreCardSettingMenu = ({
   //onDeleteMall = { onDeleteMall }
   >
     <MenuItem onClick={() => { cookies.set('dashboardMallId', idmall); navigate('/dashboard/') }}>통계현황</MenuItem>
-    <MenuItem onClick={onModifyMall}>수정</MenuItem>
+    <MenuItem onClick={onModifyMall.bind(this, { idmall })}>수정</MenuItem>
     <MenuItem onClick={onDeleteMall.bind(this, { idmall })}>삭제</MenuItem>
   </Menu>;
 };
