@@ -95,7 +95,7 @@ app.get('/flooritem/:id', async (req, res) => {
 
 
     try {
-        let result = await queryAsync('SELECT name, category_idcategory FROM item WHERE floor_idfloor = ?', [id]);
+        let result = await queryAsync('SELECT name, iditem FROM item WHERE floor_idfloor = ?', [id]);
         console.log(result);
         res.status(200).send(result);
     }

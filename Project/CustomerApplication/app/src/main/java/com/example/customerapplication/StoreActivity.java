@@ -76,6 +76,11 @@ class ViewEx extends View{
         invalidate();
     }
 
+    public void setArrName(){
+
+        invalidate();
+    }
+
     public void onDraw(Canvas canvas)
     {
         floorX = arr[0].length;
