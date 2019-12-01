@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -127,6 +128,7 @@ class ViewExTSP extends View
             pt.setTextSize(2*viewX/((floorX + 2)*5));
             pt.setColor(0xFF000000);
             pt.setStyle(Paint.Style.FILL_AND_STROKE);
+            pt.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
             for(int j=0;j<floorY;j++){
                 for(int i=0;i<floorX;i++){
@@ -162,6 +164,7 @@ class ViewExTSP extends View
             LinePaint.setColor(Color.RED);
             LinePaint.setStrokeWidth(10f);
             LinePaint.setStyle(Paint.Style.STROKE);
+            LinePaint.setAlpha(127);
             //TSP
         /*Path tspPath = new Path();
         if(citiesX!=null){
@@ -183,7 +186,6 @@ class ViewExTSP extends View
                     for(int j=0; j<pathArrayX.get(i).size(); j++){
                         tspPath.lineTo(viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1), (viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1));
                         //canvas.drawText(arr[pathArrayY.get(i).get(j)][pathArrayX.get(i).get(j)] + "번품목",viewX*(pathArrayX.get(i).get(j)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(j)+1)/(floorX+1),pt);
-
                     }
                     canvas.drawPath(tspPath, LinePaint);
                     if(itemName!=null){
@@ -194,18 +196,6 @@ class ViewExTSP extends View
                             }
                         }
                     }
-                    /*canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
-                            ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);*/
-
-                    /*if(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)].equals("-1")){
-                        canvas.drawText("입구"
-                                ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
-                    }
-                    else{
-                        canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
-                                ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
-                    }*/
-
                 }
             }
         }

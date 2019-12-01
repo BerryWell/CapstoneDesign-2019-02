@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -144,6 +145,7 @@ class ViewEx extends View{
 
                 pt.setColor(0xFF000000);
                 pt.setStyle(Paint.Style.FILL_AND_STROKE);
+                pt.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
                 if(arr[touchY][touchX].equals("-1")){
                     canvas.drawText("입구",centerX-pt.getTextSize(),centerY-pt.getTextSize(),pt);
@@ -152,7 +154,7 @@ class ViewEx extends View{
                     for(int i=0;i<itemName.size();i++){
                         if(arr[touchY][touchX].equals(String.valueOf(itemName.get(i).iditem))){
                             canvas.drawText(itemName.get(i).name + "",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
-                            Snackbar.make(this, "터치된 상품의 이름 =" + itemName.get(i).name, Snackbar.LENGTH_SHORT).show();
+                            //Snackbar.make(this, "터치된 상품의 이름 =" + itemName.get(i).name, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                     //canvas.drawText(arr[touchY][touchX] + "번품목",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
