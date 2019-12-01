@@ -78,6 +78,10 @@ export default function SetLayout() {
         isSending: false
     });
     const handleChange = name => event => {
+        if (name === 'quantity' && event.target.value <= 0) {
+            enqueueSnackbar("수량은 0보다 작을 수 없습니다", errorSnackbarOption);
+            return;
+        }
         setState({
             ...values,
             [name]: event.target.value,
@@ -96,18 +100,30 @@ export default function SetLayout() {
         }
     }
     const saveItem = () => {
-        if (values.itemName !== '') {
-            let newFloorStructure = values.floorStructure;
-            let shelf = newFloorStructure[values.curFloor].children.find(x => x.id === values.curShelf);
-            if (shelf) {
-                if (!shelf.children) {
-                    shelf.children = []
-                }
-                shelf.children.push({ id: values.itemName, name: values.itemName, quantity: values.quantity });
-
-                setState({ ...values, itemName: "", floorStructure: newFloorStructure, selectedShelf: "", quantity: 0 })
-            }
+        if (values.quantity <= 0) {
+            enqueueSnackbar("수량은 0보다 작을 수 없습니다", errorSnackbarOption);
+            return;
         }
+        if (values.itemName === '') {
+            enqueueSnackbar("상품 이름을 입력해주세요", errorSnackbarOption);
+            return;
+        }
+
+        let newFloorStructure = values.floorStructure;
+        if (!newFloorStructure[values.curFloor].children) {
+            enqueueSnackbar("가판대를 선택해주세요", errorSnackbarOption);
+            return;
+        }
+        let shelf = newFloorStructure[values.curFloor].children.find(x => x.id === values.curShelf);
+        if (shelf) {
+            if (!shelf.children) {
+                shelf.children = []
+            }
+            shelf.children.push({ id: values.itemName, name: values.itemName, quantity: values.quantity });
+
+            setState({ ...values, itemName: "", floorStructure: newFloorStructure, selectedShelf: "", quantity: 0 })
+        }
+
     }
 
 
@@ -125,7 +141,7 @@ export default function SetLayout() {
                 <TreeItem
                     key={treeItemData.id}
                     nodeId={treeItemData.id}
-                    label={treeItemData.name}
+                    label={treeItemData.name + (treeItemData.quantity ? '(' + treeItemData.quantity + ')' : '')}
                     children={children}
                 />
             );
@@ -239,6 +255,7 @@ export default function SetLayout() {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={values.quantity}
                             onChange={handleChange('quantity')}
                         />
                         <Button
