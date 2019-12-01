@@ -123,7 +123,7 @@ public class AddtoCartActivity extends AppCompatActivity {
             }
         }).start();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(700);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -194,12 +194,13 @@ public class AddtoCartActivity extends AppCompatActivity {
         }).start();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1100);
         }catch (Exception e){
             e.printStackTrace();
         }
         /*Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().item_quantity_by_category(id);
 
+        try {
         try {
             Response<JsonArray> response = res2.execute();
             SubCategoryItem[] dataJson2= new Gson().fromJson(response.body(), SubCategoryItem[].class);

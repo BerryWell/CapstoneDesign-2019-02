@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
                         //String users = response.body(); //body()는, json 으로 컨버팅되어 객체에 담겨 지정되로 리턴됨.
-                        //여기서는 지정을 Call<지정타입> 이므로 List<User> 가 리턴타입이 됨.
                         Log.d("Main 통신", response.body());
                         Toast.makeText(MainActivity.this, "API 연결 성공", Toast.LENGTH_SHORT).show();
                         // DO SOMETHING HERE with users!

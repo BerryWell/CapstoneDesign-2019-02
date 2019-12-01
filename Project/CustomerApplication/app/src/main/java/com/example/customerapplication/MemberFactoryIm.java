@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 
 public interface MemberFactoryIm {
     //@GET("users/login")
-    //Call<List<User>> login();
+
     @GET("/")
     Call<String> test();
 
@@ -33,5 +33,8 @@ public interface MemberFactoryIm {
 
     @GET("/map/{id}")
     Call<JsonObject> map_id(@Path("id") Integer id);
+
+    @GET("/flooritem/{id}")
+    Call<JsonArray> flooritem_id(@Path("id") Integer id);
 
 }
