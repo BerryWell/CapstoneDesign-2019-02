@@ -24,8 +24,11 @@ import com.example.customerapplication.Astar.Node;
 import com.example.customerapplication.TSP.City;
 import com.example.customerapplication.TSP.Tour;
 import com.example.customerapplication.TSP.TourManager;
+import com.example.customerapplication.item.FloorItem;
 import com.example.customerapplication.item.Map;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ class ViewExTSP extends View
             {"", "", "", "", "", ""},
             {"", "", "", "", "", ""}
     };
+    ArrayList<FloorItem> itemName;
 
     public ViewExTSP(Context context)
     {
@@ -68,6 +72,11 @@ class ViewExTSP extends View
     public void setArr(String[][] ar){
         arr = ar;
         flag = true;
+        invalidate();
+    }
+
+    public void setArrName(ArrayList<FloorItem> data){
+        itemName = data;
         invalidate();
     }
 
@@ -109,14 +118,28 @@ class ViewExTSP extends View
             Paint MyPaint = new Paint();
             MyPaint.setColor(Color.GRAY);
             MyPaint.setStrokeWidth(viewX/(floorX + 2));
+            Paint MyBlackPaint = new Paint();
+            MyBlackPaint.setColor(Color.BLACK);
+            MyBlackPaint.setStrokeWidth(viewX/(floorX + 2));
+
+            Paint pt = new Paint();
+            //pt.setTextSize(60);
+            pt.setTextSize(2*viewX/((floorX + 2)*5));
+            pt.setColor(0xFF000000);
+            pt.setStyle(Paint.Style.FILL_AND_STROKE);
+
             for(int j=0;j<floorY;j++){
                 for(int i=0;i<floorX;i++){
-                    if(!(arr[j][i].equals("")))
+                    if(arr[j][i].equals("0")){
+                        canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyBlackPaint);
+                    }
+                    else if(!(arr[j][i].equals("")))
                         canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyPaint);
                     if(arr[j][i].equals("-1")){
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mall_entrance);
                         Bitmap resized = Bitmap.createScaledBitmap(bitmap, viewX/(floorX + 2), viewX/(floorX + 2), true);
                         canvas.drawBitmap(resized, viewX*(i+1)/(floorX+1)-viewX/((floorX + 2)*2),(viewY-viewX)/2 + viewX*(j+1)/(floorX+1)-viewX/((floorX + 2)*2),null);
+                        canvas.drawText("입구",viewX*(i+1)/(floorX+1)-pt.getTextSize(),(viewY-viewX)/2 + viewX*(j+1)/(floorX+1)-pt.getTextSize(),pt);
                     }
                 }
             }
@@ -150,11 +173,7 @@ class ViewExTSP extends View
             canvas.drawPath(tspPath, LinePaint);
         }*/
             //TSP + pathfinding
-            Paint pt = new Paint();
-            //pt.setTextSize(60);
-            pt.setTextSize(2*viewX/((floorX + 2)*5));
-            pt.setColor(0xFF000000);
-            pt.setStyle(Paint.Style.FILL_AND_STROKE);
+
 
             if(pathArrayX!=null){
                 for(int i=0;i<pathArrayX.size();i++){
@@ -167,8 +186,16 @@ class ViewExTSP extends View
 
                     }
                     canvas.drawPath(tspPath, LinePaint);
-                    canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
-                            ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);
+                    if(itemName!=null){
+                        for(int k=0;k<itemName.size();k++){
+                            if(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)].equals(String.valueOf(itemName.get(k).iditem))){
+                                canvas.drawText(itemName.get(k).name + ""
+                                        ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-4*pt.getTextSize()/3,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -pt.getTextSize()/5,pt);
+                            }
+                        }
+                    }
+                    /*canvas.drawText(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)] + "번품목"
+                            ,viewX*(pathArrayX.get(i).get(0)+1)/(floorX+1)-70,(viewY-viewX)/2 + viewX*(pathArrayY.get(i).get(0)+1)/(floorX+1) -10,pt);*/
 
                     /*if(arr[pathArrayY.get(i).get(0)][pathArrayX.get(i).get(0)].equals("-1")){
                         canvas.drawText("입구"
@@ -230,6 +257,34 @@ public class TSPActivity extends AppCompatActivity {
         String toolbarTitle = intent2.getStringExtra("지점");
         int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
         final ArrayList shoppingList = intent2.getStringArrayListExtra("리스트");
+
+        Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().flooritem_id(idFloor);
+        res2.enqueue(new Callback<JsonArray>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        Log.d("Main 통신", response.body().toString());
+                        FloorItem[] dataJson= new Gson().fromJson(response.body(), FloorItem[].class);
+                        Log.d("Main 결과", dataJson[0].name);
+                        ArrayList<FloorItem> data = new ArrayList<>();
+                        for (int i = 0; i < dataJson.length; i++) {
+                            data.add(new FloorItem(dataJson[i].iditem, dataJson[i].name));
+                        }
+                        Log.d("Main 결과", data.get(0).name + data.get(0).iditem);
+                        vw.setArrName(data);
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러");
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
 
         Call<JsonObject> res = Net.getInstance().getMemberFactoryIm().map_id(idFloor);
         res.enqueue(new Callback<JsonObject>() {       // --------------------------- E
@@ -356,8 +411,6 @@ public class TSPActivity extends AppCompatActivity {
                 Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
             }
         });
-
-
 
     }
     public static double acceptanceProbability(int energy, int newEnergy, double temperature) {

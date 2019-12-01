@@ -78,7 +78,7 @@ public class AddtoCartActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if(!shoppingList.isEmpty() && shoppingList.size()!=1){
+                if(!shoppingList.isEmpty()){
                     String json = new Gson().toJson(shoppingList);
                     Log.d("Json=> ", json);
                     Intent intent = new Intent(getApplicationContext(), TSPActivity.class);
@@ -89,7 +89,7 @@ public class AddtoCartActivity extends AppCompatActivity {
                 }
                 else{
                     Toast.makeText(AddtoCartActivity.this
-                            , "두 개 이상의 품목을 선택하세요.", Toast.LENGTH_SHORT).show();
+                            , "한 개 이상의 품목을 선택하세요.", Toast.LENGTH_SHORT).show();
                 }
 
             }

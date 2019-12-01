@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.customerapplication.item.FloorItem;
 import com.example.customerapplication.item.Map;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -61,6 +62,7 @@ class ViewEx extends View{
         {"", "", "", "", "", ""},
         {"", "", "", "", "", ""}
     };
+    ArrayList<FloorItem> itemName;
 
     public ViewEx(Context context)
     {
@@ -76,8 +78,8 @@ class ViewEx extends View{
         invalidate();
     }
 
-    public void setArrName(){
-
+    public void setArrName(ArrayList<FloorItem> data){
+        itemName = data;
         invalidate();
     }
 
@@ -97,9 +99,16 @@ class ViewEx extends View{
             Paint MyPaint = new Paint();
             MyPaint.setColor(Color.GRAY);
             MyPaint.setStrokeWidth(viewX/(floorX + 2));
+            Paint MyBlackPaint = new Paint();
+            MyBlackPaint.setColor(Color.BLACK);
+            MyBlackPaint.setStrokeWidth(viewX/(floorX + 2));
+
             for(int j=0;j<floorY;j++){
                 for(int i=0;i<floorX;i++){
-                    if(!(arr[j][i].equals("")))
+                    if(arr[j][i].equals("0")){
+                        canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyBlackPaint);
+                    }
+                    else if(!(arr[j][i].equals("")))
                         canvas.drawPoint(viewX*(i+1)/(floorX+1), (viewY-viewX)/2 + viewX*(j+1)/(floorX+1), MyPaint);
                     if(arr[j][i].equals("-1")){
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mall_entrance);
@@ -140,13 +149,16 @@ class ViewEx extends View{
                     canvas.drawText("입구",centerX-pt.getTextSize(),centerY-pt.getTextSize(),pt);
                 }
                 else{
-                    canvas.drawText(arr[touchY][touchX] + "번품목",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
+                    for(int i=0;i<itemName.size();i++){
+                        if(arr[touchY][touchX].equals(String.valueOf(itemName.get(i).iditem))){
+                            canvas.drawText(itemName.get(i).name + "",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
+                            Snackbar.make(this, "터치된 상품의 이름 =" + itemName.get(i).name, Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                    //canvas.drawText(arr[touchY][touchX] + "번품목",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
                     //canvas.drawText("생선물",centerX-4*pt.getTextSize()/3,centerY-pt.getTextSize()/5,pt);
                 }
-
-
             }
-
         }
     }
 
@@ -166,7 +178,7 @@ class ViewEx extends View{
                     //map json file에서 받을수도 있을듯!
                     Log.d("터치된 상품의 touchInfoX =", String.valueOf(touchInfoX)); //iditem 받아서 item name 출력. 0, -1의 경우 예외처리 (벽, 정문 등...)
                     Log.d("터치된 상품의 touchX =", String.valueOf((event.getX()*(floorX+1)/viewX)-0.5));
-                    Snackbar.make(this, "터치된 상품의 iditem =" + arr[touchY][touchX], Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(this, "터치된 상품의 iditem =" + arr[touchY][touchX], Snackbar.LENGTH_SHORT).show();
                     invalidate();
                 }
             }
@@ -234,6 +246,34 @@ public class StoreActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {    //------------------G
+                Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
+            }
+        });
+
+        Call<JsonArray> res2 = Net.getInstance().getMemberFactoryIm().flooritem_id(Integer.parseInt(idFloor));
+        res2.enqueue(new Callback<JsonArray>() {       // --------------------------- E
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
+                if(response.isSuccessful()){
+                    if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
+                        Log.d("Main 통신", response.body().toString());
+                        FloorItem[] dataJson= new Gson().fromJson(response.body(), FloorItem[].class);
+                        Log.d("Main 결과", dataJson[0].name);
+                        ArrayList<FloorItem> data = new ArrayList<>();
+                        for (int i = 0; i < dataJson.length; i++) {
+                            data.add(new FloorItem(dataJson[i].iditem, dataJson[i].name));
+                        }
+                        Log.d("Main 결과", data.get(0).name + data.get(0).iditem);
+                        vw.setArrName(data);
+                    }else{
+                        Log.d("Main 통신", "실패 1 response 내용이 없음");
+                    }
+                }else{
+                    Log.d("Main 통신", "실패 2 서버 에러");
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {    //------------------G
                 Log.d("Main 통신", "실패 3 통신 에러 "+t.getLocalizedMessage());
             }
         });
