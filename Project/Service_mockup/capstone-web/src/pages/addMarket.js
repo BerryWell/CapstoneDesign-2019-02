@@ -88,6 +88,27 @@ export default function SetLayout() {
         </div>
     }
     const sendMarketInfo = async () => {
+        if (values.name === '' || values.address === '') {
+
+            enqueueSnackbar("매장명, 상세주소는 공란일 수 없습니다", errorSnackbarOption);
+            return;
+        }
+
+        if (values.addressFromLatLng === '') {
+            enqueueSnackbar("지도에서 위치를 설정해주세요", errorSnackbarOption);
+            return;
+
+        }
+        if (values.maxFloor === '') {
+            enqueueSnackbar("층 수를 설정해주세요", errorSnackbarOption);
+            return;
+
+        }
+        if (values.maxFloor <= 0) {
+            enqueueSnackbar("층 수는 0보다 작을 수 없습니다", errorSnackbarOption);
+            return;
+
+        }
         try {
             setValues({ isSending: true });
             let result = await addMarketInfo(values);
@@ -128,6 +149,7 @@ export default function SetLayout() {
                             onClick={(e) => {
                                 Geocode.fromLatLng(e.lat, e.lng).then(response => {
                                     setValues({
+                                        ...values,
                                         addressFromLatLng: response.results[0].formatted_address,
                                         lat: e.lat,
                                         lng: e.lng
@@ -135,6 +157,7 @@ export default function SetLayout() {
 
                                 }, error => {
                                     setValues({
+                                        ...values,
                                         addressFromLatLng: "",
                                         lat: e.lat,
                                         lng: e.lng
