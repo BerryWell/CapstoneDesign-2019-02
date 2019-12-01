@@ -18,7 +18,7 @@
     <ExpandableListView
         android:id="@+id/lvCategory"
         android:layout_width="match_parent"
-        android:layout_height="520dp"
+        android:layout_height="450dp"
         android:childDivider="@color/colorBlack"
         android:divider="@null"
         android:dividerHeight="0dp" />
