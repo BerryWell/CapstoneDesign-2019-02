@@ -166,7 +166,6 @@ const StoreCardSettingMenu = ({
   //onDeleteMall = { onDeleteMall }
   >
     <MenuItem onClick={() => { cookies.set('dashboardMallId', idmall); navigate('/dashboard/') }}>통계현황</MenuItem>
-    <MenuItem onClick={onModifyMall.bind(this, { idmall })}>수정</MenuItem>
     <MenuItem onClick={onDeleteMall.bind(this, { idmall })}>삭제</MenuItem>
   </Menu>;
 };
