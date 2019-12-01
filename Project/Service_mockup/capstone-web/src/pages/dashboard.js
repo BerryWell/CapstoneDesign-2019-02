@@ -7,7 +7,10 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 
-import { getStocks } from '../api/stores';
+import { getStocks, getPopularity } from '../api/stores';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+//dashboardMallId
 //const datasets = getStocks();
 //const labels = JSON.parse(datasets[0]);
 //const dataset_parsed = JSON.parse(datasets);
@@ -29,6 +32,18 @@ class ChartsPage extends React.Component {
         datasets: [
           {
             label: "재고(개)",
+            order: 1,
+            data: [],
+            backgroundColor: [],
+            borderWidth: 2,
+            borderColor: []
+          }
+        ]
+      },
+      popularBar: {
+        datasets: [
+          {
+            label: "리스트 등록 횟수",
             order: 1,
             data: [],
             backgroundColor: [],
@@ -75,9 +90,20 @@ class ChartsPage extends React.Component {
         dataBar.datasets[0].data.push(quantity);
         dataBar.datasets[0].backgroundColor.push("rgba(255, 134,159,0.4)");
         dataBar.datasets[0].borderColor.push("rgba(255, 134, 159, 1)");
-        console.log(category, item, quantity);
       });
       this.setState({ dataBar });
+    });
+    getPopularity(cookies.get('dashboardMallId')).then(res => {
+      let popularBar = { ...this.state.popularBar };
+      res.map(element => {
+        console.log(element);
+        const { name, count } = element;
+        popularBar.labels.push(name);
+        popularBar.datasets[0].data.push(Number(count));
+        popularBar.datasets[0].backgroundColor.push("rgba(255, 134,159,0.4)");
+        popularBar.datasets[0].borderColor.push("rgba(255, 134, 159, 1)");
+      });
+      this.setState({ popularBar });
     });
   }
   render() {
@@ -86,6 +112,8 @@ class ChartsPage extends React.Component {
       <MDBContainer>
         <h3 className="mt-5">재고 현황</h3>
         <Bar data={this.state.dataBar} options={this.state.barChartOptions} />
+        <h3 className="mt-5">인기 상품</h3>
+        <Bar data={this.state.popularBar} options={this.state.barChartOptions} />
       </MDBContainer>
     );
   }

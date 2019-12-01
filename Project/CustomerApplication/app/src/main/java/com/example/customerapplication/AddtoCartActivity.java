@@ -52,7 +52,7 @@ public class AddtoCartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addto_cart);
 
         Intent intent2 = getIntent();
-        int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
+        final int idFloor = Integer.parseInt(intent2.getStringExtra("층수"));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,6 +83,7 @@ public class AddtoCartActivity extends AppCompatActivity {
                     Log.d("Json=> ", json);
                     Intent intent = new Intent(getApplicationContext(), TSPActivity.class);
                     intent.putExtra("리스트", shoppingList);
+                    intent.putExtra("층수", String.valueOf(idFloor));
                     //intent.putExtra("카테고리", categoryArr);
                     startActivity(intent); // 다음화면으로 넘어가기
                 }
@@ -122,7 +123,7 @@ public class AddtoCartActivity extends AppCompatActivity {
             }
         }).start();
         try {
-            Thread.sleep(800);
+            Thread.sleep(1000);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -193,7 +194,7 @@ public class AddtoCartActivity extends AppCompatActivity {
         }).start();
 
         try {
-            Thread.sleep(800);
+            Thread.sleep(1000);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -77,6 +77,7 @@ public class FloorActivity extends AppCompatActivity {
             String[] categoryArr = selectedCategory.split(","); //문자열을 배열로
 
             Log.d("카테고리 1, 2", categoryArr[0] + " " + categoryArr[1]);
+            ((MyApp)getApplicationContext()).setSelectedId(Integer.parseInt(selectedId));
 
             Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
             intent.putExtra("지점",toolbarTitle);

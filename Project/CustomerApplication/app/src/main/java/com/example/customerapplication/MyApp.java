@@ -12,6 +12,7 @@ public class MyApp extends Application {
     private  ArrayList<DataItem> arCategory;
     private  ArrayList<SubCategoryItem> arSubCategory;
     private  ArrayList<ArrayList<SubCategoryItem>> listArSubCategory;
+    private int selectedId;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -25,6 +26,12 @@ public class MyApp extends Application {
     }
     public void setArCategory(ArrayList<DataItem> item) {
         this.arCategory = item;
+    }
+    public void setSelectedId(int selectedId) {
+        this.selectedId = selectedId;
+    }
+    public int getSelectedId(){
+        return selectedId;
     }
     public boolean isArCategory(){
         if(arCategory==null)

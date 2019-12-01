@@ -51,12 +51,13 @@ async function findItems() {
 
 async function getItemsByMall(id) {
     return await queryAsync(
-        'SELECT floor.idfloor as id, GROUP_CONCAT(distinct category.name) as category, floor.number as floor \
+        "SELECT floor.idfloor as id, GROUP_CONCAT(distinct category.name) as category, floor.number as floor \
         FROM category, floor \
         WHERE floor.mall_idmall = ? \
             AND floor.idfloor = category.floor_idfloor \
+            AND category.name NOT LIKE '%가판대%'\
         GROUP BY id, floor \
-        ORDER BY floor DESC',
+        ORDER BY floor DESC",
         [id]
     );
 }
@@ -66,7 +67,7 @@ async function getItemsByFloor(id) {
         "SELECT idcategory, name \
         FROM category \
         WHERE floor_idfloor = ? \
-            AND name NOT LIKE '%가판대'",
+            AND name NOT LIKE '%가판대%'",
         [id]
     );
 }
