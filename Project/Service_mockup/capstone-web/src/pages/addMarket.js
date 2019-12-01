@@ -65,7 +65,7 @@ export default function SetLayout() {
         addressFromLatLng: "",
         maxFloor: 0,
         userId: cookies.get('userId'),
-        isSending:false
+        isSending: false
 
     });
     values.userId = cookies.get('userId');
@@ -89,7 +89,7 @@ export default function SetLayout() {
     }
     const sendMarketInfo = async () => {
         try {
-            setValues({isSending:true});
+            setValues({ isSending: true });
             let result = await addMarketInfo(values);
             console.log(result);
             cookies.set("editingMarketID", result.mallId);
@@ -98,7 +98,7 @@ export default function SetLayout() {
             navigate('/floorinfo');
         }
         catch (err) {
-            setValues({isSending:false});
+            setValues({ isSending: false });
             enqueueSnackbar("매장 등록 실패", errorSnackbarOption);
             console.log(err);
         }
@@ -115,6 +115,37 @@ export default function SetLayout() {
                 매장정보 입력
                     </Typography>
             <form className={classes.form} onSubmit={e => e.preventDefault()}>
+
+                <Typography component="h2" variant="h5">
+                    주소:{values.addressFromLatLng}
+                </Typography>
+                <Grid item>
+                    <div style={{ height: '100vh', width: '100vh' }}>
+                        <GoogleMap
+                            defaultZoom={10}
+                            defaultCenter={[37.504073, 126.956887]}
+                            onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
+                            onClick={(e) => {
+                                Geocode.fromLatLng(e.lat, e.lng).then(response => {
+                                    setValues({
+                                        addressFromLatLng: response.results[0].formatted_address,
+                                        lat: e.lat,
+                                        lng: e.lng
+                                    });
+
+                                }, error => {
+                                    setValues({
+                                        addressFromLatLng: "",
+                                        lat: e.lat,
+                                        lng: e.lng
+                                    });
+                                });
+                            }}
+                        >
+                            <Marker lat={values.lat} lng={values.lng} />
+                        </GoogleMap>
+                    </div>
+                </Grid>
                 <TextField
                     variant="outlined"
                     margin="normal"
@@ -156,36 +187,6 @@ export default function SetLayout() {
                 >
                     등록
                         </Button>
-                <Typography component="h2" variant="h5">
-                    주소:{values.addressFromLatLng}
-                </Typography>
-                <Grid item>
-                    <div style={{ height: '100vh', width: '100vh' }}>
-                        <GoogleMap
-                            defaultZoom={10}
-                            defaultCenter={[37.504073, 126.956887]}
-                            onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
-                            onClick={(e) => {
-                                Geocode.fromLatLng(e.lat, e.lng).then(response => {
-                                    setValues({
-                                        addressFromLatLng: response.results[0].formatted_address,
-                                        lat: e.lat,
-                                        lng: e.lng
-                                    });
-
-                                }, error => {
-                                    setValues({
-                                        addressFromLatLng: "",
-                                        lat: e.lat,
-                                        lng: e.lng
-                                    });
-                                });
-                            }}
-                        >
-                            <Marker lat={values.lat} lng={values.lng} />
-                        </GoogleMap>
-                    </div>
-                </Grid>
             </form>
 
 

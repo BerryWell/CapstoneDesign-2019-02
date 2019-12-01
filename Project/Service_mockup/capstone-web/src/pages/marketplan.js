@@ -31,12 +31,7 @@ export default function SetLayout() {
     const { enqueueSnackbar } = useSnackbar();
     const [values, setState] = React.useState({
         items: [],
-        columns: [
-            { key: 0, name: 0 },
-            { key: 1, name: 1 },
-            { key: 2, name: 2 },
-            { key: 3, name: 3 },
-            { key: 4, name: 4 }],
+        columns: [...Array(10).keys()].map(element => { return { key: element, name: element } }),
         rows: [],
         itemName: '',
         refresh: false,
@@ -48,7 +43,7 @@ export default function SetLayout() {
         categoryNameIDMap: {},
 
         selectedArea: { left: 0, top: 0, right: 0, bottom: 0 },
-        isSending:false
+        isSending: false
     });
 
     const handleChange = name => event => {
@@ -81,9 +76,9 @@ export default function SetLayout() {
             values.floorSelect.push(floorCnt);
             values.rows[floorCnt] = [];
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 10; i++) {
                 let rowData = [];
-                for (let j = 0; j < 5; j++) {
+                for (let j = 0; j < 10; j++) {
                     rowData[j] = '';
                 }
                 values.rows[floorCnt][i] = rowData;
@@ -129,7 +124,7 @@ export default function SetLayout() {
     };
     const savePlan = async () => {
         try {
-            setState({...values, isSending:true});
+            setState({ ...values, isSending: true });
             let inputRows = [...values.rows];
             for (let floorIndex = 0; floorIndex < inputRows.length; floorIndex++) {
                 let floor = inputRows[floorIndex];
@@ -153,7 +148,7 @@ export default function SetLayout() {
             }
         }
         catch (err) {
-            setState({...values, isSending:false});
+            setState({ ...values, isSending: false });
             enqueueSnackbar('매장 등록 실패', successSnackbarOption);
             console.log(err);
         }
