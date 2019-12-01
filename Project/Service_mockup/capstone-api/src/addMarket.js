@@ -59,7 +59,7 @@ app.post('/addmarketitem', async (req, res) => {
                     items[category.name] = [];
                     for (let k = 0; k < category.children.length; k++) {
                         let item = category.children[k];
-                        items[category.name].push([item.name, floorNum]);
+                        items[category.name].push([item.name, floorNum, item.quantity]);
                     }
                 }
             }
@@ -81,13 +81,14 @@ app.post('/addmarketitem', async (req, res) => {
                 continue;
             let categoryMap = {};
             categoryIds.map(element => categoryMap[element.name] = element.idcategory);
+
             //카테고리 내 아이템마다
             for (const [categoryName, categoryId] of Object.entries(categoryMap)) {
                 if (!items[categoryName])
                     continue;
                 for (let i = 0; i < items[categoryName].length; i++) {
                     let item = items[categoryName][i];
-                    await queryAsync('INSERT INTO item (name, category_idcategory, floor_idfloor) values (?, ?, ?)', [item[0], categoryMap[categoryName], floorId]);
+                    await queryAsync('INSERT INTO item (name, category_idcategory, floor_idfloor, quantity) values (?, ?, ?, ?)', [item[0], categoryMap[categoryName], floorId, item[2]]);
                 }
             }
         }

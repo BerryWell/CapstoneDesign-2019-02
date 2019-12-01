@@ -67,14 +67,15 @@ export default function SetLayout() {
     const { enqueueSnackbar } = useSnackbar();
 
     const [values, setState] = React.useState({
-        floorItem: [...Array(cookies.get("editingMarketMaxFloor")).keys()].map(element => {return {key:(element+1).toString()}}),
+        floorItem: [...Array(cookies.get("editingMarketMaxFloor")).keys()].map(element => { return { key: (element + 1).toString() } }),
         shelves: [],
         shelveName: "",
         curFloor: 0,
         curShelf: "",
         itemName: "",
-        floorStructure: [...Array(cookies.get("editingMarketMaxFloor")).keys()].map(element => {return { id: (element+1).toString(), name: (element+1).toString() }}),
-        isSending:false
+        quantity: 0,
+        floorStructure: [...Array(cookies.get("editingMarketMaxFloor")).keys()].map(element => { return { id: (element + 1).toString(), name: (element + 1).toString() } }),
+        isSending: false
     });
     const handleChange = name => event => {
         setState({
@@ -102,9 +103,9 @@ export default function SetLayout() {
                 if (!shelf.children) {
                     shelf.children = []
                 }
-                shelf.children.push({ id: values.itemName, name: values.itemName });
+                shelf.children.push({ id: values.itemName, name: values.itemName, quantity: values.quantity });
 
-                setState({ ...values, itemName: "", floorStructure: newFloorStructure, selectedShelf: "" })
+                setState({ ...values, itemName: "", floorStructure: newFloorStructure, selectedShelf: "", quantity: 0 })
             }
         }
     }
@@ -112,7 +113,7 @@ export default function SetLayout() {
 
 
     const getTreeItemsFromData = treeItems => {
-        if(!treeItems){
+        if (!treeItems) {
             return undefined;
         }
         return treeItems.map(treeItemData => {
@@ -151,7 +152,7 @@ export default function SetLayout() {
     }
     const sendData = async () => {
         try {
-            setState({...values, isSending:true});
+            setState({ ...values, isSending: true });
             let result = await addMarketItemInfo(values.floorStructure, cookies.get('editingMarketID'), cookies.get('userId'));
             if (result) {
                 enqueueSnackbar("아이템 등록 성공", successSnackbarOption);
@@ -159,7 +160,7 @@ export default function SetLayout() {
             }
         }
         catch (err) {
-            setState({...values, isSending:false});
+            setState({ ...values, isSending: false });
             enqueueSnackbar("아이템 등록 실패", errorSnackbarOption);
             console.log(err);
         }
@@ -180,8 +181,8 @@ export default function SetLayout() {
                             onChange={changeFloor('curFloor')}
                         >
                             {
-                             values.floorItem.map((element, key) => <MenuItem key={key.toString()} value={key.toString()}>{element.key}</MenuItem>)
-                             }
+                                values.floorItem.map((element, key) => <MenuItem key={key.toString()} value={key.toString()}>{element.key}</MenuItem>)
+                            }
                         </Select>
                     </Grid>
                     <Grid item xs={12}>
@@ -215,7 +216,7 @@ export default function SetLayout() {
                                 {values.floorStructure[values.curFloor].children ?
                                     values.floorStructure[values.curFloor].children.map((element) =>
                                         <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.name}</MenuItem>) :
-                               []}
+                                    []}
                             </Select>
                         </FormControl>
 
@@ -230,6 +231,15 @@ export default function SetLayout() {
                             id="itemName"
                             value={values.itemName}
                             onChange={handleChange('itemName')}
+                        />
+                        <TextField
+                            id="quantity"
+                            label="수량"
+                            type="number"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={handleChange('quantity')}
                         />
                         <Button
                             type="submit"
