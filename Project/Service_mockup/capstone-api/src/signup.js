@@ -24,7 +24,7 @@ app.post('/signin', async (req, res) => {
         const result = await findMember(id, password);
         res.send({ "id": result });
     } catch (err) {
-        res.status(403).send({ error: 'Something failed!' });
+        res.status(403).send({ error: err });
     }
 });
 
