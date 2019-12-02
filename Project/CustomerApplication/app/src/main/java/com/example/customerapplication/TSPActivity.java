@@ -254,9 +254,9 @@ public class TSPActivity extends AppCompatActivity {
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                        Log.d("Main 통신", response.body().toString());
+                        //Log.d("Main 통신", response.body().toString());
                         FloorItem[] dataJson= new Gson().fromJson(response.body(), FloorItem[].class);
-                        Log.d("Main 결과", dataJson[0].name);
+                        //Log.d("Main 결과", dataJson[0].name);
                         ArrayList<FloorItem> data = new ArrayList<>();
                         for (int i = 0; i < dataJson.length; i++) {
                             data.add(new FloorItem(dataJson[i].iditem, dataJson[i].name));
@@ -282,11 +282,11 @@ public class TSPActivity extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {   // ---------- F
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                        Log.d("Main 통신", response.body().toString());
+                        //Log.d("Main 통신", response.body().toString());
                         Map dataJson= new Gson().fromJson(response.body(), Map.class);
-                        Log.d("Main 통신", dataJson.map);
+                        //Log.d("Main 통신", dataJson.map);
                         arr = new Gson().fromJson(dataJson.map, String[][].class);
-                        Log.d("Main 통신", arr[0][1]);
+                        //Log.d("Main 통신", arr[0][1]);
                         vw.setArr(arr);
 
                         boolean exitOuterLoop = false;

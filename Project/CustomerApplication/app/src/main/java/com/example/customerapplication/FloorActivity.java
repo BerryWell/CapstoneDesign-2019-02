@@ -72,11 +72,11 @@ public class FloorActivity extends AppCompatActivity {
             TextView textViewCategory
                     = viewHolder.itemView.findViewById(R.id.textViewVersion);
             String selectedCategory = (String) textViewCategory.getText();
-            Log.d("층의 id와 카테고리", selectedId + " " + selectedCategory);
+            //Log.d("층의 id와 카테고리", selectedId + " " + selectedCategory);
 
             String[] categoryArr = selectedCategory.split(","); //문자열을 배열로
 
-            Log.d("카테고리 1, 2", categoryArr[0] + " " + categoryArr[1]);
+           // Log.d("카테고리 1, 2", categoryArr[0] + " " + categoryArr[1]);
             ((MyApp)getApplicationContext()).setSelectedId(Integer.parseInt(selectedId));
 
             Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
@@ -116,10 +116,10 @@ public class FloorActivity extends AppCompatActivity {
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                        Log.d("Main 통신", response.body().toString());
-                        Log.d("Main 통신 주소", call.request().url().toString());
+                        //Log.d("Main 통신", response.body().toString());
+                        //Log.d("Main 통신 주소", call.request().url().toString());
                         Floor[] dataJson= new Gson().fromJson(response.body(), Floor[].class);
-                        Log.d("Main 결과", dataJson[0].category);
+                        //Log.d("Main 결과", dataJson[0].category);
                         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setLayoutManager(layoutManager);

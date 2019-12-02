@@ -178,8 +178,8 @@ class ViewEx extends View{
             if(touchX>=0 && touchX<floorX && touchY>=0 && touchY<floorY){
                 if(!arr[touchY][touchX].equals("")){
                     //map json file에서 받을수도 있을듯!
-                    Log.d("터치된 상품의 touchInfoX =", String.valueOf(touchInfoX)); //iditem 받아서 item name 출력. 0, -1의 경우 예외처리 (벽, 정문 등...)
-                    Log.d("터치된 상품의 touchX =", String.valueOf((event.getX()*(floorX+1)/viewX)-0.5));
+                   //Log.d("터치된 상품의 touchInfoX =", String.valueOf(touchInfoX)); //iditem 받아서 item name 출력. 0, -1의 경우 예외처리 (벽, 정문 등...)
+                    //Log.d("터치된 상품의 touchX =", String.valueOf((event.getX()*(floorX+1)/viewX)-0.5));
                     //Snackbar.make(this, "터치된 상품의 iditem =" + arr[touchY][touchX], Snackbar.LENGTH_SHORT).show();
                     invalidate();
                 }
@@ -233,11 +233,11 @@ public class StoreActivity extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {   // ---------- F
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                        Log.d("Main 통신", response.body().toString());
+                       // Log.d("Main 통신", response.body().toString());
                         Map dataJson= new Gson().fromJson(response.body(), Map.class);
-                        Log.d("Main 통신", dataJson.map);
+                        //Log.d("Main 통신", dataJson.map);
                         arr = new Gson().fromJson(dataJson.map, String[][].class);
-                        Log.d("Main 통신", arr[0][1]);
+                        //Log.d("Main 통신", arr[0][1]);
                         vw.setArr(arr);
                     }else{
                         Log.d("Main 통신", "실패 1 response 내용이 없음");
@@ -258,9 +258,9 @@ public class StoreActivity extends AppCompatActivity {
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                        Log.d("Main 통신", response.body().toString());
+                        //Log.d("Main 통신", response.body().toString());
                         FloorItem[] dataJson= new Gson().fromJson(response.body(), FloorItem[].class);
-                        Log.d("Main 결과", dataJson[0].name);
+                       // Log.d("Main 결과", dataJson[0].name);
                         ArrayList<FloorItem> data = new ArrayList<>();
                         for (int i = 0; i < dataJson.length; i++) {
                             data.add(new FloorItem(dataJson[i].iditem, dataJson[i].name));

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         double longitude = gpsTracker.getLongitude();
 
         LatLng position = new LatLng(latitude, longitude);
-        Log.d("현재 위치: ",latitude + ", " + longitude);
+       // Log.d("현재 위치: ",latitude + ", " + longitude);
 
         //db에서 mall의 idmall, name, 위도, 경도 받아오기 -> intent로 idmall도 보내주기.
         findMalls();
@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {   // ---------- F
                 if(response.isSuccessful()){
                     if(response.body() != null){ //null 뿐 아니라 오류 값이 들어올 때도 처리해줘야 함.
-                        Log.d("Main 통신", response.body().toString());
+                        //Log.d("Main 통신", response.body().toString());
                         Mall[] dataJson= new Gson().fromJson(response.body(), Mall[].class);
-                        Log.d("Main 결과", dataJson[4].name);
+                        //Log.d("Main 결과", dataJson[4].name);
                         markerOption = new MarkerOptions[dataJson.length];
                         for (int i = 0; i < dataJson.length; i++) {
                             markerOption[i] = new MarkerOptions();
