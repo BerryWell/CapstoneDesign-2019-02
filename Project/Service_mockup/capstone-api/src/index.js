@@ -162,11 +162,8 @@ async function findMalls() {
 }
 
 app.get('/findMalls', async (req, res) => {
-    console.log({ '/findMalls': req.body });
-    console.log({ '/findMalls': req.query });
     try {
         const result = await findMalls();
-        console.log(result);
         res.send(result);
     } catch (err) {
         console.log({ err })
