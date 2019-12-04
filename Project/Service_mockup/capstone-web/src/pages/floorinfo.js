@@ -67,14 +67,14 @@ export default function SetLayout() {
     const { enqueueSnackbar } = useSnackbar();
 
     const [values, setState] = React.useState({
-        floorItem: [...Array(cookies.get("editingMarketMaxFloor")).keys()].map(element => { return { key: (element + 1).toString() } }),
+        floorItem: [...Array(Number(cookies.get("editingMarketMaxFloor")))].map((i, index) => { return { id: (index + 1).toString() } }),
         shelves: [],
         shelveName: "",
-        curFloor: 0,
+        curFloor: 1,
         curShelf: "",
         itemName: "",
         quantity: 0,
-        floorStructure: [...Array(cookies.get("editingMarketMaxFloor")).keys()].map(element => { return { id: (element + 1).toString(), name: (element + 1).toString() } }),
+        floorStructure: [...Array(Number(cookies.get("editingMarketMaxFloor"))).keys()].map(element => { return { id: (element + 1).toString(), name: (element + 1).toString() } }),
         isSending: false
     });
     const handleChange = name => event => {
@@ -92,10 +92,10 @@ export default function SetLayout() {
         if (values.shelveName !== '') {
             values.shelves.push({ "key": values.shelveName });
             let newFloorStructure = values.floorStructure;
-            if (!newFloorStructure[values.curFloor].children) {
-                newFloorStructure[values.curFloor].children = [];
+            if (!newFloorStructure[values.curFloor - 1].children) {
+                newFloorStructure[values.curFloor - 1].children = [];
             }
-            newFloorStructure[values.curFloor].children.push({ id: values.shelveName, name: values.shelveName });
+            newFloorStructure[values.curFloor - 1].children.push({ id: values.shelveName, name: values.shelveName });
             setState({ ...values, shelveName: "", shelves: values.shelves, floorStructure: newFloorStructure });
         }
     }
@@ -110,11 +110,11 @@ export default function SetLayout() {
         }
 
         let newFloorStructure = values.floorStructure;
-        if (!newFloorStructure[values.curFloor].children) {
+        if (!newFloorStructure[values.curFloor - 1].children) {
             enqueueSnackbar("가판대를 선택해주세요", errorSnackbarOption);
             return;
         }
-        let shelf = newFloorStructure[values.curFloor].children.find(x => x.id === values.curShelf);
+        let shelf = newFloorStructure[values.curFloor - 1].children.find(x => x.id === values.curShelf);
         if (shelf) {
             if (!shelf.children) {
                 shelf.children = []
@@ -160,6 +160,7 @@ export default function SetLayout() {
         );
     };
     const changeFloor = name => event => {
+
         setState({
             ...values,
             curFloor: event.target.value,
@@ -177,7 +178,7 @@ export default function SetLayout() {
         }
         catch (err) {
             setState({ ...values, isSending: false });
-            enqueueSnackbar("아이템 등록 실패", errorSnackbarOption);
+            enqueueSnackbar("아이템 등록 실패" + err, errorSnackbarOption);
             console.log(err);
         }
 
@@ -197,7 +198,7 @@ export default function SetLayout() {
                             onChange={changeFloor('curFloor')}
                         >
                             {
-                                values.floorItem.map((element, key) => <MenuItem key={key.toString()} value={key.toString()}>{element.key}</MenuItem>)
+                                values.floorItem.map((element) => <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.id}</MenuItem>)
                             }
                         </Select>
                     </Grid>
@@ -229,8 +230,8 @@ export default function SetLayout() {
                                 value={values.curShelf}
                                 onChange={handleChange('curShelf')}
                             >
-                                {values.floorStructure[values.curFloor].children ?
-                                    values.floorStructure[values.curFloor].children.map((element) =>
+                                {values.floorStructure[values.curFloor - 1].children ?
+                                    values.floorStructure[values.curFloor - 1].children.map((element) =>
                                         <MenuItem key={element.id.toString()} value={element.id.toString()}>{element.name}</MenuItem>) :
                                     []}
                             </Select>
