@@ -76,7 +76,7 @@ const IndexPage = () => {
         가게 추가하기
       </Button>
       {stores.storeInfo ?
-        stores.storeInfo.map((store, index) => <StoreCard {...store} key={index} afterDeleteMall={() => {getStores(cookies.get('userId')).then(setCard); }} />) :
+        stores.storeInfo.map((store, index) => <StoreCard {...store} key={index} afterDeleteMall={() => { getStores(cookies.get('userId')).then(setCard); }} />) :
         <>가게 목록을 불러오는 중입니다...</>}
     </>
   )
@@ -96,21 +96,20 @@ const StoreCard = ({
   const openSettingMenu = () => setSettingMenuOpen(true);
   const closeSettingMenu = () => setSettingMenuOpen(false);
 
-  const modifyMall = (id, column, value) => {
-    console.log('modifyMall clicked!');
-    console.log(id);
-    navigate('/modifyMall'+'?'+id.idmall);
-    //modifyMalls(id, column, value);
+  const modifyMall = async (idmall) => {
+
+    await deleteMalls(idmall);
+    navigate('/addMarket');
     setSettingMenuOpen(false);
   }
   const deleteMall = async (idmall) => {
     console.log('deleteMall clicked!');
     //console.log(typeof afterDeleteMall);
-    
+
     let ret = await deleteMalls(idmall);
-    if(ret){
+    if (ret) {
       afterDeleteMall();
-      
+
     }
     setSettingMenuOpen(false);
 
