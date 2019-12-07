@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         ////////////////////아래 데모 시 필히 지울 것
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(CHONGANG));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(CHONGANG));
         /////////////////
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
     }
