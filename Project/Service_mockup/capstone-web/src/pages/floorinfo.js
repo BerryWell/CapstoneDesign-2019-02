@@ -279,7 +279,7 @@ export default function SetLayout() {
                     disabled={values.isSending}
                 >
                     품목 저장
-                            </Button>
+                </Button>
                 <Button
                     type="button"
                     variant="contained"
@@ -287,7 +287,7 @@ export default function SetLayout() {
                     onClick={() => { navigate('/uploadItems') }}
                 >
                     CSV에서 읽어들이기
-                            </Button>
+                </Button>
             </form>
 
 

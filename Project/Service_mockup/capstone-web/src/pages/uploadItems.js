@@ -12,6 +12,7 @@ import CSVReader from 'react-csv-reader'
 import { uploadItems } from '../api/stores';
 
 import Cookies from 'universal-cookie';
+import { Button } from '@material-ui/core';
 const cookies = new Cookies();
 
 
@@ -47,6 +48,7 @@ class Form extends React.Component {
     // DB 쿼리 넣기
     //uploadItems(file["item"], file["quantity"]);
     //cookies.set("editingMarketMaxFloor"
+    // category, item, quantity
     uploadItems(file, cookies.get("editingMarketID"));
   }
 
@@ -59,19 +61,27 @@ class Form extends React.Component {
   render() {
     return (
       <>
-        <h1>Upload items</h1>
-        <p>This page is for uploading items by uploading a csv file.</p>
+        <h1>상품 업로드</h1>
+        <p>재고 현황을 저장하고 있는 파일을 업로드하세요.</p>
 
         <CSVReader
           keys={keys}
           cssClass="csv-reader-input"
-          label="Upload a csv file."
+          label="업로드할 csv 파일을 선택하세요."
           onFileLoaded={this.handleFile}
           onError={this.handleError}
           parserOptions={papaparseOptions}
           inputId="ObiWan"
           inputStyle={{ color: 'red' }}
         />
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={() => { navigate('/floorinfo') }}
+        >
+        완료
+        </Button>
 
       </>
     );
