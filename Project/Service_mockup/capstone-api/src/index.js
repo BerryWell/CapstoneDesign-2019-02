@@ -145,9 +145,9 @@ app.post('/uploadItems', async (req, res) => {
             const { category, item, quantity, floor } = data[i];
             const result = await queryAsync("INSERT IGNORE INTO category(name, floor_idfloor) VALUES(?, (SELECT idfloor FROM floor WHERE mall_idmall = ? AND number = ?))", [category, marketId, floor]);
             const result2 = await queryAsync("INSERT IGNORE INTO item(category_idcategory, name, quantity, floor_idfloor) VALUES (?, ?, ?, (SELECT idfloor FROM floor WHERE mall_idmall = ? AND number = ?))", [result.insertId, item, quantity, marketId, floor]);
+            console.log(result);
+            res.send(result);
         }
-        console.log(result);
-        res.send(result);
     } catch (err) {
         console.log({ err });
         res.status(403).send({ error: 'Something failed! ' });
