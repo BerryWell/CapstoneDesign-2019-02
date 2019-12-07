@@ -12,7 +12,9 @@ import CSVReader from 'react-csv-reader'
 import { uploadItems } from '../api/stores';
 
 import Cookies from 'universal-cookie';
-import { Button } from '@material-ui/core';
+import { Button, Modal, Dialog } from '@material-ui/core';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 const cookies = new Cookies();
 
 
@@ -34,6 +36,8 @@ const papaparseOptions = {
       .replace(/\W/g, '_')
 }
 
+
+
 class Form extends React.Component {
   constructor(props) {
     super(props);
@@ -50,11 +54,15 @@ class Form extends React.Component {
     //cookies.set("editingMarketMaxFloor"
     // category, item, quantity
     uploadItems(file, cookies.get("editingMarketID"));
+
+
+    //navigate('/floorinfo');
   }
 
   handleError = error => {
     console.log("error!");
     console.log(error);
+
   }
 
 
@@ -78,7 +86,7 @@ class Form extends React.Component {
           type="button"
           variant="contained"
           color="primary"
-          onClick={() => { navigate('/floorinfo') }}
+          onClick={() => {navigate('/floorinfo');}}
         >
         완료
         </Button>
